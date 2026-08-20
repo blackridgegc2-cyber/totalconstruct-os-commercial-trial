@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TotalConstruct OS Commercial</title>
+<style>
+
+:root{
+ --ink:#17212b;--muted:#6f7884;--bg:#f3f4f6;--panel:#fff;--line:#e1e5e9;
+ --charcoal:#131b22;--charcoal2:#1b2731;--bronze:#b9792f;--bronze2:#d69a4d;
+ --blue:#236a95;--good:#237a49;--warn:#9a6812;--bad:#b9382e;--violet:#6f5aa7;
+ --radius:14px;--shadow:0 8px 28px rgba(17,27,36,.07)
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}.hidden{display:none!important}.small{font-size:11px}.muted{color:var(--muted)}.right{text-align:right}.money{font-variant-numeric:tabular-nums}
+.login{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 25% 15%,#273846 0,#121a21 40%,#0d1419 100%)}
+.login-card{width:min(440px,92vw);background:rgba(255,255,255,.97);border-radius:22px;padding:34px;box-shadow:0 35px 80px #0006;display:grid;gap:14px}
+.mark,.brand-icon{background:linear-gradient(145deg,var(--bronze2),#8d5724);color:#fff;font-weight:900;display:grid;place-items:center}
+.mark{width:52px;height:52px;border-radius:14px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;color:var(--bronze)}.login h1{margin:2px 0 0;font-size:33px}.login p{margin:3px 0;color:var(--muted)}label{font-size:12px;font-weight:700}
+.login select,.project-select,input,select,textarea{border:1px solid #cfd6dc;border-radius:9px;background:#fff;padding:9px 11px;color:var(--ink)}
+.wide{width:100%}
+header{height:66px;background:var(--charcoal);color:#fff;display:flex;align-items:center;gap:14px;padding:0 17px;position:sticky;top:0;z-index:30;border-bottom:1px solid #ffffff12}
+.brand-wrap{display:flex;gap:9px;align-items:center;min-width:225px}.brand-icon{width:36px;height:36px;border-radius:10px;font-size:13px}.brand-wrap b{display:block;font-size:14px}.brand-wrap span{font-size:10px;color:#aeb9c2;display:block}
+.project-select{background:#24333f;color:#fff;border-color:#465562;min-width:245px}.search-wrap{flex:1}.search-wrap input{width:100%;max-width:520px;background:#202c36;border-color:#3c4c59;color:#fff}.search-wrap input::placeholder{color:#9eabb5}
+.ask{border:1px solid #d59a50;background:linear-gradient(135deg,#d99c4c,#b57931);color:#111;padding:9px 13px;border-radius:9px;font-weight:800;cursor:pointer}.avatar{height:34px;width:34px;border-radius:50%;display:grid;place-items:center;background:#344754;font-weight:800}
+.layout{display:flex;min-height:calc(100vh - 66px)}aside{width:260px;background:#17232c;color:#dfe7ec;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto;padding:12px 9px 80px}
+.nav-title{font-size:9px;color:#83939e;text-transform:uppercase;letter-spacing:1.3px;padding:15px 10px 5px}.nav{padding:9px 10px;border-radius:8px;margin:2px 0;font-size:12px;cursor:pointer;display:flex;justify-content:space-between}.nav:hover,.nav.active{background:#253744;color:#fff}.nav.active{box-shadow:inset 3px 0 var(--bronze2)}.nav-badge{background:#9d342e;color:#fff;border-radius:12px;padding:1px 6px;font-size:9px}
+.aside-bottom{position:fixed;bottom:0;width:242px;background:#111b23;border-top:1px solid #ffffff14;padding:12px}.tenant{font-size:11px;font-weight:700}
+main{flex:1;min-width:0;padding:22px;max-width:calc(100vw - 260px)}.page{display:none}.page.active{display:block}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:15px}.head h1{font-size:26px;margin:0;letter-spacing:-.6px}.sub{font-size:12px;color:var(--muted);margin-top:4px}.actions{display:flex;gap:7px;flex-wrap:wrap}
+.btn{padding:8px 11px;border-radius:8px;border:1px solid #ccd3d9;background:#fff;font-weight:700;font-size:12px;cursor:pointer}.btn:hover{filter:brightness(.98)}.btn.primary{background:var(--blue);color:white;border-color:var(--blue)}.btn.dark{background:var(--charcoal2);color:#fff;border-color:var(--charcoal2)}.btn.bronze{background:var(--bronze);color:white;border-color:var(--bronze)}.btn.danger{color:var(--bad)}.icon-btn{border:0;background:transparent;font-size:24px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:11px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:12px}.two{display:grid;grid-template-columns:1.45fr 1fr;gap:12px}.section{margin-top:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:0 1px 2px #00000006}.card h3{margin:0 0 10px;font-size:14px}.kpi{position:relative;overflow:hidden}.kpi:after{content:'';position:absolute;right:-18px;bottom:-28px;width:86px;height:86px;border-radius:50%;background:#b9792f10}.kpi .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.kpi .value{font-size:25px;font-weight:850;letter-spacing:-.6px;margin:5px 0}.kpi .foot{font-size:10px;color:var(--muted)}
+.table-wrap{overflow:auto;border-radius:10px;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;font-size:11px;background:#fff;white-space:nowrap}th{text-align:left;padding:8px;background:#f7f8fa;color:#59636e;border-bottom:1px solid var(--line);font-size:10px;position:sticky;top:0;z-index:1}td{padding:8px;border-bottom:1px solid #edf0f2;vertical-align:middle}tr:last-child td{border-bottom:0}tr.clickable:hover{background:#faf7f2;cursor:pointer}
+.status{display:inline-block;padding:4px 7px;border-radius:12px;font-weight:750;font-size:9px}.green{background:#e0f4e6;color:#1d6e3e}.amber{background:#fff0c9;color:#83580b}.red{background:#fde4e1;color:#a42e26}.blue{background:#e3eff7;color:#255b7d}.gray{background:#edf0f2;color:#5f6871}.bronze{background:#f4e8da;color:#84511f}.violet{background:#eee8f7;color:#5f4b8a}
+.help{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#e7ebee;color:#5d6973;font-size:9px;font-weight:800;cursor:help;position:relative;margin-left:4px}.help:hover:after{content:attr(data-tip);position:absolute;width:250px;bottom:21px;left:-10px;background:#101820;color:#fff;padding:9px 10px;border-radius:8px;font-size:10px;line-height:1.4;z-index:50;box-shadow:0 10px 24px #0004}
+.callout{border-left:4px solid var(--bronze);background:#fff9f0;border-radius:8px;padding:10px 11px;font-size:11px}.ai-panel{background:linear-gradient(160deg,#131f28,#1b2c37);color:#eaf0f3;border-radius:var(--radius);padding:15px}.ai-panel h3{margin:0 0 8px}.ai-item{font-size:11px;padding:8px 0;border-bottom:1px solid #ffffff14}.ai-item:last-child{border-bottom:0}.ai-item b{color:#e6ad67}
+.field{display:grid;gap:4px;margin:8px 0}.field label{font-size:10px;color:var(--muted)}.field input,.field select,.field textarea{width:100%}.inline{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:10px;border:1px solid #d4d9de;padding:5px 8px;border-radius:14px;background:#fff}.pill.on{background:#203746;color:#fff;border-color:#203746}
+.progress{height:7px;background:#e8ebee;border-radius:9px;overflow:hidden}.progress i{height:100%;display:block;background:linear-gradient(90deg,var(--bronze),var(--bronze2))}
+.metric-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid #edf0f2;font-size:11px}.metric-row:last-child{border:0}.board{display:grid;grid-template-columns:repeat(5,minmax(210px,1fr));gap:10px;overflow:auto;padding-bottom:8px}.lane{background:#e9edf0;border-radius:12px;padding:9px;min-height:270px}.lane-head{font-weight:800;font-size:11px;margin:2px 3px 8px}.project-card{background:#fff;border:1px solid #dce1e5;border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 2px 4px #00000008}.project-card h4{margin:0 0 5px;font-size:12px}.project-card .amount{font-size:15px;font-weight:850;margin-top:7px}
+.modal{position:fixed;inset:0;background:#0006;z-index:100}.ai-drawer{width:min(510px,95vw);height:100%;background:#f6f7f8;position:absolute;right:0;display:flex;flex-direction:column;box-shadow:-20px 0 60px #0004}.drawer-head{background:#13202a;color:#fff;padding:16px;display:flex;justify-content:space-between}.drawer-head .muted{color:#aeb9c1}.drawer-head .icon-btn{color:white}.chat{flex:1;overflow:auto;padding:15px}.bubble{padding:10px 12px;border-radius:12px;max-width:90%;font-size:12px;line-height:1.5;margin-bottom:9px}.bubble.ai{background:#fff;border:1px solid var(--line)}.bubble.user{background:#1f5d82;color:#fff;margin-left:auto}.chat-input{display:flex;gap:7px;padding:12px;background:#fff;border-top:1px solid var(--line)}.chat-input input{flex:1}
+.statline{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #edf0f2;font-size:11px}.statline:last-child{border:0}.split-note{font-size:11px;color:var(--muted);line-height:1.5}.risk-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.risk-high{background:var(--bad)}.risk-med{background:var(--warn)}.risk-low{background:var(--good)}
+@media(max-width:1100px){aside{width:76px}.nav-title,.aside-bottom{display:none}.nav span:first-child{display:none}.nav:before{content:'•';font-size:18px}.nav{justify-content:center}.brand-wrap{min-width:auto}.brand-wrap>div:last-child{display:none}.project-select{min-width:160px}main{max-width:calc(100vw - 76px)}.grid{grid-template-columns:repeat(2,1fr)}.two,.grid3{grid-template-columns:1fr}}
+@media(max-width:700px){header{gap:7px;padding:0 9px}.project-select{min-width:120px;max-width:150px}.search-wrap{display:none}.ask{font-size:0}.ask:after{content:'✦ AI';font-size:11px}.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.layout aside{width:58px}main{max-width:calc(100vw - 58px);padding:12px}.nav{padding:8px}}
+
+</style>
+
+<style id="trial-r04-overrides">
+html{font-size:16px} body{font-size:15px}
+.nav{font-size:14px;padding:11px 12px}.nav-title{font-size:11px}
+.head h1{font-size:30px}.sub{font-size:14px}.card h3{font-size:17px}
+.kpi .label{font-size:12px}.kpi .value{font-size:30px}.kpi .foot{font-size:12px}
+table{font-size:13px} th{font-size:12px;padding:11px 10px} td{padding:11px 10px}
+.btn{font-size:13px;padding:10px 13px}.project-select,input,select,textarea{font-size:14px;padding:10px 12px}
+.help{width:18px;height:18px;font-size:11px}
+.topmenus{display:flex;gap:5px;align-items:center}.topmenu{position:relative}
+.topmenu>button{background:#1f2d37;color:#fff;border:1px solid #3c4c58;border-radius:8px;padding:9px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.topmenu>button:hover{background:#2a3d49}.mega{display:none;position:absolute;top:42px;left:0;min-width:310px;max-width:520px;background:#fff;color:#17212b;border:1px solid #dfe4e8;border-radius:12px;box-shadow:0 16px 40px #0003;padding:10px;z-index:80}
+.topmenu:hover .mega,.topmenu.open .mega{display:block}.mega-grid{display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:5px}
+.mega a{display:block;padding:9px 10px;border-radius:8px;color:#24323d;text-decoration:none;font-size:13px;cursor:pointer}.mega a:hover{background:#f3f6f8}
+.create-global{background:linear-gradient(135deg,#d99c4c,#b57931)!important;color:#151515!important;border-color:#d99c4c!important}
+.editable-cell{background:#fff9e9!important;outline:1px solid #e7c684;border-radius:5px}.locked-cell{background:#f5f7f9;color:#58636d}
+.draw-layout{display:grid;grid-template-columns:330px 1fr;gap:12px;min-height:680px}.draw-sidebar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;overflow:auto}
+.dropzone{border:2px dashed #b8c2ca;border-radius:12px;padding:24px;text-align:center;background:#f9fbfc;cursor:pointer}.dropzone.drag{background:#eef7fd;border-color:#236a95}
+.discipline{margin-top:12px}.discipline h4{margin:6px 0;font-size:13px}.file-row{padding:9px;border-radius:8px;border:1px solid #e6eaed;margin:5px 0;cursor:pointer;background:#fff}
+.file-row:hover,.file-row.active{background:#f4eee6;border-color:#c99555}.file-row b{display:block;font-size:12px}.file-row span{font-size:11px;color:#6f7884}
+.viewer-shell{background:#20262b;border-radius:14px;position:relative;overflow:hidden;min-height:680px}.viewer-toolbar{display:flex;gap:6px;align-items:center;padding:9px;background:#141b20;color:#fff;position:sticky;top:0;z-index:4;flex-wrap:wrap}
+.viewer-toolbar button,.viewer-toolbar select{font-size:12px;padding:7px 9px;border-radius:7px;border:1px solid #4a5965}
+.viewer{position:relative;height:630px;background:#313a41;overflow:auto;display:grid;place-items:start center;padding:18px}.viewer iframe,.viewer img{max-width:100%;width:100%;min-height:590px;border:0;background:white}
+#markupCanvas{position:absolute;top:18px;left:18px;pointer-events:none;z-index:3}#markupCanvas.active{pointer-events:auto;cursor:crosshair}.viewer-empty{color:#d5dce1;padding:100px 20px;text-align:center;width:100%}
+.tag{display:inline-block;padding:3px 6px;border-radius:9px;background:#edf2f5;font-size:10px;margin-right:4px}
+.project-banner{height:155px;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(135deg,#253746,#111a21);margin-bottom:14px}.project-banner img{width:100%;height:100%;object-fit:cover;opacity:.55}.project-banner .overlay{position:absolute;inset:0;padding:20px;color:#fff;display:flex;justify-content:space-between;align-items:flex-end}.project-banner h2{margin:0;font-size:28px}.project-banner .meta{font-size:13px;color:#e2e8ec}
+@media(max-width:1200px){.topmenus{display:none}.draw-layout{grid-template-columns:1fr}.draw-sidebar{max-height:320px}}
+</style>
+
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-card">
+    <div class="mark">TC</div>
+    <div>
+      <div class="eyebrow">TOTALCONSTRUCT OS</div>
+      <h1>Commercial</h1>
+      <p>Commercial construction operations, financial controls, field management and AI.</p>
+    </div>
+    <label>Demo user</label>
+    <select id="demoUser"></select>
+    <button class="btn primary wide" id="loginBtn">Sign in</button>
+    <div class="muted">Trial Release 0.5 · Includes a built-in Training Project and role-based demo accounts. Data is stored in this browser.</div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<header>
+  <div class="brand-wrap">
+    <div class="brand-icon">TC</div>
+    <div><b>TotalConstruct OS</b><span>Commercial</span></div>
+  </div>
+  <select id="projectSelect" class="project-select"></select>
+  
+<div class="topmenus">
+  <div class="topmenu"><button>Project ▾</button><div class="mega"><div class="mega-grid">
+    <a data-jump="home">Dashboard</a><a data-jump="projectboard">Project Board</a><a data-jump="statusreport">Project Status</a><a data-jump="preconstruction">Preconstruction</a><a data-jump="compliance">Compliance</a><a data-jump="subcontractors">Subcontractors</a><a data-jump="drawings">Drawings</a><a data-jump="schedule">Schedule</a>
+    <a data-jump="rfis">RFIs</a><a data-jump="submittals">Submittals</a><a data-jump="daily">Daily Reports</a><a data-jump="meetings">Meetings</a>
+  </div></div></div>
+  <div class="topmenu"><button>Financials ▾</button><div class="mega"><div class="mega-grid">
+    <a data-jump="financials">Budget / Cost Controls</a><a data-jump="wip">WIP</a><a data-jump="payapps">Pay Apps</a><a data-jump="contracts">Prime Contract</a><a data-jump="subcontractors">Subcontractors</a>
+    <a data-jump="fees">Fee Tally</a><a data-jump="oh">OH Recovery</a><a data-jump="integrations">Accounting / Integrations</a><a data-jump="reports">Reports</a>
+  </div></div></div>
+  <div class="topmenu"><button>Field ▾</button><div class="mega"><div class="mega-grid">
+    <a data-jump="daily">Daily Reports</a><a data-jump="quality">QA/QC</a><a data-jump="safety">Safety / OSHA</a><a data-jump="tm">T&M</a>
+    <a data-jump="procurement">Procurement</a><a data-jump="equipment">Equipment</a><a data-jump="warranty">Warranty</a><a data-jump="closeout">Closeout</a>
+  </div></div></div>
+  <div class="topmenu"><button class="create-global" id="globalCreate">＋ Create</button></div>
+</div>
+
+  <div class="search-wrap"><input id="globalSearch" placeholder="Search project, cost code, RFI, submittal, contract, asset..."></div>
+  <button class="ask" id="askAI">✦ Ask AI</button>
+  <div class="avatar" id="userAvatar"></div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div id="nav"></div>
+    <div class="aside-bottom">
+      <div class="tenant">Blackridge Construction LLC</div>
+      <div class="small muted">Test tenant</div>
+    </div>
+  </aside>
+  <main id="main">
+<div id="projectBanner" class="project-banner">
+  <div class="overlay"><div><div class="eyebrow">CURRENT PROJECT</div><h2 id="bannerTitle"></h2><div class="meta" id="bannerMeta"></div></div><button class="btn" id="bannerImageBtn">Set Project Image</button></div>
+</div>
+<input type="file" id="bannerImageInput" accept="image/*" style="display:none">
+
+    <section class="page active" id="home"></section>
+    <section class="page" id="projectboard"></section>
+    <section class="page" id="wip"></section>
+    <section class="page" id="oh"></section>
+    <section class="page" id="fees"></section>
+    <section class="page" id="employees"></section>
+    <section class="page" id="timesheets"></section>
+    <section class="page" id="resources"></section>
+    <section class="page" id="access"></section>
+    <section class="page" id="financials"></section>
+    <section class="page" id="payapps"></section>
+    <section class="page" id="contracts"></section>
+    <section class="page" id="subcontractors"></section>
+    <section class="page" id="preconstruction"></section>
+    <section class="page" id="compliance"></section>
+    <section class="page" id="statusreport"></section>
+    <section class="page" id="warranty"></section>
+    <section class="page" id="rfis"></section>
+    <section class="page" id="submittals"></section>
+    <section class="page" id="schedule"></section>
+    <section class="page" id="drawings"></section>
+    <section class="page" id="meetings"></section>
+    <section class="page" id="tasks"></section>
+    <section class="page" id="correspondence"></section>
+    <section class="page" id="daily"></section>
+    <section class="page" id="tm"></section>
+    <section class="page" id="procurement"></section>
+    <section class="page" id="quality"></section>
+    <section class="page" id="safety"></section>
+    <section class="page" id="equipment"></section>
+    <section class="page" id="closeout"></section>
+    <section class="page" id="bidders"></section>
+    <section class="page" id="reports"></section>
+    <section class="page" id="audit"></section>
+    <section class="page" id="integrations"></section>
+    <section class="page" id="settings"></section>
+  </main>
+</div>
+</div>
+
+<div id="aiModal" class="modal hidden">
+ <div class="ai-drawer">
+   <div class="drawer-head"><div><b>✦ Ask AI</b><div id="aiContext" class="muted small"></div></div><button id="closeAI" class="icon-btn">×</button></div>
+   <div id="chat" class="chat"><div class="bubble ai">Ask about the page you are on, the selected project, company WIP/OH/fee, safety, contracts, schedule, warranty, or project records. Access follows your user permissions.</div></div>
+   <div class="chat-input"><input id="aiInput" placeholder="Ask TotalConstruct AI..."><button class="btn primary" id="sendAI">Send</button></div>
+ </div>
+</div>
+
+<script>
+
+const seed={
+ company:{name:'Blackridge Construction LLC',monthlyOH:42180,ohRecovered:35600,feeEarned:12400,feeBilled:8900,feeCollected:8900,fiscalYear:'Calendar'},
+ users:[
+  {id:'u1',name:'Billy Brown',initials:'BB',role:'Company Owner / Super Admin',projects:['training','orchard','kingsland'],permissions:['all']},
+  {id:'u2',name:'Coby Brown',initials:'CB',role:'Project Manager',projects:['training','orchard'],permissions:['project','financial_project','contracts','rfi','submittal','schedule','payapps','internal','external','quality','tasks','meetings','daily','tm','procurement','closeout','timesheet','safety','equipment']},
+  {id:'u3',name:'Demo — Executive / Operations',initials:'EX',role:'Executive / Operations',projects:['training','orchard','kingsland'],permissions:['project','financial_project','wip','contracts','rfi','submittal','schedule','payapps','internal','external','quality','tasks','meetings','daily','tm','procurement','closeout','reports','resources']},
+  {id:'u4',name:'Demo — Accounting / Controller',initials:'AC',role:'Accounting / Controller',projects:['training','orchard','kingsland'],permissions:['project','financial_project','wip','payapps','contracts','employees_cost','timesheet','accounting','reports']},
+  {id:'u5',name:'Demo — Estimator / Preconstruction',initials:'ES',role:'Estimator / Preconstruction',projects:['training','orchard','kingsland'],permissions:['project','financial_project','rfi','submittal','drawings','procurement','bidders','internal','external','tasks','meetings']},
+  {id:'u6',name:'Demo — APM / Project Engineer',initials:'PE',role:'APM / Project Engineer',projects:['training','orchard'],permissions:['project','rfi','submittal','schedule','contracts','internal','external','tasks','meetings','daily','quality','procurement','closeout']},
+  {id:'u7',name:'Demo — Superintendent',initials:'SU',role:'Superintendent',projects:['training','orchard'],permissions:['project','field','rfi','submittal','schedule','safety','timesheet','internal','quality','daily','tasks','tm','equipment','drawings']},
+  {id:'u8',name:'Demo — Field Employee',initials:'FE',role:'Field Employee',projects:['training'],permissions:['project','field','timesheet','daily','safety','tasks','drawings']},
+  {id:'u9',name:'Demo — Architect / Engineer',initials:'AE',role:'Architect / Engineer',projects:['training'],permissions:['project','rfi','submittal','schedule','drawings','meetings','tasks','external']},
+  {id:'u10',name:'Demo — Owner / Client',initials:'OW',role:'Owner / Client',projects:['training'],permissions:['project','schedule','payapps','drawings','meetings','external']},
+  {id:'u11',name:'Demo — Subcontractor',initials:'SC',role:'Subcontractor',projects:['training'],permissions:['project','rfi','submittal','schedule','timesheet','safety','daily','external']},
+  {id:'u12',name:'Demo — Lender / Inspector',initials:'LI',role:'Lender / Inspector',projects:['training'],permissions:['project','payapps','schedule','drawings','reports']},
+  {id:'u13',name:'Demo — Read Only / Auditor',initials:'RO',role:'Read Only / Auditor',projects:['training','orchard'],permissions:['project','reports']}
+ ],
+ projects:[
+  {id:'training',job:'SAMPLE-001',name:'TotalConstruct Training Center',client:'Sample Client / Training',status:'Active Construction',prob:100,contract:2500000,originalContract:2400000,estimatedCost:2080000,forecastCost:2145000,costToDate:925000,billings:1015000,earnedRevenue:1077500,fee:180000,feeEarned:77500,feeBilled:72000,feeCollected:65000,ohRecovery:95000,start:'2026-04-01',end:'2027-02-15',pm:'Coby Brown',super:'Demo — Superintendent',contractType:'Lump Sum GC',region:'Central Texas',city:'Austin',estValue:2500000,subValue:1915000,consultantFee:0,taxWithhold:0},
+  {id:'orchard',job:'24017',name:'Academic Orchard',client:'The Academic Orchard',status:'Awarded / Preconstruction',prob:100,contract:747114,originalContract:747114,estimatedCost:671000,forecastCost:671000,costToDate:37200,billings:0,earnedRevenue:41413,fee:45598.5,feeEarned:12400,feeBilled:8900,feeCollected:8900,ohRecovery:28870.9,start:'2026-09-15',end:'2027-06-30',pm:'Project Manager Demo',super:'Superintendent Demo',contractType:'CM / GMP',region:'Central Texas',city:'Liberty Hill',estValue:747114,subValue:627628,consultantFee:0,taxWithhold:0},
+  {id:'kingsland',job:'24022',name:'Kingsland Commons',client:'Kingsland LAG, LLC',status:'Awaiting Owner Decision',prob:55,contract:15150000,originalContract:15150000,estimatedCost:13720000,forecastCost:13720000,costToDate:0,billings:0,earnedRevenue:0,fee:850000,feeEarned:0,feeBilled:0,feeCollected:0,ohRecovery:420000,start:'2026-10-15',end:'2028-05-01',pm:'TBD',super:'TBD',contractType:'Civil / GC',region:'Highland Lakes',city:'Kingsland',estValue:15150000,subValue:0,consultantFee:0,taxWithhold:0}
+ ],
+ employees:[
+  {id:'e1',name:'Billy Brown',position:'Owner / Principal',salary:125000,burden:22,truckAllowance:900,assigned:'Corporate / Multiple',status:'Active'},
+  {id:'e2',name:'Project Manager Demo',position:'Project Manager',salary:98000,burden:24,truckAllowance:650,assigned:'Academic Orchard',status:'Active'},
+  {id:'e3',name:'Superintendent Demo',position:'Superintendent',salary:92000,burden:24,truckAllowance:750,assigned:'Academic Orchard',status:'Active'},
+  {id:'e4',name:'Accounting Demo',position:'Accounting / Controller',salary:68000,burden:23,truckAllowance:0,assigned:'Corporate OH',status:'Active'}
+ ],
+ overhead:[
+  {month:'2026-08',category:'Office / Admin Payroll',budget:17500,actual:17340},
+  {month:'2026-08',category:'Vehicles / Truck Allowances',budget:4600,actual:4520},
+  {month:'2026-08',category:'Insurance',budget:3900,actual:4100},
+  {month:'2026-08',category:'Software / IT',budget:2200,actual:2280},
+  {month:'2026-08',category:'Office / Rent / Utilities',budget:4200,actual:4180},
+  {month:'2026-08',category:'Accounting / Legal / Professional',budget:2800,actual:2600},
+  {month:'2026-08',category:'BD / Marketing / Travel',budget:3100,actual:3160},
+  {month:'2026-08',category:'Bank / Interest / Misc.',budget:4100,actual:4000}
+ ],
+ time:[
+  {employee:'Project Manager Demo',date:'2026-08-19',hours:5,category:'Project',project:'Academic Orchard',costCode:'01 31 00',miles:42,fuel:0,notes:'Preconstruction coordination'},
+  {employee:'Project Manager Demo',date:'2026-08-19',hours:2,category:'Estimating',project:'Kingsland Commons',costCode:'EST',miles:0,fuel:0,notes:'Bid variance review'},
+  {employee:'Superintendent Demo',date:'2026-08-19',hours:8,category:'Project',project:'Academic Orchard',costCode:'01 50 00',miles:36,fuel:62.4,notes:'Site / permit preparation'},
+  {employee:'Billy Brown',date:'2026-08-19',hours:3,category:'Business Development',project:'Kingsland Commons',costCode:'BD',miles:0,fuel:0,notes:'Owner follow-up'},
+  {employee:'Accounting Demo',date:'2026-08-19',hours:8,category:'Overhead',project:'Corporate',costCode:'OH',miles:0,fuel:0,notes:'Accounting administration'}
+ ],
+ contracts:[
+  {project:'TotalConstruct Training Center',company:'Sample Electrical Co.',trade:'Electrical',value:285000,expires:'2026-10-15',cgl:'$1M/$2M',auto:'$1M',wc:'Statutory',umbrella:'$2M',status:'Current',executed:true,w9:true,waiver:true,submittals:true},
+  {project:'TotalConstruct Training Center',company:'Sample Roofing Co.',trade:'Roofing',value:168000,expires:'2026-09-05',cgl:'$1M/$2M',auto:'$1M',wc:'Statutory',umbrella:'$1M',status:'Expiring Soon',executed:true,w9:true,waiver:false,submittals:true},
+  {project:'Academic Orchard',company:'PEMB Supplier',trade:'PEMB',value:40812,expires:'2027-03-31',cgl:'$1M/$2M',auto:'$1M',wc:'Statutory',umbrella:'$2M',status:'Current',executed:true,w9:true,waiver:true,submittals:true},
+  {project:'Academic Orchard',company:'Earthwork Sub',trade:'Earthwork',value:39750,expires:'2026-09-12',cgl:'$1M/$2M',auto:'$1M',wc:'Statutory',umbrella:'None',status:'Expiring Soon',executed:true,w9:true,waiver:false,submittals:true}
+ ],
+ insurance:[
+  {project:'TotalConstruct Training Center',party:'GC',type:'Commercial General Liability',carrier:'Sample Carrier',policy:'CGL-TRAIN-01',effective:'2026-01-01',expires:'2027-01-01',limit:'$1M/$2M',deductible:'$5,000',status:'Current'},
+  {project:'TotalConstruct Training Center',party:'Project',type:"Builder's Risk",carrier:'Sample BR Carrier',policy:'BR-TRAIN-01',effective:'2026-04-01',expires:'2027-03-01',limit:'$2.5M',deductible:'$10,000',status:'Current'},
+  {project:'Academic Orchard',party:'GC',type:'Commercial General Liability',carrier:'Watkins / Carrier TBD',policy:'TBD',effective:'2026-09-01',expires:'2027-09-01',limit:'$1M/$2M',deductible:'TBD',status:'Planned'},
+  {project:'Academic Orchard',party:'Project',type:"Builder's Risk",carrier:'Watkins / Carrier TBD',policy:'TBD',effective:'2026-09-01',expires:'2027-07-31',limit:'Project Value',deductible:'TBD',status:'Planned'}
+ ],
+ warranties:[
+  {project:'TotalConstruct Training Center',trade:'Roofing',asset:'TPO Roofing System',provider:'Sample Roofing / Manufacturer',contact:'Warranty Dept.',phone:'(555) 555-0100',email:'warranty@sample.test',manufacturer:'SampleRoof',model:'TPO-60',serial:'N/A',coverage:'20-year membrane / 2-year labor',start:'2027-02-15',expires:'2047-02-15',term:'20 years',docs:['Manufacturer Warranty','Sub Warranty'],location:'Main Roof'},
+  {project:'TotalConstruct Training Center',trade:'HVAC',asset:'RTU-1',provider:'Sample Mechanical',contact:'Service Manager',phone:'(555) 555-0102',email:'service@sample.test',manufacturer:'Sample HVAC',model:'RTU-120',serial:'TRN-8840201',coverage:'Parts / compressor / labor',start:'2027-02-15',expires:'2032-02-15',term:'5 years',docs:['Manufacturer Warranty','Startup Report','O&M'],location:'Roof Area A'},
+  {project:'Academic Orchard',trade:'Roofing',asset:'TPO Roofing System',provider:'Roofing Sub / Manufacturer',contact:'Warranty Dept.',phone:'(555) 555-0101',email:'warranty@example.com',manufacturer:'Example Roofing',model:'TPO-60',serial:'N/A',coverage:'Manufacturer membrane',start:'2027-06-30',expires:'2037-06-30',term:'10 years',docs:['Manufacturer Warranty','Sub Warranty Letter'],location:'Roof'},
+  {project:'Academic Orchard',trade:'HVAC',asset:'RTU-1',provider:'HVAC Sub',contact:'Service Manager',phone:'(555) 555-0119',email:'service@example.com',manufacturer:'Example HVAC',model:'RTU-120',serial:'SN-8840201',coverage:'Labor',start:'2027-06-30',expires:'2030-06-30',term:'3 years',docs:['Sub Warranty','Startup Report','O&M'],location:'Building 1 Roof'}
+ ],
+ subcontractorProfiles:[
+  {project:'TotalConstruct Training Center',company:'Sample Electrical Co.',trade:'26 00 00 Electrical',contact:'Alex Reed',phone:'(555) 555-2101',email:'alex@sampleelectrical.test',contract:285000,approvedCO:12500,paid:115000,retainage:12750,proposal:'Proposal Rev 2',scope:'Division 26 complete electrical scope',insurance:'Current',w9:true,lienWaiver:false,executed:true,submittalsOpen:2,rfisOpen:1,punchOpen:0,closeout:15},
+  {project:'TotalConstruct Training Center',company:'Sample Roofing Co.',trade:'07 54 23 TPO Roofing',contact:'Morgan Lee',phone:'(555) 555-2102',email:'morgan@sampleroofing.test',contract:168000,approvedCO:0,paid:42000,retainage:4200,proposal:'Proposal Rev 1',scope:'TPO roofing, flashings, insulation',insurance:'Expiring Soon',w9:true,lienWaiver:true,executed:true,submittalsOpen:1,rfisOpen:0,punchOpen:0,closeout:20},
+  {project:'Academic Orchard',company:'PEMB Supplier',trade:'13 34 19 Metal Building Systems',contact:'Project Contact',phone:'(555) 555-2201',email:'pemb@example.test',contract:40812,approvedCO:0,paid:0,retainage:0,proposal:'PEMB Proposal',scope:'PEMB package',insurance:'Current',w9:true,lienWaiver:true,executed:true,submittalsOpen:1,rfisOpen:0,punchOpen:0,closeout:5}
+ ],
+ preconstruction:[
+  {project:'TotalConstruct Training Center',phase:'90% CD',designComplete:90,budgetTarget:2500000,currentEstimate:2465000,vePending:38000,openDesignIssues:7,ownerDecisionsDue:2,permitStatus:'In Review',longLeadRisks:2,bidCoverage:91,scheduleStatus:'On Track'},
+  {project:'Academic Orchard',phase:'DD / Permit Development',designComplete:65,budgetTarget:747114,currentEstimate:747114,vePending:0,openDesignIssues:5,ownerDecisionsDue:3,permitStatus:'In Progress',longLeadRisks:3,bidCoverage:62,scheduleStatus:'At Risk'}
+ ],
+ compliance:[
+  {project:'TotalConstruct Training Center',authority:'City of Austin',requirement:'Foundation / Pre-Pour Inspection',type:'Inspection',trade:'Concrete',responsible:'Superintendent',required:'2026-05-15',activity:'Concrete Foundations',status:'Passed / Complete',result:'Passed',rescheduled:'',docs:'Inspection Report'},
+  {project:'TotalConstruct Training Center',authority:'City of Austin',requirement:'Electrical Rough Inspection',type:'Inspection',trade:'Electrical',responsible:'Superintendent',required:'2026-08-28',activity:'Electrical Rough-In',status:'Scheduled',result:'',rescheduled:'',docs:'Pending'},
+  {project:'TotalConstruct Training Center',authority:'Testing Agency',requirement:'Concrete Cylinder Testing',type:'Testing',trade:'Concrete',responsible:'PM',required:'2026-05-15',activity:'Concrete Foundations',status:'Passed / Complete',result:'Passed',rescheduled:'',docs:'Test Report'},
+  {project:'Academic Orchard',authority:'Williamson County',requirement:'Building Permit Review',type:'Permit',trade:'General',responsible:'PM',required:'2026-09-20',activity:'Permit / Agency Review',status:'In Review',result:'',rescheduled:'',docs:'Permit Set'}
+ ],
+ projectStatus:[
+  {project:'TotalConstruct Training Center',period:'2026-08',reportNo:'08-2026-01',start:'2026-04-01',contractCompletion:'2027-02-15',projectedCompletion:'2027-02-22',percentComplete:43,rainDays:2,workInProgress:'Electrical rough-in, metal framing, drywall hang, storefront coordination.',completed:'Concrete structure complete; roofing dry-in substantially complete; main underground utilities complete.',concerns:'Storefront RFI and lead time may affect enclosure milestone.',countermeasures:'Architect response expedited; alternate release package under review.',safety:'No recordable incidents this period. One first-aid case closed.',summary:'Project remains generally on budget. Schedule risk is concentrated around storefront release and selected long-lead items.'}
+ ],
+ incidents:[{project:'TotalConstruct Training Center',type:'First Aid',date:'2026-08-12',recordable:'No',status:'Closed',topic:'Minor hand cut'},
+ {project:'Academic Orchard',type:'Near Miss',date:'2026-08-18',recordable:'No',status:'Corrective Action Open',topic:'Ladder / access'}],
+ toolbox:[{project:'TotalConstruct Training Center',date:'2026-08-20',type:'Daily',topic:'Ladder Safety / Overhead Work',attendees:21,status:'Completed'},
+ {project:'TotalConstruct Training Center',date:'2026-08-24',type:'Weekly',topic:'Electrical Rough-In / Lockout Awareness',attendees:0,status:'AI Suggested'},
+ {project:'Academic Orchard',date:'2026-08-19',type:'Daily',topic:'Heat Stress & Hydration',attendees:12,status:'Completed'},{project:'Academic Orchard',date:'2026-08-23',type:'Weekly',topic:'Excavation & Utility Locates',attendees:0,status:'AI Suggested'}],
+ rfis:[{project:'TotalConstruct Training Center',id:'RFI-027',subject:'Storefront head flashing detail',bic:'Architect',due:'2026-08-22',activity:'Storefront Fabrication',float:2,delay:3,tie:'PM Approved',status:'Open'},
+ {project:'Academic Orchard',id:'RFI-001',subject:'Utility / design clarification',bic:'Architect',due:'2026-09-10',activity:'Design Completion',float:5,delay:0,tie:'AI Suggested',status:'Open'}],
+ submittals:[{project:'TotalConstruct Training Center',id:'08-041',spec:'08 41 13',desc:'Storefront Shop Drawings',sub:'Sample Glazing Co.',bic:'Architect',ros:'2026-09-18',lead:'5 wks',activity:'Storefront Install',exposure:6,tie:'PM Approved',status:'In Review'},
+ {project:'Academic Orchard',id:'13-001',spec:'13 34 19',desc:'PEMB Shop Drawings',sub:'PEMB Supplier',bic:'Architect',ros:'2026-11-20',lead:'8 wks',activity:'PEMB Fabrication',exposure:0,tie:'AI Suggested',status:'Planned'}],
+ schedule:{versions:[{id:1,label:'Baseline',date:'2026-08-20'},{id:2,label:'Update 01',date:'2026-08-20'}],activities:[
+  {project:'TotalConstruct Training Center',id:'A1450',activity:'Storefront Fabrication',planned:75,actual:68,status:'At Risk',critical:true},
+  {project:'TotalConstruct Training Center',id:'A2210',activity:'Electrical Rough-In',planned:62,actual:58,status:'Active',critical:false},
+  {project:'TotalConstruct Training Center',id:'A2310',activity:'Drywall Hang',planned:15,actual:12,status:'Active',critical:true},
+  {project:'Academic Orchard',id:'A100',activity:'Complete Design',planned:65,actual:65,status:'Active',critical:false},
+  {project:'Academic Orchard',id:'A200',activity:'Permit / Agency Review',planned:0,actual:0,status:'Future',critical:true},
+  {project:'Academic Orchard',id:'A300',activity:'PEMB Procurement',planned:0,actual:0,status:'Future',critical:true}
+ ]},
+ daily:[{project:'TotalConstruct Training Center',date:'2026-08-20',weather:'94°F / Mostly Sunny',rain:'0.00',workers:41,activity:'Electrical rough-in, framing, storefront prep',scheduleActivity:'Electrical Rough-In',planned:62,actual:58,issue:'Storefront RFI may affect fabrication'},
+ {project:'Academic Orchard',date:'2026-08-19',weather:'92°F / Partly Cloudy',rain:'0.00',workers:12,activity:'Preconstruction / site verification',scheduleActivity:'Complete Design',planned:65,actual:65,issue:'None'}],
+ tm:[{project:'TotalConstruct Training Center',id:'TM-014',date:'2026-08-19',description:'Owner-directed conduit relocation',labor:1850,material:640,equipment:175,status:'Pending Signature'},
+ {project:'Academic Orchard',id:'TM-001',date:'2026-08-19',description:'Sample extra field investigation',labor:0,material:0,equipment:0,status:'Draft'}],
+ procurement:[{project:'TotalConstruct Training Center',item:'Storefront Package',sub:'Sample Glazing Co.',status:'A/E Review',required:'2026-09-18',lead:'5 wks',activity:'Storefront Install'},
+ {project:'Academic Orchard',item:'PEMB Package',sub:'PEMB Supplier',status:'Submittal Pending',required:'2026-11-20',lead:'8 wks',activity:'PEMB Procurement'}],
+ quality:[{project:'TotalConstruct Training Center',id:'ITP-004',title:'Storefront Pre-Installation',status:'In Progress',steps:8,complete:5},
+ {project:'Academic Orchard',id:'ITP-001',title:'Pre-Pour Concrete',status:'Template',steps:6,complete:0}],
+ tasks:[{project:'TotalConstruct Training Center',id:'T-018',source:'RFI-027',task:'Resolve storefront head flashing',owner:'Coby Brown',due:'2026-08-22',status:'Open'},
+ {project:'Academic Orchard',id:'T-001',source:'RFI-001',task:'Confirm utility design response',owner:'Project Manager Demo',due:'2026-09-10',status:'Open'}],
+ meetings:[{project:'TotalConstruct Training Center',type:'OAC',number:12,date:'2026-08-21',status:'Planned',openItems:7},
+ {project:'Academic Orchard',type:'OAC',number:1,date:'2026-09-01',status:'Planned',openItems:3}],
+ equipment:[{id:'EQ-T01',name:'Training Site Camera / Trailer',type:'Jobsite Equipment',ownership:'Rented',assigned:'Demo — Superintendent',project:'TotalConstruct Training Center',rate:450,status:'Active',nextService:'2026-09-15'},
+ {id:'EQ-001',name:'Company Truck 01',type:'Vehicle',ownership:'Owned',assigned:'Project Manager Demo',project:'Academic Orchard',rate:0,status:'Active',nextService:'2026-10-01'}],
+ bidders:[
+  {company:'PEMB Supplier',trade:'13 34 19 Metal Building Systems',region:'Central Texas',safety:'Good',quality:'Good',schedule:'Good',billing:'Good',score:88},
+  {company:'Earthwork Sub',trade:'31 20 00 Earth Moving',region:'Central Texas',safety:'Good',quality:'Good',schedule:'Average',billing:'Good',score:82}
+ ],
+ payapps:{'TotalConstruct Training Center':{number:6,prior:865000,retainage:10,rows:[
+  {sov:'General Requirements',value:185000,prev:118000,current:18500,stored:0},
+  {sov:'Concrete',value:275000,prev:261000,current:0,stored:0},
+  {sov:'Storefront / Glazing',value:210000,prev:42000,current:31500,stored:18000},
+  {sov:'Electrical',value:285000,prev:115000,current:42500,stored:0},
+  {sov:'HVAC',value:310000,prev:125000,current:38000,stored:12000},
+  {sov:'Drywall / Ceilings',value:260000,prev:64000,current:29000,stored:0}
+ ]},
+ 'Academic Orchard':{number:1,prior:0,retainage:10,rows:[
+  {sov:'General Requirements',value:62833,prev:0,current:0,stored:0},
+  {sov:'Earthwork',value:42810,prev:0,current:0,stored:0},
+  {sov:'Concrete',value:34555,prev:0,current:0,stored:0},
+  {sov:'PEMB / Shell',value:40812,prev:0,current:0,stored:0},
+  {sov:'Plumbing',value:30787,prev:0,current:0,stored:0},
+  {sov:'HVAC',value:35123,prev:0,current:0,stored:0},
+  {sov:'Electrical',value:34222,prev:0,current:0,stored:0}
+ ]}},
+ internalMessages:[{project:'TotalConstruct Training Center',date:'2026-08-20',subject:'Internal storefront cost / schedule exposure',from:'Coby Brown',visibility:'Company Only',linked:'RFI-027',status:'Open'},
+ {project:'Academic Orchard',date:'2026-08-19',subject:'Internal pricing / permit strategy',from:'Billy Brown',visibility:'Company Only',linked:'Preconstruction',status:'Open'}],
+ externalMessages:[{project:'TotalConstruct Training Center',date:'2026-08-20',subject:'RFI-027 response needed for storefront release',from:'Coby Brown',to:'Architect',linked:'RFI-027',status:'Sent'},
+ {project:'Academic Orchard',date:'2026-08-19',subject:'Permit coordination follow-up',from:'Project Manager Demo',to:'Architect',linked:'Permit',status:'Sent'}],
+ audit:[{date:'2026-08-20 09:00',user:'System',action:'Seeded project dataset',record:'Academic Orchard',old:'—',new:'Created'}]
+};
+
+let state=JSON.parse(localStorage.getItem('totalconstruct_commercial_v2')||'null')||JSON.parse(JSON.stringify(seed));
+let currentUser=null,currentPage='home';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const money=n=>Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+const pct=n=>(Number(n||0)*100).toFixed(1)+'%';
+const help=txt=>`<span class="help" data-tip="${String(txt).replace(/"/g,'&quot;')}">?</span>`;
+function save(action='Saved data',record='System'){localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state)); if(action) state.audit.unshift({date:new Date().toLocaleString(),user:currentUser?.name||'System',action,record,old:'',new:''});localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state));renderPage(currentPage)}
+function allowed(key){return currentUser?.permissions.includes('all')||currentUser?.permissions.includes(key)}
+function visibleProjects(){return state.projects.filter(p=>currentUser?.permissions.includes('all')||currentUser?.projects.includes(p.id))}
+function currentProject(){let id=$('#projectSelect')?.value;return state.projects.find(p=>p.id===id)||visibleProjects()[0]}
+function gp(p){return p.contract-p.forecastCost}
+function comp(p){return p.forecastCost?p.costToDate/p.forecastCost:0}
+function earned(p){return p.earnedRevenue||p.contract*comp(p)}
+function over(p){return p.billings-earned(p)}
+function backlog(p){return Math.max(0,p.contract-p.billings)}
+function feeRemaining(p){return p.fee-p.feeEarned}
+function statusClass(s){s=(s||'').toLowerCase();if(s.includes('approved')||s.includes('current')||s.includes('complete')||s.includes('active'))return'green';if(s.includes('expired')||s.includes('denied')||s.includes('hold')||s.includes('overdue'))return'red';if(s.includes('pending')||s.includes('soon')||s.includes('suggest')||s.includes('open'))return'amber';return'gray'}
+const navModel=[
+ ['Corporate',['home','Executive Dashboard','project'],['projectboard','Project / Opportunity Board','project'],['wip','WIP / Contract Status','wip'],['oh','OH Recovery','all'],['fees','Fee Tally','all'],['employees','Employees','employees_cost'],['timesheets','Timesheets / Expenses','timesheet'],['resources','Resource Planning','project'],['access','Users / Access','all']],
+ ['Project Financials',['financials','Cost Controls','financial_project'],['payapps','Pay Applications','payapps'],['contracts','Contracts / Insurance','contracts'],['subcontractors','Subcontractors','project'],['warranty','Warranty / Assets','project']],
+ ['Project Management',['preconstruction','Preconstruction','project'],['compliance','Compliance','project'],['statusreport','Project Status Report','project'],['rfis','RFIs','project'],['submittals','Submittals','project'],['schedule','Schedule / Delays','schedule'],['drawings','Drawings / Takeoff','project'],['meetings','Meetings','project'],['tasks','Tasks / Action Items','project'],['correspondence','Correspondence','project']],
+ ['Field Operations',['daily','Daily Reports / Weather','project'],['tm','T&M Tickets','project'],['procurement','Procurement / Deliveries','project'],['quality','Quality / Action Plans','project'],['safety','Safety / OSHA','project'],['equipment','Equipment / Fleet','project']],
+ ['Closeout / Business',['closeout','Closeout','project'],['bidders','Bidders / Scorecards','project'],['reports','Reports / Analytics','reports'],['audit','Audit / Versions','all'],['integrations','Integrations','accounting'],['settings','Company Settings','all']]
+];
+function renderNav(){let html='';navModel.forEach(([g,...items])=>{let rendered=items.filter(i=>allowed(i[2])||allowed('all')||(i[2]==='project'&&allowed('project')));if(!rendered.length)return;html+=`<div class="nav-title">${g}</div>`;rendered.forEach(([id,label])=>html+=`<div class="nav ${currentPage===id?'active':''}" data-page="${id}"><span>${label}</span>${['rfis','submittals','tasks'].includes(id)?'<span class="nav-badge">'+countFor(id)+'</span>':''}</div>`)});$('#nav').innerHTML=html;$$('.nav').forEach(n=>n.onclick=()=>openPage(n.dataset.page))}
+function countFor(id){let p=currentProject();if(!p)return 0;if(id==='rfis')return state.rfis.filter(x=>x.project===p.name&&x.status!=='Closed').length;if(id==='submittals')return state.submittals.filter(x=>x.project===p.name&&!x.status.includes('Approved')).length;if(id==='tasks')return state.tasks.filter(x=>x.project===p.name&&x.status!=='Closed').length;return 0}
+function openPage(id){currentPage=id;$$('.page').forEach(p=>p.classList.remove('active'));$('#'+id).classList.add('active');renderNav();renderPage(id);refreshBanner();scrollTo(0,0)}
+function head(title,sub,actions=''){return `<div class="head"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div class="actions">${actions}</div></div>`}
+function kpi(label,value,foot=''){return `<div class="card kpi"><div class="label">${label}</div><div class="value">${value}</div><div class="foot">${foot}</div></div>`}
+function table(headers,rows){return `<div class="table-wrap"><table><tr>${headers.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')}</table></div>`}
+function renderPage(id){({home:renderHome,projectboard:renderBoard,wip:renderWip,oh:renderOH,fees:renderFees,employees:renderEmployees,timesheets:renderTime,resources:renderResources,access:renderAccess,financials:renderFinancials,payapps:renderPayapps,contracts:renderContracts,subcontractors:renderSubcontractors,preconstruction:renderPreconstruction,compliance:renderCompliance,statusreport:renderStatusReport,warranty:renderWarranty,rfis:renderRFIs,submittals:renderSubs,schedule:renderSchedule,drawings:renderDrawings,meetings:renderMeetings,tasks:renderTasks,correspondence:renderCorrespondence,daily:renderDaily,tm:renderTM,procurement:renderProcurement,quality:renderQuality,safety:renderSafety,equipment:renderEquipment,closeout:renderCloseout,bidders:renderBidders,reports:renderReports,audit:renderAudit,integrations:renderIntegrations,settings:renderSettings}[id]||renderHome)()}
+function renderAll(){renderNav();renderPage(currentPage)}
+function renderHome(){let ps=visibleProjects(),active=ps.filter(p=>/Awarded|Active/.test(p.status)).reduce((a,p)=>a+p.contract,0),pipeline=ps.filter(p=>!/Awarded|Active/.test(p.status)).reduce((a,p)=>a+p.contract,0),weighted=ps.reduce((a,p)=>a+p.contract*(p.prob/100),0),fees=ps.reduce((a,p)=>a+p.fee,0),feeEarned=ps.reduce((a,p)=>a+p.feeEarned,0),oh=state.overhead.filter(x=>x.month==='2026-08').reduce((a,x)=>a+x.actual,0),rec=state.company.ohRecovered;
+ $('#home').innerHTML=head('Executive Dashboard',`${currentUser.role} · Trial Release 0.5 · Training Project included`) +
+ `<div class="grid">${kpi('Active Contract Value',money(active),'Awarded / active work')}${kpi('Pipeline',money(pipeline),'Unawarded opportunities')}${kpi('Weighted Pipeline',money(weighted),'Probability weighted')}${kpi('Fee Remaining',money(fees-feeEarned),money(fees)+' total fee')}</div>
+ <div class="grid section">${kpi('Monthly Corporate OH',money(oh),help('All current corporate overhead cost for the selected month.'))}${kpi('OH Recovered',money(rec),pct(rec/oh)+' recovered')}${kpi('Unrecovered OH',money(Math.max(0,oh-rec)),'At risk of consuming fee/profit')}${kpi('Net Fee Position',money(feeEarned-Math.max(0,oh-rec)),'Earned fee less unrecovered OH')}</div>
+ <div class="two section"><div class="card"><h3>Portfolio</h3>${table(['Project','Status','Contract / Est.','Fee','OH Recovery','PM','Risk'],ps.map(p=>`<tr class="clickable" data-project="${p.id}"><td><b>${p.name}</b><br><span class="muted">${p.job}</span></td><td><span class="status ${statusClass(p.status)}">${p.status}</span></td><td>${money(p.contract)}</td><td>${allowed('all')||allowed('financial_project')?money(p.fee):'Restricted'}</td><td>${allowed('all')?money(p.ohRecovery):'Restricted'}</td><td>${p.pm}</td><td><span class="risk-dot ${p.id==='kingsland'?'risk-med':'risk-low'}"></span>${p.id==='kingsland'?'Decision':'Normal'}</td></tr>`))}</div>
+ <div class="ai-panel"><h3>✦ Executive Intelligence</h3><div class="ai-item"><b>OH:</b> ${money(Math.max(0,oh-rec))} remains unrecovered this month.</div><div class="ai-item"><b>Pipeline:</b> Kingsland Commons remains Awaiting Owner Decision and is not counted as awarded backlog.</div><div class="ai-item"><b>Fee:</b> ${money(fees-feeEarned)} remains to earn across visible projects.</div><div class="ai-item"><b>Capacity:</b> Resource planning should be reviewed before a large pipeline award.</div></div></div>`}
+function renderBoard(){let ps=visibleProjects(),statuses=['Estimating','Bid Submitted','Awaiting Owner Decision','Awarded / Preconstruction','Active Construction'];let lanes=statuses.map(s=>`<div class="lane"><div class="lane-head">${s}</div>${ps.filter(p=>p.status===s).map(p=>`<div class="project-card"><h4>${p.name}</h4><div class="muted small">${p.job} · ${p.city}</div><div class="amount">${money(p.contract)}</div><div class="small">Probability ${p.prob}% · ${p.contractType}</div><div class="small">PM ${p.pm}</div></div>`).join('')||'<div class="muted small">No projects</div>'}</div>`).join('');
+ $('#projectboard').innerHTML=head('Project / Opportunity Board','Execution board + pursuit pipeline · configurable market product',allowed('all')?'<button class="btn primary" id="addProject">+ Opportunity / Project</button>':'')+`<div class="board">${lanes}</div><div class="card section"><h3>Execution Board View</h3>${table(['Job #','Project','Client','Status','Contract Type','Region','City','Probability','Est. Value','Sub Value','Contract Value','Est. Profit','Consultant Fee','Net Profit','Projected Start','Projected End','PM','Super'],ps.map(p=>`<tr><td>${p.job}</td><td>${p.name}</td><td>${p.client}</td><td>${p.status}</td><td>${p.contractType}</td><td>${p.region}</td><td>${p.city}</td><td>${p.prob}%</td><td>${money(p.estValue)}</td><td>${money(p.subValue)}</td><td>${money(p.contract)}</td><td>${money(gp(p))}</td><td>${money(p.consultantFee)}</td><td>${money(gp(p)-p.taxWithhold)}</td><td>${p.start}</td><td>${p.end}</td><td>${p.pm}</td><td>${p.super}</td></tr>`))}</div>`;$('#addProject')?.addEventListener('click',addProject)}
+function renderWip(){let ps=visibleProjects().filter(p=>/Awarded|Active|Preconstruction/.test(p.status));let rows=ps.map(p=>{let pc=comp(p),er=earned(p),ou=over(p);return `<tr><td>${p.job}</td><td>${p.name}</td><td>${money(p.originalContract)}</td><td>${money(p.contract-p.originalContract)}</td><td>${money(p.contract)}</td><td>${money(p.estimatedCost)}</td><td>${money(p.forecastCost)}</td><td>${money(gp(p))}</td><td>${pct(gp(p)/p.contract)}</td><td>${money(p.costToDate)}</td><td>${pct(pc)}</td><td>${money(er)}</td><td>${money(p.billings)}</td><td>${money(ou)}</td><td>${money(backlog(p))}</td><td>${money(p.fee)}</td><td>${money(p.feeEarned)}</td><td>${money(feeRemaining(p))}</td><td>${money(p.ohRecovery)}</td></tr>`});
+ let total=ps.reduce((a,p)=>a+p.contract,0),cost=ps.reduce((a,p)=>a+p.forecastCost,0),fees=ps.reduce((a,p)=>a+p.fee,0);
+ $('#wip').innerHTML=head('WIP / Contract Status Report','Calculated company WIP · only authorized forecast/management inputs are editable',`<button class="btn" id="csvWip">Export CSV</button>`)+`<div class="grid">${kpi('Contract Value',money(total),'Visible awarded projects')}${kpi('Forecast Cost',money(cost),'Projected final cost')}${kpi('Projected GP',money(total-cost),pct((total-cost)/total))}${kpi('Total Fee',money(fees),'Separate from GP/OH')}</div><div class="card section">${table(['Job','Project','Original Contract','Approved COs','Current Contract','Original Est. Cost','Forecast Cost','Est. GP','GP %','Cost to Date','Cost % Complete','Earned Revenue','Billings','Over/(Under)','Backlog','Total Fee','Fee Earned','Fee Remaining','OH Recovery'],rows)}</div>`;$('#csvWip').onclick=exportWip}
+function renderOH(){let rows=state.overhead.map(x=>`<tr><td>${x.month}</td><td>${x.category}</td><td>${money(x.budget)}</td><td>${money(x.actual)}</td><td>${money(x.actual-x.budget)}</td></tr>`),total=state.overhead.reduce((a,x)=>a+x.actual,0),budget=state.overhead.reduce((a,x)=>a+x.budget,0),rec=state.company.ohRecovered;
+ $('#oh').innerHTML=head('Corporate OH Recovery','Track every monthly company overhead cost and required recovery')+`<div class="grid">${kpi('OH Budget',money(budget),'August 2026')}${kpi('OH Actual',money(total),'All corporate cost')}${kpi('OH Recovered',money(rec),'Across projects / operations')}${kpi('Recovery Gap',money(rec-total),rec>=total?'Surplus':'Unrecovered OH')}</div><div class="two section"><div class="card">${table(['Month','OH Category','Budget','Actual','Variance'],rows)}</div><div class="card"><h3>OH Recovery by Project</h3>${state.projects.filter(p=>/Awarded|Active|Preconstruction/.test(p.status)).map(p=>`<div class="metric-row"><span>${p.name}</span><b>${money(p.ohRecovery)}</b></div>`).join('')}<div class="callout section">Unrecovered corporate OH is shown separately from project fee so management can see when overhead is consuming intended profit.</div></div></div>`}
+function renderFees(){let ps=visibleProjects(),rows=ps.map(p=>`<tr><td>${p.name}</td><td>${money(p.contract)}</td><td>${money(p.fee)}</td><td>${pct(p.fee/p.contract)}</td><td>${money(p.feeEarned)}</td><td>${money(p.feeBilled)}</td><td>${money(p.feeCollected)}</td><td>${money(p.fee-p.feeEarned)}</td><td>${money(p.feeEarned-p.feeCollected)}</td></tr>`);let fee=ps.reduce((a,p)=>a+p.fee,0),earnedF=ps.reduce((a,p)=>a+p.feeEarned,0),col=ps.reduce((a,p)=>a+p.feeCollected,0);
+ $('#fees').innerHTML=head('Company Fee Tally','At-a-glance fee position with project drilldown')+`<div class="grid">${kpi('Total Contracted Fee',money(fee),'Original + approved change fee')}${kpi('Fee Earned',money(earnedF),pct(earnedF/fee))}${kpi('Fee Collected',money(col),'Cash collected')}${kpi('Fee Remaining',money(fee-earnedF),'Remaining to earn')}</div><div class="card section">${table(['Project','Contract','Total Fee','Fee %','Earned','Billed','Collected','Remaining to Earn','Fee AR'],rows)}</div>`}
+function renderEmployees(){let can=allowed('all')||allowed('employees_cost');$('#employees').innerHTML=head('Employees','Employee cost, burden, vehicle allowance and assignments',allowed('all')?'<button class="btn primary" id="addEmp">+ Employee</button>':'')+`<div class="card">${table(['Employee','Position','Salary / Rate','Burden','Truck Allowance','Assignment','Status'],state.employees.map(e=>`<tr><td><b>${e.name}</b></td><td>${e.position}</td><td>${can?money(e.salary):'Restricted'}</td><td>${can?e.burden+'%':'Restricted'}</td><td>${can?money(e.truckAllowance)+'/mo':'Restricted'}</td><td>${e.assigned}</td><td><span class="status green">${e.status}</span></td></tr>`))}</div>`;$('#addEmp')?.addEventListener('click',addEmployee)}
+function renderTime(){let visible=allowed('all')||allowed('employees_cost')?state.time:state.time.filter(t=>t.employee===currentUser.name),rows=visible.map(t=>`<tr><td>${t.date}</td><td>${t.employee}</td><td>${t.category}</td><td>${t.project}</td><td>${t.costCode}</td><td>${t.hours}</td><td>${t.miles}</td><td>${money(t.fuel)}</td><td>${t.notes||''}</td></tr>`);$('#timesheets').innerHTML=head('Timesheets / Expenses','Salaried time allocation, project/OH coding, mileage, fuel and vehicle costs',`<button class="btn primary" id="addTime">+ Time Entry</button>`)+`<div class="callout">Salaried template baseline: pay periods may be configured by company. The uploaded sample notes salaried periods ending on the 10th and 25th and a baseline of 86.67 hours per pay period.</div><div class="card section">${table(['Date','Employee','Category','Project / Corporate','Cost Code','Hours','Miles','Fuel','Notes'],rows)}</div>`;$('#addTime').onclick=addTime}
+function renderResources(){let ps=visibleProjects();$('#resources').innerHTML=head('Resource Planning','Who is assigned where, upcoming capacity and employee/equipment loading')+`<div class="grid3">${ps.map(p=>`<div class="card"><h3>${p.name}</h3><div class="statline"><span>PM</span><b>${p.pm}</b></div><div class="statline"><span>Super</span><b>${p.super}</b></div><div class="statline"><span>Start</span><b>${p.start}</b></div><div class="statline"><span>End</span><b>${p.end}</b></div><div class="statline"><span>Status</span><b>${p.status}</b></div></div>`).join('')}</div><div class="callout section">Future production build: visual allocation board by employee, equipment, office/region and time period with pipeline scenario planning.</div>`}
+function renderAccess(){if(!allowed('all')){$('#access').innerHTML=head('Users / Access','Restricted')+'<div class="card">Administrator access required.</div>';return}let rows=state.users.map(u=>`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.projects.map(id=>state.projects.find(p=>p.id===id)?.name).filter(Boolean).join(', ')}</td><td>${u.permissions.includes('all')?'Super Admin':u.permissions.join(', ')}</td><td><span class="status green">Active</span></td></tr>`);$('#access').innerHTML=head('Users / Access','Company role → assigned projects → project permissions → overrides',`<button class="btn primary" id="addUser">+ Invite Employee</button>`)+`<div class="card">${table(['User','Company Role','Assigned Projects','Permission Profile','Status'],rows)}</div><div class="callout section">External Owner/Architect/Engineer/Sub/Lender accounts are separate portal identities and never inherit internal employee access.</div>`;$('#addUser').onclick=addUser}
+function renderFinancials(){
+ let p=currentProject();
+ state.costLines=state.costLines||[
+ {project:'TotalConstruct Training Center',code:'01 00 00',item:'General Requirements',cls:'GR',budget:185000,committed:142000,actual:118000,forecast:190000},
+ {project:'TotalConstruct Training Center',code:'03 30 00',item:'Concrete',cls:'SUB',budget:275000,committed:268000,actual:261000,forecast:268000},
+ {project:'TotalConstruct Training Center',code:'08 41 13',item:'Storefront / Glazing',cls:'SUB',budget:210000,committed:208000,actual:42000,forecast:218000},
+ {project:'TotalConstruct Training Center',code:'26 00 00',item:'Electrical',cls:'SUB',budget:285000,committed:282000,actual:115000,forecast:292000}
+ ];
+ let lines=state.costLines.filter(x=>x.project===p.name),forecast=lines.length?lines.reduce((a,x)=>a+x.forecast,0):p.forecastCost,actual=lines.length?lines.reduce((a,x)=>a+x.actual,0):p.costToDate;
+ $('#financials').innerHTML=head('Project Budget / Cost Controls',`${p.name} · yellow cells are editable forecast inputs; gray cells are source/calculated`,
+ `<button class="btn primary" id="addCostLine">+ Cost Line</button><button class="btn" id="importBudget">Import Budget</button>`)+
+ `<div class="grid">${kpi('Current Contract',money(p.contract),'Calculated from contract + approved COs')}${kpi('Forecast Cost',money(forecast),'Calculated from cost-line forecasts')}${kpi('Cost to Date',money(actual),'Calculated from AP/accounting/time/equipment')}${kpi('Projected GP',money(p.contract-forecast),'Calculated')}</div>
+ <div class="card section">${table(['CSI / Cost Code','Work Item','Class','Original Budget','Committed','Actual Cost','Forecast at Completion '+help('Editable by authorized PM/Executive. This is the management forecast input.'),'Projected Variance'],lines.map((x,i)=>`<tr><td>${x.code}</td><td>${x.item}</td><td>${x.cls}</td><td class="locked-cell">${money(x.budget)}</td><td class="locked-cell">${money(x.committed)}</td><td class="locked-cell">${money(x.actual)}</td><td><input class="editable-cell fc-input" data-i="${i}" type="number" value="${x.forecast}" style="width:120px"></td><td class="locked-cell">${money(x.budget-x.forecast)}</td></tr>`))}</div>
+ <div class="callout section"><b>Reporting rule:</b> source-derived cells cannot be overwritten. Forecast/management input cells are editable and audit-tracked.</div>`;
+ $$('.fc-input').forEach(e=>e.onchange=()=>{lines[+e.dataset.i].forecast=+e.value;save('Updated forecast at completion',p.name)});
+ $('#addCostLine').onclick=()=>{let code=prompt('CSI / Cost code');if(!code)return;let item=prompt('Work item')||'New Work Item';let cls=prompt('Classification: SUB / GR / OHP / MAT / LAB / EQUIP','SUB')||'SUB';let budget=+(prompt('Original / current budget')||0);state.costLines.push({project:p.name,code,item,cls,budget,committed:0,actual:0,forecast:budget});save('Added cost line',item)};
+}
+function renderPayapps(){let p=currentProject(),pa=state.payapps[p.name];if(!pa){$('#payapps').innerHTML=head('Pay Applications',p.name)+'<div class="card">No pay app structure initialized for this pursuit/project.</div>';return}let cur=pa.rows.reduce((a,x)=>a+x.current+x.stored,0),cum=pa.prior+cur,ret=cum*pa.retainage/100;$('#payapps').innerHTML=head(`Pay Application #${pa.number}`,`${p.name} · G702/G703-style workflow · prior periods locked`, `<button class="btn bronze" id="finalPA">Finalize / Roll Forward</button>`)+`<div class="grid">${kpi('Previous Applications',money(pa.prior),'Locked carry-forward')}${kpi('Current Work + Stored',money(cur),'Current period')}${kpi('Retainage',money(ret),pa.retainage+'%')}${kpi('Current Payment Due',money(cur-ret),'G702-style summary')}</div><div class="card section">${table(['SOV','Scheduled Value','Previous Applications','This Period','Stored Materials','Total Completed & Stored','Balance'],pa.rows.map((x,i)=>`<tr><td>${x.sov}</td><td>${money(x.value)}</td><td>${money(x.prev)}</td><td><input class="pa-current" data-i="${i}" type="number" value="${x.current}" style="width:90px"></td><td><input class="pa-stored" data-i="${i}" type="number" value="${x.stored}" style="width:90px"></td><td>${money(x.prev+x.current+x.stored)}</td><td>${money(x.value-x.prev-x.current-x.stored)}</td></tr>`))}</div><div class="callout section">Internal invoice-supported and manually-entered billing can remain separate in the production ledger while the owner/lender-facing continuation sheet presents the combined contractual billing value.</div>`;$$('.pa-current').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].current=+e.value;save('Updated pay app current billing',p.name)});$$('.pa-stored').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].stored=+e.value;save('Updated stored materials',p.name)});$('#finalPA').onclick=()=>finalizePA(p,pa)}
+function renderContracts(){
+ let p=currentProject(),subs=state.contracts.filter(x=>x.project===p.name),ins=state.insurance.filter(x=>x.project===p.name);
+ let ownerContact=p.id==='training'?'Jordan Miles · Owner PM · (555) 555-1001 · jordan@sampleclient.test':(p.id==='orchard'?'The Academic Orchard · Owner Contact on File':'Kingsland LAG, LLC · Owner Contact on File');
+ $('#contracts').innerHTML=head('Prime Contract / Contracts',`${p.name} · owner and contract mechanism remain visible to all authorized internal users`)+
+ `<div class="card">
+   <div class="grid">
+    ${kpi('Owner / Client',p.client,'Primary contractual counterparty')}
+    ${kpi('Contract Method',p.contractType,help('Delivery/contract mechanism used for this project.'))}
+    ${kpi('Current Contract',money(p.contract),'Original + approved owner changes')}
+    ${kpi('Current Completion',p.end,'Current contractual/project completion')}
+   </div>
+   <div class="section"><div class="metric-row"><span><b>Owner Contact</b></span><span>${ownerContact}</span></div>
+   <div class="metric-row"><span><b>Original Contract</b></span><span>${money(p.originalContract)}</span></div>
+   <div class="metric-row"><span><b>Approved Owner COs</b></span><span>${money(p.contract-p.originalContract)}</span></div>
+   <div class="metric-row"><span><b>Contract Form</b></span><span>${p.id==='orchard'?'Modified AIA A133 / project agreement':'Company / Owner Agreement on File'}</span></div></div>
+ </div>
+ <div class="two section"><div class="card"><h3>Subcontract / COI Tracking</h3>${table(['Company','Trade','Contract','COI Expires','CGL','Auto','WC','Umbrella','Compliance'],subs.map(x=>`<tr><td>${x.company}</td><td>${x.trade}</td><td>${money(x.value)}</td><td>${x.expires}</td><td>${x.cgl}</td><td>${x.auto}</td><td>${x.wc}</td><td>${x.umbrella}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div>
+ <div class="card"><h3>GC / Project Insurance</h3>${table(['Party','Coverage','Carrier','Effective','Expires','Limit','Status'],ins.map(x=>`<tr><td>${x.party}</td><td>${x.type}</td><td>${x.carrier}</td><td>${x.effective}</td><td>${x.expires}</td><td>${x.limit}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div></div>`
+}
+function renderSubcontractors(){
+ let p=currentProject(),rows=(state.subcontractorProfiles||[]).filter(x=>x.project===p.name);
+ $('#subcontractors').innerHTML=head('Subcontractors',`${p.name} · one project-specific profile for contracts, scope, insurance, correspondence, billing and closeout`,
+ `<button class="btn primary" id="addSubcontractor">+ Add Subcontractor</button><button class="btn" id="messageSub">Message Subcontractor</button><button class="btn bronze" id="broadcastSubs">Broadcast to Project Subs</button>`)+
+ `<div class="card">${table(['Subcontractor','Trade','Current Commitment','Paid','Retainage','Insurance','W-9','Waiver','Open Submittals','Open RFIs','Closeout','Payment Status'],rows.map((x,i)=>{let current=x.contract+x.approvedCO,hold=!x.executed||!x.w9||!x.lienWaiver||x.insurance!=='Current';return `<tr class="clickable subprofile" data-i="${i}"><td><b>${x.company}</b><br><span class="muted">${x.contact} · ${x.phone}</span></td><td>${x.trade}</td><td>${money(current)}</td><td>${money(x.paid)}</td><td>${money(x.retainage)}</td><td><span class="status ${statusClass(x.insurance)}">${x.insurance}</span></td><td>${x.w9?'✓':'—'}</td><td>${x.lienWaiver?'✓':'⚠'}</td><td>${x.submittalsOpen}</td><td>${x.rfisOpen}</td><td>${x.closeout}%</td><td><span class="status ${hold?'red':'green'}">${hold?'PAYMENT HOLD':'READY TO PAY'}</span></td></tr>`}) )}</div>
+ <div id="subProfileDetail" class="card section"><h3>Select a subcontractor</h3><div class="muted">Open a row to see Contract & Scope, Financial, Compliance, Correspondence, RFIs, Submittals, Schedule, Safety, Quality, Documents and Warranty/Closeout summary.</div></div>`;
+ $$('.subprofile').forEach(r=>r.onclick=()=>showSubProfile(rows[+r.dataset.i]));
+ $('#messageSub').onclick=()=>{let names=rows.map((x,i)=>`${i+1}. ${x.company}`).join('\n');let n=+(prompt(`Select subcontractor:\n${names}`)||0)-1;if(rows[n])alert(`Compose message to ${rows[n].company}. In production this records correspondence and sends by platform/email according to recipient preference.`)};
+ $('#broadcastSubs').onclick=()=>{alert(`Broadcast will target only ${rows.length} subcontractor(s) assigned to ${p.name}, not the company-wide vendor database.`)};
+ $('#addSubcontractor').onclick=()=>{let company=prompt('Subcontractor company');if(!company)return;state.subcontractorProfiles.push({project:p.name,company,trade:prompt('Trade / CSI')||'',contact:prompt('Primary contact')||'',phone:'',email:'',contract:+(prompt('Contract amount')||0),approvedCO:0,paid:0,retainage:0,proposal:'',scope:'',insurance:'Needs Review',w9:false,lienWaiver:false,executed:false,submittalsOpen:0,rfisOpen:0,punchOpen:0,closeout:0});save('Added subcontractor profile',company)}
+}
+function showSubProfile(x){
+ let current=x.contract+x.approvedCO,remaining=current-x.paid-x.retainage;
+ $('#subProfileDetail').innerHTML=`<h3>${x.company} — ${x.trade}</h3>
+ <div class="tabs"><span class="pill on">Overview</span><span class="pill">Contract & Scope</span><span class="pill">Financial</span><span class="pill">Compliance</span><span class="pill">Correspondence</span><span class="pill">RFIs</span><span class="pill">Submittals</span><span class="pill">Schedule</span><span class="pill">Safety</span><span class="pill">Quality/Punch</span><span class="pill">Documents</span><span class="pill">Warranty/Closeout</span></div>
+ <div class="grid">${kpi('Current Commitment',money(current),'Contract + approved sub COs')}${kpi('Paid',money(x.paid),'Accounting-linked')}${kpi('Retainage',money(x.retainage),'Retainage payable')}${kpi('Remaining',money(remaining),'Commitment less paid/retainage')}</div>
+ <div class="two section"><div class="card"><h3>Contract & Scope</h3><div class="statline"><span>Proposal</span><b>${x.proposal||'Not uploaded'}</b></div><div class="statline"><span>Scope</span><b>${x.scope||'Not entered'}</b></div><div class="statline"><span>Executed Contract</span><b>${x.executed?'Yes':'Missing'}</b></div></div>
+ <div class="card"><h3>Compliance / Payment</h3><div class="statline"><span>Insurance</span><b>${x.insurance}</b></div><div class="statline"><span>W-9</span><b>${x.w9?'On File':'Missing'}</b></div><div class="statline"><span>Lien Waiver</span><b>${x.lienWaiver?'Current':'Missing Current'}</b></div><div class="statline"><span>Closeout</span><b>${x.closeout}%</b></div></div></div>`
+}
+function renderWarranty(){let p=currentProject(),rows=state.warranties.filter(w=>w.project===p.name);$('#warranty').innerHTML=head('Warranty / Asset Register',`${p.name} · AI-indexed documents, expirations, model/serial and service routing`, `<button class="btn primary">+ Warranty / Asset</button>`)+`<div class="card">${table(['Trade','Asset / System','Manufacturer','Model','Serial','Location','Coverage','Provider','Contact','Start','Expires','Term','Docs'],rows.map(w=>`<tr><td>${w.trade}</td><td><b>${w.asset}</b></td><td>${w.manufacturer}</td><td>${w.model}</td><td>${w.serial}</td><td>${w.location}</td><td>${w.coverage}</td><td>${w.provider}</td><td>${w.contact}<br>${w.phone}</td><td>${w.start}</td><td>${w.expires}</td><td>${w.term}</td><td>${w.docs.length}</td></tr>`))}</div><div class="callout section">One asset may carry multiple simultaneous warranties (labor, parts, manufacturer, extended). QR/barcode scanning will open this asset record in the production mobile app.</div>`}
+
+function renderPreconstruction(){
+ let p=currentProject(),r=(state.preconstruction||[]).find(x=>x.project===p.name);
+ if(!r){$('#preconstruction').innerHTML=head('Preconstruction',`${p.name} · module activates when applicable to delivery method`)+'<div class="card">No preconstruction baseline is seeded for this project yet.</div>';return}
+ $('#preconstruction').innerHTML=head('Preconstruction',`${p.name} · design-build / negotiated preconstruction control`,
+ `<button class="btn primary">+ Design Issue</button><button class="btn">+ VE Item</button><button class="btn">+ Owner Decision</button>`)+
+ `<div class="grid">${kpi('Design Completion',r.designComplete+'%',r.phase)}${kpi('Budget vs Target',money(r.budgetTarget-r.currentEstimate),`${money(r.currentEstimate)} current estimate`)}${kpi('VE Pending',money(r.vePending),'Pending evaluation')}${kpi('Open Design Issues',r.openDesignIssues,'Coordination / constructability')}</div>
+ <div class="grid section">${kpi('Owner Decisions Due',r.ownerDecisionsDue,'Selection / approval deadlines')}${kpi('Permit Status',r.permitStatus,'AHJ coordination')}${kpi('Long-Lead Risks',r.longLeadRisks,'Procurement exposure')}${kpi('Bid Coverage',r.bidCoverage+'%',r.scheduleStatus)}</div>
+ <div class="two section"><div class="card"><h3>Design Milestones</h3>${table(['Milestone','Status','Budget Check','Comments'],['<tr><td>Concept / SD</td><td>Complete</td><td>Complete</td><td>Baseline retained</td></tr>','<tr><td>DD</td><td>Complete</td><td>Complete</td><td>VE incorporated</td></tr>','<tr><td>90% CD</td><td>Current</td><td>In Review</td><td>AI delta review available</td></tr>','<tr><td>IFC / Permit</td><td>Upcoming</td><td>Pending</td><td>Turnover gate</td></tr>'])}</div>
+ <div class="ai-panel"><h3>AI Preconstruction</h3><div class="ai-item">Compare drawing revisions and quantity/cost deltas.</div><div class="ai-item">Track VE incorporation into drawings/specs.</div><div class="ai-item">Flag owner decisions and long-lead risks.</div><div class="ai-item">Prepare Preconstruction → Construction turnover checklist.</div></div></div>`
+}
+function renderCompliance(){
+ let p=currentProject(),rows=(state.compliance||[]).filter(x=>x.project===p.name);
+ $('#compliance').innerHTML=head('Compliance / Inspections / Testing',`${p.name} · uploaded requirements → AI extraction → schedule-linked matrix`,
+ `<button class="btn primary" id="addCompliance">+ Requirement</button><button class="btn">Upload Requirements Document</button>`)+
+ `<div class="card">${table(['Authority / Agency','Requirement','Type','Trade','Responsible','Required Date','Schedule Activity','Status','Result','Docs'],rows.map((x,i)=>`<tr><td>${x.authority}</td><td><b>${x.requirement}</b></td><td>${x.type}</td><td>${x.trade}</td><td>${x.responsible}</td><td>${x.required}</td><td>${x.activity}</td><td><select class="complianceStatus" data-i="${i}"><option ${x.status==='Not Started'?'selected':''}>Not Started</option><option ${x.status==='Scheduled'?'selected':''}>Scheduled</option><option ${x.status==='Ready for Inspection'?'selected':''}>Ready for Inspection</option><option ${x.status==='Passed / Complete'?'selected':''}>Passed / Complete</option><option ${x.status==='Failed / Correction Required'?'selected':''}>Failed / Correction Required</option><option ${x.status==='Rescheduled'?'selected':''}>Rescheduled</option><option ${x.status==='Incomplete'?'selected':''}>Incomplete</option><option ${x.status==='In Review'?'selected':''}>In Review</option><option ${x.status==='Awaiting Documentation'?'selected':''}>Awaiting Documentation</option></select></td><td>${x.result||'—'}</td><td>${x.docs}</td></tr>`))}</div>
+ <div class="callout section">Changing a compliance status updates the authoritative compliance record. Failed/rescheduled items should flag the linked schedule activity and create follow-up action items rather than silently rewriting the contract schedule.</div>`;
+ $$('.complianceStatus').forEach(e=>e.onchange=()=>{rows[+e.dataset.i].status=e.value;save('Updated compliance status',rows[+e.dataset.i].requirement)});
+ $('#addCompliance').onclick=()=>{let req=prompt('Requirement / inspection / test');if(!req)return;state.compliance.push({project:p.name,authority:prompt('Authority / Agency')||'',requirement:req,type:prompt('Type: Permit / Inspection / Testing / Commissioning')||'Inspection',trade:prompt('Trade')||'',responsible:prompt('Responsible party')||'PM',required:'',activity:prompt('Linked schedule activity')||'AI Suggested / Pending',status:'Not Started',result:'',rescheduled:'',docs:'Pending'});save('Added compliance requirement',req)}
+}
+function renderStatusReport(){
+ let p=currentProject(),r=(state.projectStatus||[]).find(x=>x.project===p.name);
+ if(!r) r={project:p.name,period:new Date().toISOString().slice(0,7),reportNo:'Draft',start:p.start,contractCompletion:p.end,projectedCompletion:p.end,percentComplete:Math.round(comp(p)*100),rainDays:0,workInProgress:'AI draft pending',completed:'AI draft pending',concerns:'',countermeasures:'',safety:'',summary:'AI draft pending'};
+ let rfiOpen=state.rfis.filter(x=>x.project===p.name&&x.status!=='Closed').length,subOpen=state.submittals.filter(x=>x.project===p.name&&!/Approved|Closed/.test(x.status)).length,compRows=(state.compliance||[]).filter(x=>x.project===p.name),failed=compRows.filter(x=>/Failed|Incomplete/.test(x.status)).length;
+ $('#statusreport').innerHTML=head('Live Project Status Report',`${p.name} · Horner Hall content structure modernized into a live, publishable report`,
+ `<button class="btn" id="previewStatus">Print / Distribution Preview</button><button class="btn bronze" id="publishStatus">Publish Snapshot</button>`)+
+ `<div class="card">
+  <div class="grid">${kpi('Reporting Period',r.period,r.reportNo)}${kpi('Contract Completion',r.contractCompletion,'Baseline/current contract')}${kpi('Projected Completion',r.projectedCompletion,'Current forecast')}${kpi('% Complete',r.percentComplete+'%','Schedule/WIP based')}</div>
+  <div class="grid section">${kpi('Rain / Weather Days',r.rainDays,'Approved/reportable')}${kpi('Open RFIs',rfiOpen,'Current project')}${kpi('Open Submittals',subOpen,'Current project')}${kpi('Compliance Issues',failed,'Failed / incomplete')}</div>
+ </div>
+ <div class="two section"><div class="card"><h3>Executive Summary</h3><textarea id="statusSummary" rows="5">${r.summary}</textarea><h3 class="section">Work in Progress</h3><textarea id="statusWIP" rows="4">${r.workInProgress}</textarea><h3 class="section">Completed Since Last Report</h3><textarea id="statusCompleted" rows="4">${r.completed}</textarea></div>
+ <div class="card"><h3>Concerns</h3><textarea id="statusConcerns" rows="5">${r.concerns}</textarea><h3 class="section">Countermeasures</h3><textarea id="statusCounter" rows="5">${r.countermeasures}</textarea><h3 class="section">Safety</h3><textarea id="statusSafety" rows="4">${r.safety}</textarea></div></div>
+ <div class="card section"><h3>4-Week Look Ahead / Current Activities</h3>${table(['Activity','Planned %','Actual %','Status','Critical'],state.schedule.activities.filter(a=>a.project===p.name).map(a=>`<tr><td>${a.activity}</td><td>${a.planned}%</td><td>${a.actual}%</td><td>${a.status}</td><td>${a.critical?'Yes':'No'}</td></tr>`))}</div>
+ <div class="two section"><div class="card"><h3>Compliance / Inspections</h3>${table(['Requirement','Status','Activity'],compRows.map(x=>`<tr><td>${x.requirement}</td><td>${x.status}</td><td>${x.activity}</td></tr>`))}</div>
+ <div class="card"><h3>Progress Drawing / Photos</h3><div class="callout">Use saved drawing markup layers and selected project/Daily Report photos here. Production document composer will place these into the polished issued report.</div></div></div>
+ <div id="statusPreview" class="card section hidden"></div>`;
+ ['statusSummary','statusWIP','statusCompleted','statusConcerns','statusCounter','statusSafety'].forEach(id=>$('#'+id).onchange=()=>{r.summary=$('#statusSummary').value;r.workInProgress=$('#statusWIP').value;r.completed=$('#statusCompleted').value;r.concerns=$('#statusConcerns').value;r.countermeasures=$('#statusCounter').value;r.safety=$('#statusSafety').value;if(!state.projectStatus.includes(r))state.projectStatus.push(r);save('Updated live project status report',p.name)});
+ $('#previewStatus').onclick=()=>{let d=$('#statusPreview');d.classList.remove('hidden');d.innerHTML=`<div style="max-width:850px;margin:auto;background:white;padding:24px"><div style="display:flex;justify-content:space-between;border-bottom:3px solid #b9792f;padding-bottom:12px"><div><h2 style="margin:0">PROJECT STATUS REPORT</h2><div>${p.name} · ${p.job}</div></div><div style="text-align:right">${state.company.name}<br>${r.period} · ${r.reportNo}</div></div><h3>Executive Summary</h3><p>${r.summary}</p><h3>Work in Progress</h3><p>${r.workInProgress}</p><h3>Completed Since Last Report</h3><p>${r.completed}</p><h3>Concerns / Countermeasures</h3><p><b>Concerns:</b> ${r.concerns}</p><p><b>Countermeasures:</b> ${r.countermeasures}</p><p class="muted">Professional PDF pagination, selected photos, marked-up drawings, logo, TOC and distribution record are the next document-composer layer.</p></div>`};
+ $('#publishStatus').onclick=()=>{alert('Snapshot published in trial. Production build will freeze issued revision, preserve it permanently, and continue updating the live dashboard separately.')}
+}
+function renderRFIs(){let p=currentProject(),rows=state.rfis.filter(r=>r.project===p.name);$('#rfis').innerHTML=head('RFIs',`${p.name} · design response + schedule/delay linkage`, `<button class="btn primary" id="addRfi">+ RFI</button>`)+`<div class="card">${table(['RFI','Subject','Ball in Court','Due','Linked Activity','Float','Potential Delay','AI Tie','Status'],rows.map(r=>`<tr><td>${r.id}</td><td>${r.subject}</td><td>${r.bic}</td><td>${r.due}</td><td>${r.activity}</td><td>${r.float}d</td><td>${r.delay?`+${r.delay}d`:'None'}</td><td>${r.tie}</td><td><span class="status ${statusClass(r.status)}">${r.status}</span></td></tr>`))}</div>`;$('#addRfi').onclick=addRfi}
+function renderSubs(){let p=currentProject(),rows=state.submittals.filter(s=>s.project===p.name);$('#submittals').innerHTML=head('Submittals',`${p.name} · review aging, required-on-site, procurement and schedule linkage`, `<button class="btn primary" id="addSub">+ Submittal</button>`)+`<div class="card">${table(['Spec','#','Description','Sub','BIC','Required On Site','Lead','Activity','Exposure','AI Tie','Status'],rows.map(s=>`<tr><td>${s.spec}</td><td>${s.id}</td><td>${s.desc}</td><td>${s.sub}</td><td>${s.bic}</td><td>${s.ros}</td><td>${s.lead}</td><td>${s.activity}</td><td>${s.exposure?`+${s.exposure}d`:'None'}</td><td>${s.tie}</td><td>${s.status}</td></tr>`))}</div>`;$('#addSub').onclick=addSub}
+function renderSchedule(){let p=currentProject(),acts=state.schedule.activities.filter(s=>s.project===p.name),latest=state.schedule.versions.at(-1);$('#schedule').innerHTML=head('Schedule / Delay Control',`${p.name} · retained versions, CPM/Gantt, P6/MS Project interchange`, `<button class="btn">Import P6 / MSP</button><button class="btn primary" id="publishSchedule">Publish Update</button>`)+`<div class="grid">${kpi('Current Version',latest.label,latest.date)}${kpi('Critical Activities',acts.filter(a=>a.critical).length,'Current plan')}${kpi('RFI Delay Exposures',state.rfis.filter(r=>r.project===p.name&&r.delay>0).length,'PM/Super confirmation required')}${kpi('Submittal Exposures',state.submittals.filter(s=>s.project===p.name&&s.exposure>0).length,'Procurement-linked')}</div><div class="card section">${table(['Activity ID','Activity','Planned %','Field %','Variance','Critical','Status'],acts.map(a=>`<tr><td>${a.id}</td><td>${a.activity}</td><td>${a.planned}%</td><td>${a.actual}%</td><td>${a.actual-a.planned}%</td><td>${a.critical?'Yes':'No'}</td><td>${a.status}</td></tr>`))}</div><div class="callout section">Approved RFI/submittal/CO/weather/inspection impacts are tied to activities while contractual time entitlement remains separate from forecast completion.</div>`;$('#publishSchedule').onclick=publishSchedule}
+function renderDrawings(){
+ let p=currentProject();
+ let files=(state.drawingFiles||[]).filter(f=>f.project===p.name);
+ let groups={}; files.forEach(f=>{(groups[f.discipline]||(groups[f.discipline]=[])).push(f)});
+ let sidebar=Object.keys(groups).sort().map(g=>`<div class="discipline"><h4>${g}</h4>${groups[g].map(f=>`<div class="file-row" data-drawid="${f.id}"><b>${f.sheet||f.name}</b><span>${f.title||f.name}</span><br><span class="tag">${f.discipline}</span><span class="tag">${f.status||'Current'}</span></div>`).join('')}</div>`).join('');
+ $('#drawings').innerHTML=head('Drawings / AI Sort / Markup',`${p.name} · upload plan sets, auto-classify by discipline, markup and save views`,
+ `<button class="btn" id="uploadDrawingsBtn">+ Upload Drawings</button><button class="btn primary" id="newDrawingSet">+ New Drawing Set</button>`)+
+ `<div class="draw-layout">
+   <div class="draw-sidebar">
+    <div class="dropzone" id="drawDrop">Drop PDF/image drawings here<br><span class="muted small">or click to browse</span></div>
+    <input id="drawInput" type="file" multiple accept=".pdf,image/*" style="display:none">
+    <div class="callout section"><b>AI Sort:</b> files are classified into Architectural, Structural, Civil, Mechanical, Plumbing, Electrical, Fire Protection, Landscape, General or Other/Review. Review before publishing.</div>
+    ${sidebar||'<div class="muted section">No drawings uploaded yet.</div>'}
+   </div>
+   <div class="viewer-shell">
+    <div class="viewer-toolbar">
+      <button id="toolPointer">Pointer</button><button id="toolHighlight">Highlight</button><button id="toolRect">Rectangle</button><button id="toolFree">Freehand</button><button id="toolText">Text</button>
+      <button id="clearMarkup">Clear Markups</button><button id="saveMarkup">Save Markup Layer</button><span class="muted small">Markup: <b id="markupStatus">Not saved</b></span>
+    </div>
+    <div class="viewer" id="drawingViewer"><div class="viewer-empty">Select or upload a drawing to begin.</div><canvas id="markupCanvas"></canvas></div>
+   </div>
+ </div>`;
+ $('#uploadDrawingsBtn').onclick=()=>$('#drawInput').click(); $('#drawDrop').onclick=()=>$('#drawInput').click();
+ $('#drawInput').onchange=e=>handleDrawingFiles([...e.target.files],p);
+ let dz=$('#drawDrop'); dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag')}; dz.ondragleave=()=>dz.classList.remove('drag'); dz.ondrop=e=>{e.preventDefault();dz.classList.remove('drag');handleDrawingFiles([...e.dataTransfer.files],p)};
+ $$('.file-row').forEach(r=>r.onclick=()=>openDrawing(r.dataset.drawid)); setupMarkupTools();
+}
+function classifyDrawing(name){
+ let n=name.toUpperCase();
+ if(/(^|[^A-Z])A[-_ ]?\d|ARCH|A\d{2,}/.test(n))return 'Architectural';
+ if(/(^|[^A-Z])S[-_ ]?\d|STRUCT/.test(n))return 'Structural';
+ if(/(^|[^A-Z])C[-_ ]?\d|CIVIL|SITE|GRADING|UTILITY/.test(n))return 'Civil';
+ if(/(^|[^A-Z])M[-_ ]?\d|MECH|HVAC/.test(n))return 'Mechanical';
+ if(/(^|[^A-Z])P[-_ ]?\d|PLUMB/.test(n))return 'Plumbing';
+ if(/(^|[^A-Z])E[-_ ]?\d|ELECT|LIGHT|POWER/.test(n))return 'Electrical';
+ if(/FIRE|FP[-_ ]?\d|SPRINKLER/.test(n))return 'Fire Protection';
+ if(/LAND|L[-_ ]?\d/.test(n))return 'Landscape';
+ if(/G[-_ ]?\d|COVER|GENERAL/.test(n))return 'General';
+ return 'Other / Review';
+}
+function handleDrawingFiles(files,p){
+ state.drawingFiles=state.drawingFiles||[];
+ for(let file of files){
+   let id='DRW-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),url=URL.createObjectURL(file),discipline=classifyDrawing(file.name);
+   state.drawingFiles.push({id,project:p.name,name:file.name,title:file.name.replace(/\.[^.]+$/,''),sheet:'',discipline,status:'AI Classified — Review',type:file.type,url,markup:[]});
+ }
+ save('Uploaded drawing files',p.name); renderDrawings();
+}
+function openDrawing(id){
+ let f=(state.drawingFiles||[]).find(x=>x.id===id); if(!f)return; state.currentDrawing=id; $$('.file-row').forEach(x=>x.classList.toggle('active',x.dataset.drawid===id));
+ let v=$('#drawingViewer'); if((f.type||'').includes('pdf')||f.name.toLowerCase().endsWith('.pdf')) v.innerHTML=`<iframe id="drawDoc" src="${f.url}#toolbar=1&navpanes=0"></iframe><canvas id="markupCanvas"></canvas>`;
+ else v.innerHTML=`<img id="drawImage" src="${f.url}"><canvas id="markupCanvas"></canvas>`;
+ setTimeout(resizeMarkupCanvas,300); setupMarkupTools();
+}
+let markupTool='pointer',drawing=false,startX=0,startY=0,lastX=0,lastY=0;
+function resizeMarkupCanvas(){let c=$('#markupCanvas');if(!c)return;let v=$('#drawingViewer');c.width=Math.max(500,v.clientWidth-36);c.height=Math.max(590,v.clientHeight-36);redrawMarkup()}
+function setupMarkupTools(){
+ let c=$('#markupCanvas'); if(!c)return; const setTool=t=>{markupTool=t;c.classList.toggle('active',t!=='pointer')};
+ $('#toolPointer')?.addEventListener('click',()=>setTool('pointer')); $('#toolHighlight')?.addEventListener('click',()=>setTool('highlight')); $('#toolRect')?.addEventListener('click',()=>setTool('rect')); $('#toolFree')?.addEventListener('click',()=>setTool('free')); $('#toolText')?.addEventListener('click',()=>setTool('text'));
+ $('#clearMarkup')?.addEventListener('click',()=>{let f=getCurrentDraw();if(f){f.markup=[];redrawMarkup();$('#markupStatus').textContent='Cleared / unsaved'}});
+ $('#saveMarkup')?.addEventListener('click',()=>{let f=getCurrentDraw();if(f){$('#markupStatus').textContent='Saved '+new Date().toLocaleTimeString();save('Saved drawing markup',f.name)}});
+ c.onmousedown=e=>{if(markupTool==='pointer')return;let r=c.getBoundingClientRect();startX=e.clientX-r.left;startY=e.clientY-r.top;lastX=startX;lastY=startY;drawing=true;if(markupTool==='text'){let txt=prompt('Markup text');if(txt)pushMark({t:'text',x:startX,y:startY,text:txt});drawing=false}};
+ c.onmousemove=e=>{if(!drawing||markupTool!=='free')return;let r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;pushMark({t:'line',x1:lastX,y1:lastY,x2:x,y2:y},false);lastX=x;lastY=y;redrawMarkup()};
+ c.onmouseup=e=>{if(!drawing)return;let r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;if(markupTool==='rect'||markupTool==='highlight')pushMark({t:markupTool,x:startX,y:startY,w:x-startX,h:y-startY});drawing=false;redrawMarkup()};
+}
+function getCurrentDraw(){return (state.drawingFiles||[]).find(x=>x.id===state.currentDrawing)}
+function pushMark(m,redraw=true){let f=getCurrentDraw();if(!f)return;f.markup=f.markup||[];f.markup.push(m);if(redraw)redrawMarkup();$('#markupStatus').textContent='Unsaved changes'}
+function redrawMarkup(){
+ let c=$('#markupCanvas'),f=getCurrentDraw();if(!c||!f)return;let ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+ (f.markup||[]).forEach(m=>{if(m.t==='rect'){ctx.strokeStyle='red';ctx.lineWidth=3;ctx.strokeRect(m.x,m.y,m.w,m.h)}if(m.t==='highlight'){ctx.fillStyle='rgba(255,230,0,.28)';ctx.fillRect(m.x,m.y,m.w,m.h)}if(m.t==='line'){ctx.strokeStyle='#ff3b30';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(m.x1,m.y1);ctx.lineTo(m.x2,m.y2);ctx.stroke()}if(m.t==='text'){ctx.fillStyle='red';ctx.font='bold 18px Arial';ctx.fillText(m.text,m.x,m.y)}})
+}
+function renderMeetings(){let p=currentProject(),rows=state.meetings.filter(m=>m.project===p.name);$('#meetings').innerHTML=head('Meetings',`${p.name} · OAC, subcontractor, design, safety and pre-installation`, `<button class="btn primary">+ Meeting</button>`)+`<div class="card">${table(['Type','#','Date','Open Items','Status'],rows.map(m=>`<tr><td>${m.type}</td><td>${m.number}</td><td>${m.date}</td><td>${m.openItems}</td><td>${m.status}</td></tr>`))}</div><div class="callout section">AI pre-populates live budget/CO, schedule, RFIs, submittals, procurement, open decisions and prior action items; unresolved items carry to the next meeting automatically.</div>`}
+function renderTasks(){let p=currentProject(),rows=state.tasks.filter(t=>t.project===p.name);$('#tasks').innerHTML=head('Tasks / Action Items',`${p.name} · universal task engine across all modules`, `<button class="btn primary" id="addTask">+ Task</button>`)+`<div class="card">${table(['ID','Source','Task','Owner','Due','Status'],rows.map(t=>`<tr><td>${t.id}</td><td>${t.source}</td><td>${t.task}</td><td>${t.owner}</td><td>${t.due}</td><td><span class="status ${statusClass(t.status)}">${t.status}</span></td></tr>`))}</div>`;$('#addTask').onclick=addTask}
+function renderCorrespondence(){let p=currentProject(),im=state.internalMessages.filter(x=>x.project===p.name),em=state.externalMessages.filter(x=>x.project===p.name);$('#correspondence').innerHTML=head('Correspondence',`${p.name} · two deliberately separate communication channels`)+`<div class="two"><div class="card"><h3>🔒 Internal Correspondence</h3><p class="split-note">Company only. Cannot address external users from this channel.</p>${table(['Date','Subject','From','Linked','Status'],im.map(x=>`<tr><td>${x.date}</td><td>${x.subject}</td><td>${x.from}</td><td>${x.linked}</td><td>${x.status}</td></tr>`))}<button class="btn dark section" id="newInternal">New Internal Message</button></div><div class="card"><h3>✉ External Correspondence</h3><p class="split-note">Email-style communication to outside project parties. AI can warn about internal-only data before sending.</p>${table(['Date','Subject','From','To','Linked','Status'],em.map(x=>`<tr><td>${x.date}</td><td>${x.subject}</td><td>${x.from}</td><td>${x.to}</td><td>${x.linked}</td><td>${x.status}</td></tr>`))}<button class="btn primary section" id="newExternal">Compose External Message</button></div></div>`;$('#newInternal').onclick=()=>addMessage('internal');$('#newExternal').onclick=()=>addMessage('external')}
+function renderDaily(){let p=currentProject(),rows=state.daily.filter(d=>d.project===p.name);$('#daily').innerHTML=head('Daily Reports / Weather',`${p.name} · weather auto-fill + schedule activity progress`, `<button class="btn primary">+ Daily Report</button>`)+`<div class="card">${table(['Date','Weather','Rain','Workers','Activity','Schedule Activity','Planned','Actual','Issue'],rows.map(d=>`<tr><td>${d.date}</td><td>${d.weather}</td><td>${d.rain}</td><td>${d.workers}</td><td>${d.activity}</td><td>${d.scheduleActivity}</td><td>${d.planned}%</td><td>${d.actual}%</td><td>${d.issue}</td></tr>`))}</div><div class="callout section">Production version: current weather auto-fills from project location and is preserved with the finalized daily report. PM/Super approval controls whether field progress updates the official schedule.</div>`}
+function renderTM(){let p=currentProject(),rows=state.tm.filter(x=>x.project===p.name);$('#tm').innerHTML=head('T&M Tickets',`${p.name} · labor, material, equipment, photos and signature → potential change`, `<button class="btn primary">+ T&M Ticket</button>`)+`<div class="card">${table(['Ticket','Date','Description','Labor','Material','Equipment','Total','Status'],rows.map(x=>`<tr><td>${x.id}</td><td>${x.date}</td><td>${x.description}</td><td>${money(x.labor)}</td><td>${money(x.material)}</td><td>${money(x.equipment)}</td><td>${money(x.labor+x.material+x.equipment)}</td><td>${x.status}</td></tr>`))}</div>`}
+function renderProcurement(){let p=currentProject(),rows=state.procurement.filter(x=>x.project===p.name);$('#procurement').innerHTML=head('Procurement / Material Tracking',`${p.name} · approved → released → fabrication → shipped → delivered → installed`)+`<div class="card">${table(['Item','Vendor/Sub','Status','Required On Site','Lead','Linked Activity'],rows.map(x=>`<tr><td>${x.item}</td><td>${x.sub}</td><td>${x.status}</td><td>${x.required}</td><td>${x.lead}</td><td>${x.activity}</td></tr>`))}</div>`}
+function renderQuality(){let p=currentProject(),rows=state.quality.filter(x=>x.project===p.name);$('#quality').innerHTML=head('Quality / Action Plans / ITPs',`${p.name} · inspections, observations, preparatory meetings and hold points`, `<button class="btn primary">+ Action Plan</button>`)+`<div class="card">${table(['ID','Action Plan / ITP','Steps','Complete','Status'],rows.map(x=>`<tr><td>${x.id}</td><td>${x.title}</td><td>${x.steps}</td><td>${x.complete}</td><td>${x.status}</td></tr>`))}</div><div class="callout section">Example: Pre-Pour Concrete → Forms → Rebar → embeds/MEP → testing agency → AHJ → release to pour, with required signatures and attachments.</div>`}
+function renderSafety(){let p=currentProject(),inc=state.incidents.filter(i=>i.project===p.name),tb=state.toolbox.filter(t=>t.project===p.name);$('#safety').innerHTML=head('Safety / OSHA / Toolbox',`${p.name} · incidents, OSHA 300/301/300A, corrective actions and activity-driven talks`, `<button class="btn">OSHA Reports</button><button class="btn primary">+ Incident / Near Miss</button>`)+`<div class="grid">${kpi('Recordable Cases',inc.filter(i=>i.recordable==='Yes').length,'Current project')}${kpi('Near Misses',inc.filter(i=>i.type==='Near Miss').length,'Current project')}${kpi('Corrective Actions',inc.filter(i=>i.status.includes('Open')).length,'Open')}${kpi('Toolbox Talks',tb.length,'Daily + weekly')}</div><div class="two section"><div class="card"><h3>Toolbox Meetings</h3>${table(['Date','Type','Topic','Attendees','Status'],tb.map(t=>`<tr><td>${t.date}</td><td>${t.type}</td><td>${t.topic}</td><td>${t.attendees}</td><td><span class="status ${statusClass(t.status)}">${t.status}</span></td></tr>`))}</div><div class="ai-panel"><h3>AI Safety Assistant</h3><div class="ai-item"><b>Upcoming work:</b> reads schedule and daily activities.</div><div class="ai-item"><b>Toolbox:</b> suggests relevant talking points from the toolbox database.</div><div class="ai-item"><b>Incident:</b> can suggest corrective topics and missing incident data.</div><div class="ai-item"><b>OSHA:</b> potential recordability is flagged for authorized review, not decided autonomously.</div></div></div>`}
+function renderEquipment(){let rows=state.equipment.filter(e=>e.project===currentProject().name||allowed('all'));$('#equipment').innerHTML=head('Equipment / Fleet','Company/project equipment, utilization, fuel, maintenance and QR records', `<button class="btn primary">+ Equipment</button>`)+`<div class="card">${table(['ID','Equipment','Type','Ownership','Assigned','Project','Internal Rate','Next Service','Status'],rows.map(e=>`<tr><td>${e.id}</td><td>${e.name}</td><td>${e.type}</td><td>${e.ownership}</td><td>${e.assigned}</td><td>${e.project}</td><td>${money(e.rate)}</td><td>${e.nextService}</td><td>${e.status}</td></tr>`))}</div>`}
+function renderCloseout(){let p=currentProject();$('#closeout').innerHTML=head('Closeout',`${p.name} · requirements identified early and assembled continuously`)+`<div class="grid">${kpi('Readiness','35%','Example current readiness')}${kpi('Warranty Records',state.warranties.filter(w=>w.project===p.name).length,'AI indexed')}${kpi('Required Items','26','Template / contract derived')}${kpi('Missing Items','17','Current placeholder')}</div><div class="two section"><div class="card"><h3>Closeout Checklist</h3>${table(['Requirement','Source','Responsible','Status'],['<tr><td>Certificate of Occupancy</td><td>AHJ / Contract</td><td>PM</td><td><span class="status amber">Future</span></td></tr>','<tr><td>Record Drawings / As-Builts</td><td>Closeout Requirements</td><td>Subs</td><td><span class="status amber">Open</span></td></tr>','<tr><td>O&M Manuals</td><td>Specs</td><td>Subs</td><td><span class="status amber">Open</span></td></tr>','<tr><td>Final Warranties</td><td>Specs / Contracts</td><td>PM</td><td><span class="status amber">Open</span></td></tr>'])}</div><div class="ai-panel"><h3>AI Closeout Assembly</h3><div class="ai-item">Finds related documents as they arrive.</div><div class="ai-item">Indexes by CSI / system / asset.</div><div class="ai-item">Builds TOC and bookmarked delivery package.</div><div class="ai-item">Tracks missing requirements continuously.</div></div></div>`}
+function renderBidders(){let rows=state.bidders;$('#bidders').innerHTML=head('Bidders / Subcontractor Scorecards','Qualification, bid history and performance intelligence')+`<div class="card">${table(['Company','Trade','Region','Safety','Quality','Schedule','Billing','Score'],rows.map(x=>`<tr><td>${x.company}</td><td>${x.trade}</td><td>${x.region}</td><td>${x.safety}</td><td>${x.quality}</td><td>${x.schedule}</td><td>${x.billing}</td><td><b>${x.score}</b></td></tr>`))}</div>`}
+function renderReports(){let p=currentProject();$('#reports').innerHTML=head('Reports / Analytics','Custom report builder + portfolio analytics')+`<div class="grid3"><div class="card"><h3>Financial</h3><p class="split-note">WIP, contract status, budget, commitments, forecast, fee, OH recovery, AR/AP and cash flow.</p></div><div class="card"><h3>Operations</h3><p class="split-note">Schedule, RFIs, submittals, procurement, daily reports, manpower, productivity, safety and quality.</p></div><div class="card"><h3>Portfolio</h3><p class="split-note">Slice performance by PM, Super, client, project type, region, contract type, estimator, year and CSI division.</p></div></div><div class="callout section">Production report builder will allow field selection, filters, grouping, formulas, saved layouts, scheduled delivery and role-based visibility.</div>`}
+function renderAudit(){if(!allowed('all')){$('#audit').innerHTML=head('Audit / Versions','Restricted')+'<div class="card">Administrator access required.</div>';return}$('#audit').innerHTML=head('Audit / Versions','Immutable history across financial, schedule, approval, document and permission changes')+`<div class="card">${table(['Date / Time','User','Action','Record','Old','New'],state.audit.slice(0,50).map(a=>`<tr><td>${a.date}</td><td>${a.user}</td><td>${a.action}</td><td>${a.record}</td><td>${a.old}</td><td>${a.new}</td></tr>`))}</div>`}
+function renderIntegrations(){$('#integrations').innerHTML=head('Integrations','Two-way accounting + scheduling + email + bank / card + API architecture')+`<div class="grid3"><div class="card"><h3>QuickBooks / Sage / ERP</h3><p class="split-note">Bi-directional vendor, AP, payment, AR and financial mapping with external IDs, source-of-truth rules, conflict review and duplicate protection.</p><span class="status amber">Backend connector required</span></div><div class="card"><h3>P6 / Microsoft Project</h3><p class="split-note">Schedule import/export with activity ID, WBS, logic, calendar, float, percent complete, baselines and milestones.</p><span class="status amber">Backend connector required</span></div><div class="card"><h3>Email / Banking / API</h3><p class="split-note">External correspondence, incoming replies, bank/credit-card feeds and customer API/webhooks.</p><span class="status amber">Backend connector required</span></div></div>`}
+function renderSettings(){$('#settings').innerHTML=head('Company Settings','Subscription-ready tenant configuration')+`<div class="grid3"><div class="card"><h3>Branding</h3><p class="split-note">Company logo, color palette, report headers, correspondence signatures and app theme.</p></div><div class="card"><h3>Financial / CSI</h3><p class="split-note">Full CSI library, company cost codes, SUB/GR/OHP classifications, fee methodology, OH allocation and fiscal settings.</p></div><div class="card"><h3>Workflow / Security</h3><p class="split-note">Project statuses, roles, field-level permissions, approval thresholds, templates, safety cadence and closeout requirements.</p></div></div>`}
+function addProject(){let name=prompt('Project / opportunity name');if(!name)return;let id='p'+Date.now();state.projects.push({id,job:'TBD',name,client:'TBD',status:'Estimating',prob:25,contract:+(prompt('Estimated value')||0),originalContract:0,estimatedCost:0,forecastCost:0,costToDate:0,billings:0,earnedRevenue:0,fee:0,feeEarned:0,feeBilled:0,feeCollected:0,ohRecovery:0,start:'',end:'',pm:'TBD',super:'TBD',contractType:'TBD',region:'TBD',city:'TBD',estValue:0,subValue:0,consultantFee:0,taxWithhold:0});currentUser.projects.push(id);save('Created project/opportunity',name);syncProjectSelect()}
+function addEmployee(){let name=prompt('Employee name');if(!name)return;state.employees.push({id:'e'+Date.now(),name,position:prompt('Position')||'',salary:+(prompt('Annual salary / annualized rate')||0),burden:+(prompt('Payroll burden %')||0),truckAllowance:+(prompt('Monthly truck allowance')||0),assigned:'Unassigned',status:'Active'});save('Added employee',name)}
+function addTime(){let employee=currentUser.name,date=prompt('Date (YYYY-MM-DD)',new Date().toISOString().slice(0,10))||'',hours=+(prompt('Hours')||0),category=prompt('Category: Project / Overhead / Estimating / Business Development / Marketing / Training / PTO')||'Project',project=prompt('Project / Corporate',currentProject()?.name||'Corporate')||'',costCode=prompt('Cost code / activity')||'',miles=+(prompt('Mileage')||0),fuel=+(prompt('Fuel $')||0),notes=prompt('Notes')||'';state.time.push({employee,date,hours,category,project,costCode,miles,fuel,notes});save('Added time entry',employee)}
+function addUser(){let name=prompt('Employee / user name');if(!name)return;let role=prompt('Role','Project Manager')||'Employee';state.users.push({id:'u'+Date.now(),name,initials:name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase(),role,projects:[],permissions:['project']});save('Invited user',name)}
+function addRfi(){let p=currentProject(),subject=prompt('RFI subject');if(!subject)return;state.rfis.push({project:p.name,id:'RFI-'+String(state.rfis.filter(r=>r.project===p.name).length+1).padStart(3,'0'),subject,bic:prompt('Ball in court','Architect')||'',due:prompt('Due date','')||'',activity:'AI Suggested / Pending',float:0,delay:0,tie:'AI Suggested',status:'Open'});save('Created RFI',subject)}
+function addSub(){let p=currentProject(),desc=prompt('Submittal description');if(!desc)return;state.submittals.push({project:p.name,id:'SUB-'+String(state.submittals.filter(r=>r.project===p.name).length+1).padStart(3,'0'),spec:prompt('CSI / Spec section')||'',desc,sub:prompt('Subcontractor')||'',bic:'GC',ros:'',lead:'',activity:'AI Suggested / Pending',exposure:0,tie:'AI Suggested',status:'Planned'});save('Created submittal',desc)}
+function addTask(){let p=currentProject(),task=prompt('Task');if(!task)return;state.tasks.push({project:p.name,id:'T-'+String(state.tasks.length+1).padStart(3,'0'),source:'Manual',task,owner:prompt('Owner',currentUser.name)||currentUser.name,due:prompt('Due date','')||'',status:'Open'});save('Created task',task)}
+function addMessage(type){let p=currentProject(),subject=prompt('Subject');if(!subject)return;if(type==='internal')state.internalMessages.unshift({project:p.name,date:new Date().toISOString().slice(0,10),subject,from:currentUser.name,visibility:'Company Only',linked:'Manual',status:'Open'});else state.externalMessages.unshift({project:p.name,date:new Date().toISOString().slice(0,10),subject,from:currentUser.name,to:prompt('To / recipient')||'External',linked:'Manual',status:'Draft'});save(type==='internal'?'Created internal correspondence':'Created external correspondence',subject)}
+function publishSchedule(){let n=state.schedule.versions.length+1;state.schedule.versions.push({id:n,label:'Update '+String(n-1).padStart(2,'0'),date:new Date().toISOString().slice(0,10)});save('Published schedule version',currentProject().name)}
+function finalizePA(p,pa){if(!confirm(`Finalize Pay App #${pa.number}? Current values will roll forward and become prior-period values.`))return;let current=pa.rows.reduce((a,x)=>a+x.current+x.stored,0);pa.prior+=current;pa.rows.forEach(x=>{x.prev+=x.current+x.stored;x.current=0;x.stored=0});p.billings=pa.prior;pa.number+=1;save('Finalized pay application',p.name)}
+function exportWip(){let ps=visibleProjects().filter(p=>/Awarded|Active|Preconstruction/.test(p.status)),headers=['Job','Project','Original Contract','Approved COs','Current Contract','Original Est Cost','Forecast Cost','Est GP','GP %','Cost to Date','Cost % Complete','Earned Revenue','Billings','Over Under','Backlog','Total Fee','Fee Earned','Fee Remaining','OH Recovery'];let lines=[headers.join(',')].concat(ps.map(p=>[p.job,p.name,p.originalContract,p.contract-p.originalContract,p.contract,p.estimatedCost,p.forecastCost,gp(p),gp(p)/p.contract,p.costToDate,comp(p),earned(p),p.billings,over(p),backlog(p),p.fee,p.feeEarned,feeRemaining(p),p.ohRecovery].map(v=>`"${v}"`).join(',')));download('TotalConstruct_WIP.csv',lines.join('\n'),'text/csv')}
+function download(name,text,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),100)}
+function syncProjectSelect(){let ps=visibleProjects();$('#projectSelect').innerHTML=ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');$('#projectSelect').onchange=()=>{renderNav();renderPage(currentPage);refreshBanner()}}
+function aiReply(q){let p=currentProject(),l=q.toLowerCase();if(l.includes('fee')){if(!allowed('all')&&!allowed('financial_project'))return 'Fee information is restricted for your current role.';let ps=visibleProjects();return `Visible projects carry ${money(ps.reduce((a,x)=>a+x.fee,0))} of total fee, ${money(ps.reduce((a,x)=>a+x.feeEarned,0))} earned, and ${money(ps.reduce((a,x)=>a+feeRemaining(x),0))} remaining to earn.`}if(l.includes('overhead')||/\boh\b/.test(l)){if(!allowed('all'))return 'Corporate overhead information is restricted for your current role.';let total=state.overhead.reduce((a,x)=>a+x.actual,0);return `Current modeled corporate overhead is ${money(total)} with ${money(state.company.ohRecovered)} recovered. The modeled unrecovered amount is ${money(Math.max(0,total-state.company.ohRecovered))}.`}if(l.includes('access')||l.includes('projects can i'))return `You currently have access to ${visibleProjects().map(x=>x.name).join(', ')}.`;if(l.includes('warranty'))return `${p.name} has ${state.warranties.filter(x=>x.project===p.name).length} indexed warranty/asset records in this build.`;if(l.includes('insurance'))return `${p.name} has ${state.insurance.filter(x=>x.project===p.name).length} GC/project insurance records and ${state.contracts.filter(x=>x.project===p.name).length} subcontract insurance/compliance records.`;if(l.includes('rfi'))return `${p.name} has ${state.rfis.filter(x=>x.project===p.name).length} RFI record(s).`;if(l.includes('submittal'))return `${p.name} has ${state.submittals.filter(x=>x.project===p.name).length} submittal record(s).`;return `I am scoped to ${p?.name||'Corporate'} and the ${currentPage} screen. In the production backend I will search permitted project/company records and documents, propose actions, and require approval where the action changes records, sends communications, or affects money.`}
+function showAI(){let p=currentProject();$('#aiContext').textContent=`Context: ${p?.name||'Corporate'} · ${currentPage} · ${currentUser.role}`;$('#aiModal').classList.remove('hidden');$('#aiInput').focus()}
+function sendAI(){let q=$('#aiInput').value.trim();if(!q)return;$('#chat').innerHTML+=`<div class="bubble user">${q}</div><div class="bubble ai">${aiReply(q)}</div>`;$('#aiInput').value='';$('#chat').scrollTop=$('#chat').scrollHeight}
+
+function globalCreate(){
+ let choice=prompt('Create what?\n1 RFI\n2 Submittal\n3 Cost Line\n4 Daily Report\n5 Task\n6 Internal Message\n7 External Message\n8 Upload Drawings\n9 T&M Ticket\n10 Meeting\n11 Compliance Requirement\n12 Subcontractor','1');
+ if(choice==='1'){openPage('rfis');setTimeout(addRfi,50)}
+ if(choice==='2'){openPage('submittals');setTimeout(addSub,50)}
+ if(choice==='3'){openPage('financials');setTimeout(()=>$('#addCostLine')?.click(),50)}
+ if(choice==='4'){openPage('daily');alert('Daily Report form workflow is partially modeled in this trial.')}
+ if(choice==='5'){openPage('tasks');setTimeout(addTask,50)}
+ if(choice==='6'){openPage('correspondence');setTimeout(()=>addMessage('internal'),50)}
+ if(choice==='7'){openPage('correspondence');setTimeout(()=>addMessage('external'),50)}
+ if(choice==='8'){openPage('drawings');setTimeout(()=>$('#drawInput')?.click(),100)}
+ if(choice==='9'){openPage('tm');alert('T&M create workflow is next-pass functional work.')}
+ if(choice==='10'){openPage('meetings');alert('Meeting create workflow is next-pass functional work.')} if(choice==='11'){openPage('compliance');setTimeout(()=>$('#addCompliance')?.click(),50)} if(choice==='12'){openPage('subcontractors');setTimeout(()=>$('#addSubcontractor')?.click(),50)}
+}
+$('#globalCreate')?.addEventListener('click',globalCreate);
+$$('[data-jump]').forEach(a=>a.onclick=()=>openPage(a.dataset.jump));
+function refreshBanner(){
+ let p=currentProject();if(!p)return;$('#bannerTitle').textContent=p.name;$('#bannerMeta').textContent=`${p.job} · ${p.status} · PM: ${p.pm} · Super: ${p.super}`;
+ let img=state.projectImages?.[p.id],old=$('#projectBanner img');if(old)old.remove();if(img){let im=document.createElement('img');im.src=img;$('#projectBanner').prepend(im)}
+}
+$('#bannerImageBtn').onclick=()=>$('#bannerImageInput').click();
+$('#bannerImageInput').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{state.projectImages=state.projectImages||{};state.projectImages[currentProject().id]=r.result;save('Updated project banner image',currentProject().name);refreshBanner()};r.readAsDataURL(f)};
+
+$('#askAI').onclick=showAI;$('#closeAI').onclick=()=>$('#aiModal').classList.add('hidden');$('#sendAI').onclick=sendAI;$('#aiInput').onkeydown=e=>{if(e.key==='Enter')sendAI()};
+$('#demoUser').innerHTML=state.users.map(u=>`<option value="${u.id}">${u.name} — ${u.role}</option>`).join('');
+$('#loginBtn').onclick=()=>{currentUser=state.users.find(u=>u.id===$('#demoUser').value);$('#login').classList.add('hidden');$('#app').classList.remove('hidden');$('#userAvatar').textContent=currentUser.initials;syncProjectSelect();renderAll();refreshBanner()};
+$('#globalSearch').oninput=e=>{let q=e.target.value.toLowerCase();if(q.length<2)return;e.target.title=`Search is modeled in this functional front end. Production backend will query permitted documents and records for "${q}".`}
+
+</script>
+</body></html>
