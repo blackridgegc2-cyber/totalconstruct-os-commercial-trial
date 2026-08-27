@@ -26,8 +26,10 @@ for(const token of ['QuickBooks','Plaid','401','depreci'])if(!accounting.toLower
 const security=fs.readFileSync(path.join(root,'r1-security.js'),'utf8');
 for(const token of ['pagePermissions','managementOnly','financials','payapps','rfis','submittals','schedule','drawings','meetings','daily','quality','safety','equipment','closeout','controllercpa','capitalplanning','storagevault','legalreview','access','window.tcSecurity'])if(!security.includes(token))errors.push(`security role/navigation guard missing: ${token}`);
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
-for(const token of ['form_instances','r1_runtime_snapshot','writeSnapshot','loadSnapshot','lastCloudWrite','lastCloudLoad','version:2','scope:\'project\'','belongs(row,prj)','mergeScoped','companyTracked'])if(!cloud.includes(token))errors.push(`cloud persistence/reopen requirement missing: ${token}`);
+for(const token of ['form_instances','r1_project_snapshot','r1_company_snapshot','projectTracked','companyTracked','belongsToProject','mergeProjectSnapshot','mergeCompanySnapshot','writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId','lastCloudWrite','lastCloudLoad','lastCompanyCloudWrite','lastCompanyCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/scope requirement missing: ${token}`);
+for(const token of ["'accounting'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
 if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))errors.push('Cloud reopen must not overwrite entire multi-project state arrays.');
+if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load must be keyed to authenticated company ID, not current project.');
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
 const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
