@@ -4,7 +4,7 @@
  const root=String(cfg.url).trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
  const API=root+'/rest/v1';
  const projectTracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','internalMessages','externalMessages','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
- const companyTracked=['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites','audit','taxModel','companyHealth','capitalPlan','overhead','releaseGate','branding'];
+ const companyTracked=['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites','audit','taxModel','companyHealth','capitalPlan','overhead','releaseGate','branding','bidBoard'];
  function token(){return localStorage.getItem('tc_access_token')||''}
  function userId(){return window.tcAuth?.getUserId?.()||null}
  function headers(extra={}){return Object.assign({'apikey':cfg.key,'Content-Type':'application/json','Prefer':'return=representation'},token()?{'Authorization':'Bearer '+token()}: {},extra)}
@@ -20,7 +20,7 @@
   if(Array.isArray(snapState?.scheduleActivities)){state.schedule=state.schedule||{versions:[],activities:[]};const existing=Array.isArray(state.schedule.activities)?state.schedule.activities:[];state.schedule.activities=existing.filter(x=>!belongsToProject(x,prj)).concat(snapState.scheduleActivities)}
   if(snapState?.payapp!==undefined){state.payapps=state.payapps||{};state.payapps[prj.name]=snapState.payapp}
  }
- function companySnapshot(companyId){const data={};for(const k of companyTracked){if(state&&state[k]!==undefined)data[k]=state[k]}return {kind:'r1_company_snapshot',version:6,company_id:companyId,saved_at:new Date().toISOString(),state:data}}
+ function companySnapshot(companyId){const data={};for(const k of companyTracked){if(state&&state[k]!==undefined)data[k]=state[k]}return {kind:'r1_company_snapshot',version:7,company_id:companyId,saved_at:new Date().toISOString(),state:data}}
  function mergeCompanySnapshot(snapState){for(const k of companyTracked){if(snapState&&snapState[k]!==undefined)state[k]=snapState[k]}}
  let writing=false,pending=false,lastLoaded='',companyIdCache='',companyLoaded=false,companyWriting=false,companyPending=false;
  async function getCompanyId(){if(companyIdCache)return companyIdCache;const uid=userId();if(!uid||!token())return '';const rows=await rest('company_users',`?user_id=eq.${encodeURIComponent(uid)}&active=eq.true&select=company_id&limit=1`);companyIdCache=rows?.[0]?.company_id||'';return companyIdCache}
