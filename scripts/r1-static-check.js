@@ -24,7 +24,8 @@ for(const token of ['Company Vault','Legal Hold','dailyRestorePoints','disasterS
 const accounting=fs.readFileSync(path.join(root,'r1-accounting.js'),'utf8');
 for(const token of ['QuickBooks','Plaid','401','depreci'])if(!accounting.toLowerCase().includes(token.toLowerCase()))errors.push(`accounting requirement missing: ${token}`);
 const security=fs.readFileSync(path.join(root,'r1-security.js'),'utf8');
-for(const token of ['pagePermissions','managementOnly','financials','payapps','rfis','submittals','schedule','drawings','meetings','daily','quality','safety','equipment','closeout','controllercpa','capitalplanning','storagevault','legalreview','access','window.tcSecurity'])if(!security.includes(token))errors.push(`security role/navigation guard missing: ${token}`);
+for(const token of ['pagePermissions','managementOnly','financials','payapps','rfis','submittals','schedule','drawings','meetings','daily','quality','safety','equipment','closeout','controllercpa','capitalplanning','storagevault','legalreview','access','window.tcSecurity','tcRestrictedMask','unrestrictPage'])if(!security.includes(token))errors.push(`security role/navigation guard missing: ${token}`);
+if(security.includes("page.innerHTML='<div class=\"head\"><div><h1>Restricted"))errors.push('Restricted handling must not destructively replace page contents.');
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_project_snapshot','r1_company_snapshot','projectTracked','companyTracked','belongsToProject','mergeProjectSnapshot','mergeCompanySnapshot','writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId','lastCloudWrite','lastCloudLoad','lastCompanyCloudWrite','lastCompanyCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/scope requirement missing: ${token}`);
 for(const token of ["'accounting'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
@@ -40,8 +41,8 @@ const globalCreate=fs.readFileSync(path.join(root,'r1-globalcreate.js'),'utf8');
 for(const token of ['allowedRecords','can(rule[1])','financial_project','Your role does not have permission'])if(!globalCreate.includes(token))errors.push(`role-aware global Create authorization missing: ${token}`);
 if(!globalCreate.includes("['Project / Opportunity',['all']]"))errors.push('Project / Opportunity creation must remain management-only.');
 const roleTest=fs.readFileSync(path.join(root,'r1-role-test.js'),'utf8');
-for(const token of ['View As','Actual Login','allowedManager','permsByRole','window.tcRoleTest','TEST VIEW'])if(!roleTest.includes(token))errors.push(`role acceptance simulator missing: ${token}`);
-if(!roleTest.includes("return p.includes('all')"))errors.push('View As role simulator must remain management-only.');
+for(const token of ['View As','Actual Login','actualManager','permsByRole','window.tcRoleTest','TEST VIEW','Return to Actual Login','original.permissions.includes'])if(!roleTest.includes(token))errors.push(`role acceptance simulator missing: ${token}`);
+if(!roleTest.includes("(currentUser?.permissions||[]).includes('all')"))errors.push('View As role simulator must originate from a management login.');
 const jsFiles=required.filter(x=>x.endsWith('.js'));
 for(const f of jsFiles){const src=fs.readFileSync(path.join(root,f),'utf8');try{new Function(src)}catch(e){errors.push(`${f} syntax parse failed: ${e.message}`)}}
 if(errors.length){console.error('\nR1 STATIC CHECK FAILED');errors.forEach(e=>console.error(' - '+e));process.exit(1)}
