@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -43,6 +43,9 @@ if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))er
 if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load must be keyed to authenticated company ID, not current project.');
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
+const acceptance=fs.readFileSync(path.join(root,'r1-acceptance.js'),'utf8');
+for(const token of ['Training / Sample','writeSnapshot','loadSnapshot','acceptanceTest','Acceptance cleanup','tcRoleTest.apply','tcSecurity.allowed','Returned to actual login','window.tcAcceptance'])if(!acceptance.includes(token))errors.push(`safe acceptance harness missing: ${token}`);
+if(!acceptance.includes('/(training|sample)/i'))errors.push('Acceptance harness must block database writes outside Training / Sample projects.');
 const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
 for(const token of ['navIcons','dataset.icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
 const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
