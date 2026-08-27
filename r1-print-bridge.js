@@ -1,0 +1,4 @@
+(()=>{
+ function install(){const lib=window.tcTemplateLibrary,renderers=window.tcFormRenderers;if(!lib?.printHtml||lib.printHtml.__brcRendererBridge||!renderers?.render)return;const original=lib.printHtml;const wrapped=function(title,body){const categories=['Lien Waiver','Subcontract / Work Order','Meeting Agenda','Meeting Minutes','Notice / NOI'];const category=categories.find(c=>String(title||'').endsWith('— '+c)||String(title||'').includes('— '+c));const dedicated=category?renderers.render(category):null;return original.call(this,title,dedicated||body)};wrapped.__brcRendererBridge=true;lib.printHtml=wrapped}
+ new MutationObserver(()=>{try{install()}catch(e){console.warn('Print renderer bridge',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',install);setTimeout(install,1600);setInterval(install,5000);window.tcPrintBridge={install};
+})();
