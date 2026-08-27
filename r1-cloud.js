@@ -3,43 +3,50 @@
  if(!cfg.url||!cfg.key)return;
  const root=String(cfg.url).trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
  const API=root+'/rest/v1';
- const tracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
- const companyTracked=['equipment','fixedAssets','payroll401k'];
+ const projectTracked=['meetings','daily','tasks','tm','quality','incidents','equipment','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
+ const companyTracked=['accounting','moduleConfig','storage','vaultProjects','legalHolds','invites'];
  function token(){return localStorage.getItem('tc_access_token')||''}
+ function userId(){return window.tcAuth?.getUserId?.()||null}
  function headers(extra={}){return Object.assign({'apikey':cfg.key,'Content-Type':'application/json','Prefer':'return=representation'},token()?{'Authorization':'Bearer '+token()}: {},extra)}
  async function rest(table,query=''){const r=await fetch(`${API}/${table}${query}`,{headers:headers()});if(!r.ok)throw new Error(`${table}: ${r.status} ${await r.text()}`);return r.json()}
  async function insert(table,body){const r=await fetch(`${API}/${table}`,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(`${table}: ${r.status} ${await r.text()}`);return r.json()}
  function current(){try{return typeof currentProject==='function'?currentProject():null}catch(e){return null}}
- function belongs(row,prj){if(!row||typeof row!=='object')return false;const pid=row.project_id??row.projectId??row.projectID;const pname=row.project??row.project_name??row.projectName;return String(pid||'')===String(prj.id)||String(pname||'')===String(prj.name)}
- function scopedValue(key,val,prj){if(!Array.isArray(val))return val;if(companyTracked.includes(key))return undefined;return val.filter(row=>belongs(row,prj))}
- function snapshot(prj){const data={};for(const k of tracked){if(!state||state[k]===undefined)continue;const v=scopedValue(k,state[k],prj);if(v!==undefined)data[k]=v}return {kind:'r1_runtime_snapshot',version:2,scope:'project',project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
- function mergeScoped(key,incoming,prj){if(!Array.isArray(incoming)){state[key]=incoming;return}const existing=Array.isArray(state[key])?state[key]:[];state[key]=existing.filter(row=>!belongs(row,prj)).concat(incoming)}
- let writing=false,pending=false,lastLoaded='';
+ function belongsToProject(record,prj){if(!record||typeof record!=='object')return false;return record.project===prj.name||record.project_id===prj.id||record.projectId===prj.id}
+ function projectSnapshot(prj){const data={};for(const k of projectTracked){if(!Array.isArray(state?.[k]))continue;data[k]=state[k].filter(x=>belongsToProject(x,prj))}return {kind:'r1_project_snapshot',version:2,project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
+ function mergeProjectSnapshot(prj,snapState){for(const k of projectTracked){if(!Array.isArray(snapState?.[k]))continue;const existing=Array.isArray(state[k])?state[k]:[];const others=existing.filter(x=>!belongsToProject(x,prj));state[k]=others.concat(snapState[k])}}
+ function companySnapshot(companyId){const data={};for(const k of companyTracked){if(state&&state[k]!==undefined)data[k]=state[k]}return {kind:'r1_company_snapshot',version:1,company_id:companyId,saved_at:new Date().toISOString(),state:data}}
+ function mergeCompanySnapshot(snapState){for(const k of companyTracked){if(snapState&&snapState[k]!==undefined)state[k]=snapState[k]}}
+ let writing=false,pending=false,lastLoaded='',companyIdCache='',companyLoaded=false,companyWriting=false,companyPending=false;
+ async function getCompanyId(){if(companyIdCache)return companyIdCache;const uid=userId();if(!uid||!token())return '';const rows=await rest('company_users',`?user_id=eq.${encodeURIComponent(uid)}&active=eq.true&select=company_id&limit=1`);companyIdCache=rows?.[0]?.company_id||'';return companyIdCache}
  async function writeSnapshot(action='Saved data',record='System'){
   const prj=current();if(!prj?.id||!token())return false;
   if(writing){pending=true;return false}writing=true;
   try{
-   const payload=snapshot(prj);payload.action=action;payload.record=record;
+   const payload=projectSnapshot(prj);payload.action=action;payload.record=record;
    await insert('form_instances',{project_id:prj.id,title:'R1 Runtime Snapshot',status:'complete',form_data:payload,completed_at:new Date().toISOString()});
    state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastCloudWrite=new Date().toISOString();state.persistenceHealth.cloudError=null;
    return true;
-  }catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.cloudError=e.message;console.warn('TotalConstruct cloud snapshot failed',e);return false}
+  }catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.cloudError=e.message;console.warn('TotalConstruct project cloud snapshot failed',e);return false}
   finally{writing=false;if(pending){pending=false;setTimeout(()=>writeSnapshot('Queued save','System'),150)}}
+ }
+ async function writeCompanySnapshot(action='Saved company data',record='Company'){
+  const prj=current();if(!prj?.id||!token())return false;
+  if(companyWriting){companyPending=true;return false}companyWriting=true;
+  try{const companyId=await getCompanyId();if(!companyId)return false;const payload=companySnapshot(companyId);payload.action=action;payload.record=record;await insert('form_instances',{project_id:prj.id,title:'R1 Company Snapshot',status:'complete',form_data:payload,completed_at:new Date().toISOString()});state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastCompanyCloudWrite=new Date().toISOString();state.persistenceHealth.companyCloudError=null;return true}
+  catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.companyCloudError=e.message;console.warn('TotalConstruct company cloud snapshot failed',e);return false}
+  finally{companyWriting=false;if(companyPending){companyPending=false;setTimeout(()=>writeCompanySnapshot('Queued company save','Company'),175)}}
  }
  async function loadSnapshot(force=false){
   const prj=current();if(!prj?.id||!token())return false;if(!force&&lastLoaded===prj.id)return true;
   try{
    const rows=await rest('form_instances',`?project_id=eq.${encodeURIComponent(prj.id)}&title=eq.${encodeURIComponent('R1 Runtime Snapshot')}&select=form_data,updated_at,created_at&order=created_at.desc&limit=1`);
-   const snap=rows?.[0]?.form_data;
-   if(snap?.kind==='r1_runtime_snapshot'&&snap.state){
-    for(const [k,v] of Object.entries(snap.state)){if(snap.version>=2&&snap.scope==='project')mergeScoped(k,v,prj);else if(Array.isArray(v))mergeScoped(k,v.filter(row=>belongs(row,prj)),prj)}
-    lastLoaded=prj.id;state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastCloudLoad=new Date().toISOString();state.persistenceHealth.cloudError=null;if(typeof renderAll==='function')renderAll();if(typeof refreshBanner==='function')refreshBanner();return true
-   }
-  }catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.cloudError=e.message;console.warn('TotalConstruct cloud reopen failed',e)}return false
+   const snap=rows?.[0]?.form_data;if(snap?.kind==='r1_project_snapshot'&&snap.state){mergeProjectSnapshot(prj,snap.state);lastLoaded=prj.id;state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastCloudLoad=new Date().toISOString();state.persistenceHealth.cloudError=null;if(typeof renderAll==='function')renderAll();if(typeof refreshBanner==='function')refreshBanner();return true}
+  }catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.cloudError=e.message;console.warn('TotalConstruct project cloud reopen failed',e)}return false
  }
- window.tcCloud={rest,insert,writeSnapshot,loadSnapshot,snapshot,belongs};
- function wrapSave(){if(typeof window.save!=='function'||window.save.__tcCloudWrapped)return;const original=window.save;const wrapped=function(action='Saved data',record='System'){const out=original.apply(this,arguments);setTimeout(()=>writeSnapshot(action,record),0);return out};wrapped.__tcCloudWrapped=true;window.save=wrapped}
+ async function loadCompanySnapshot(force=false){if(!token())return false;if(companyLoaded&&!force)return true;try{const companyId=await getCompanyId();if(!companyId)return false;const rows=await rest('form_instances',`?title=eq.${encodeURIComponent('R1 Company Snapshot')}&form_data->>company_id=eq.${encodeURIComponent(companyId)}&select=form_data,updated_at,created_at&order=created_at.desc&limit=1`);const snap=rows?.[0]?.form_data;if(snap?.kind==='r1_company_snapshot'&&snap.state){mergeCompanySnapshot(snap.state);companyLoaded=true;state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastCompanyCloudLoad=new Date().toISOString();state.persistenceHealth.companyCloudError=null;if(typeof renderAll==='function')renderAll();return true}}catch(e){state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.companyCloudError=e.message;console.warn('TotalConstruct company cloud reopen failed',e)}return false}
+ window.tcCloud={rest,insert,writeSnapshot,loadSnapshot,writeCompanySnapshot,loadCompanySnapshot,getCompanyId};
+ function wrapSave(){if(typeof window.save!=='function'||window.save.__tcCloudWrapped)return;const original=window.save;const wrapped=function(action='Saved data',record='System'){const out=original.apply(this,arguments);setTimeout(()=>writeSnapshot(action,record),0);setTimeout(()=>writeCompanySnapshot(action,record),40);return out};wrapped.__tcCloudWrapped=true;window.save=wrapped}
  function wireProject(){const sel=document.getElementById('projectSelect');if(sel&&!sel.dataset.tcCloud){sel.dataset.tcCloud='1';sel.addEventListener('change',()=>setTimeout(()=>loadSnapshot(true),250))}}
- function init(){wrapSave();wireProject();const app=document.getElementById('app');if(app&&!app.classList.contains('hidden'))loadSnapshot();}
- new MutationObserver(init).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});addEventListener('DOMContentLoaded',init);setTimeout(init,900);setTimeout(()=>loadSnapshot(),1600)
+ function init(){wrapSave();wireProject();const app=document.getElementById('app');if(app&&!app.classList.contains('hidden')){loadCompanySnapshot();loadSnapshot()}}
+ new MutationObserver(init).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});addEventListener('DOMContentLoaded',init);setTimeout(init,900);setTimeout(()=>{loadCompanySnapshot();loadSnapshot()},1600)
 })();
