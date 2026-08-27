@@ -1,0 +1,22 @@
+(()=>{
+ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+ const form=o=>window.tcOpenRecordForm?window.tcOpenRecordForm(o):alert('Form engine unavailable.');
+ const prj=()=>typeof currentProject==='function'?currentProject():null;
+ async function sendInvite(d){
+  const token=localStorage.getItem('tc_access_token')||'';
+  const r=await fetch('/api/invite-user',{method:'POST',headers:{'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},body:JSON.stringify(d)});
+  const data=await r.json().catch(()=>({})); if(!r.ok)throw new Error(data.error||'Invite failed'); return data;
+ }
+ function overrideInvite(){const b=$('#tcInviteEmployee');if(!b||b.dataset.secure==='1')return;b.dataset.secure='1';b.onclick=()=>form({title:'Invite Employee',subtitle:'A secure invitation will be sent and Admin can track its status.',fields:[{name:'name',label:'Name',required:true},{name:'email',label:'Email / Username',type:'email',required:true},{name:'role',label:'Role',type:'select',options:['Project Manager','APM / Project Engineer','Superintendent','Accounting / Controller','Estimator / Preconstruction','Safety','Field Employee','Executive / Operations','Read Only / Auditor']}],onSave:async d=>{await sendInvite(d);state.invites=state.invites||[];state.invites.push({name:d.name,email:d.email,role:d.role,sent:new Date().toLocaleString(),status:'Invite Pending'});save('Sent secure employee invitation',d.email)}})}
+ function addPrecon(type){const p=prj();if(!p)return;const configs={
+  'Design Issue':[{name:'discipline',label:'Discipline',type:'select',options:['Architectural','Structural','Civil','MEP','Interiors','Other']},{name:'issue',label:'Issue / Required Decision',type:'textarea',required:true},{name:'owner',label:'Responsible Party',value:p.pm||''},{name:'due',label:'Due Date',type:'date'},{name:'impact',label:'Potential Cost / Schedule Impact',type:'textarea'}],
+  'VE Item':[{name:'item',label:'VE Item',required:true},{name:'description',label:'Description',type:'textarea'},{name:'savings',label:'Estimated Savings',type:'number'},{name:'schedule',label:'Schedule Impact (days)',type:'number'},{name:'status',label:'Status',type:'select',options:['Proposed','Under Review','Accepted','Rejected']}],
+  'Owner Decision':[{name:'decision',label:'Decision Required',type:'textarea',required:true},{name:'due',label:'Decision Due',type:'date'},{name:'cost',label:'Potential Cost Impact',type:'number'},{name:'days',label:'Potential Schedule Impact (days)',type:'number'},{name:'status',label:'Status',type:'select',options:['Open','Pending Owner','Decided']}]
+ };
+  form({title:type,subtitle:p.name,fields:configs[type],onSave:async d=>{state.preconRecords=state.preconRecords||[];state.preconRecords.push({project:p.name,type,date:new Date().toISOString(),...d});save(`Added ${type}`,p.name)}})
+ }
+ function wirePrecon(){const root=$('#preconstruction');if(!root)return;[...root.querySelectorAll('button')].forEach(b=>{if(b.textContent.includes('Design Issue'))b.onclick=()=>addPrecon('Design Issue');if(b.textContent.includes('VE Item'))b.onclick=()=>addPrecon('VE Item');if(b.textContent.includes('Owner Decision'))b.onclick=()=>addPrecon('Owner Decision')})}
+ function wireStatus(){const root=$('#statusreport');if(!root)return;const btn=[...root.querySelectorAll('button')].find(b=>/status|report|add/i.test(b.textContent));if(btn&&!btn.onclick)btn.onclick=()=>{const p=prj();form({title:'Project Status Update',subtitle:p?.name||'',fields:[{name:'work',label:'Work in Progress',type:'textarea'},{name:'completed',label:'Work Completed',type:'textarea'},{name:'concerns',label:'Concerns / Risks',type:'textarea'},{name:'countermeasures',label:'Countermeasures',type:'textarea'},{name:'safety',label:'Safety Summary',type:'textarea'},{name:'summary',label:'Executive Summary',type:'textarea'}],onSave:async d=>{state.projectStatus=state.projectStatus||[];state.projectStatus.push({project:p.name,period:new Date().toISOString().slice(0,7),reportNo:'AUTO-'+Date.now(),...d});save('Created project status report',p.name)}})}}
+ function sweep(){overrideInvite();wirePrecon();wireStatus()}
+ new MutationObserver(sweep).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',sweep);setTimeout(sweep,500)
+})();
