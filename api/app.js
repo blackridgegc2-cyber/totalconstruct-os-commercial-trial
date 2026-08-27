@@ -26,7 +26,7 @@ module.exports = function handler(req, res) {
   };
 })();
 <\/script>` : '';
-    const inject = `\n<script>window.__TC_SUPABASE__=${JSON.stringify(config)};<\/script>${safety}\n<script src="/live.js"><\/script>\n`;
+    const inject = `\n<script>window.__TC_SUPABASE__=${JSON.stringify(config)};<\/script>${safety}\n<script src="/live.js"><\/script>\n<script src="/patch.js"><\/script>\n`;
     html = html.replace('</body>', inject + '</body>');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store, max-age=0');
