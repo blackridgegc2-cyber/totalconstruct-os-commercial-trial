@@ -1,157 +1,25 @@
 (() => {
   const cfg = window.__TC_SUPABASE__ || {};
-  if (!cfg.url || !cfg.key) {
-    console.error('TotalConstruct: Supabase runtime config missing');
-    return;
-  }
-
-  const SUPABASE_ROOT = String(cfg.url)
-    .trim()
-    .replace(/\/+$/, '')
-    .replace(/\/(rest\/v1|auth\/v1)$/i, '');
-  const API = SUPABASE_ROOT + '/rest/v1';
-  const AUTH = SUPABASE_ROOT + '/auth/v1';
-  let accessToken = localStorage.getItem('tc_access_token') || '';
-  let authUser = null;
-
-  const rolePermissions = {
-    executive:['all'], admin:['all'],
-    accounting:['project','financial_project','wip','payapps','contracts','employees_cost','timesheet','accounting','reports'],
-    pm:['project','financial_project','contracts','rfi','submittal','schedule','payapps','internal','external','quality','tasks','meetings','daily','tm','procurement','closeout','timesheet','safety','equipment','drawings'],
-    apm:['project','rfi','submittal','schedule','contracts','internal','external','tasks','meetings','daily','quality','procurement','closeout','drawings'],
-    superintendent:['project','field','rfi','submittal','schedule','safety','timesheet','internal','quality','daily','tasks','tm','equipment','drawings'],
-    safety:['project','safety','daily','tasks','reports'], qa_qc:['project','quality','daily','tasks','closeout','drawings'],
-    employee:['project','timesheet','daily','tasks','drawings'], subcontractor:['project','rfi','submittal','schedule','daily','external'],
-    architect:['project','rfi','submittal','schedule','drawings','meetings','tasks','external'], engineer:['project','rfi','submittal','schedule','drawings','meetings','tasks','external'],
-    owner:['project','schedule','payapps','drawings','meetings','external'], lender:['project','payapps','schedule','drawings','reports']
-  };
-
-  function headers(extra={}) {
-    return Object.assign({ 'apikey': cfg.key, 'Content-Type':'application/json', 'Prefer':'return=representation' }, accessToken ? { 'Authorization':'Bearer ' + accessToken } : {}, extra);
-  }
-  async function rest(table, query='') {
-    const r = await fetch(`${API}/${table}${query}`, { headers: headers() });
-    if (!r.ok) throw new Error(`${table}: ${r.status} ${await r.text()}`);
-    return r.json();
-  }
-  async function insert(table, body) {
-    const r = await fetch(`${API}/${table}`, { method:'POST', headers:headers(), body:JSON.stringify(body) });
-    if (!r.ok) throw new Error(`${table}: ${r.status} ${await r.text()}`);
-    return r.json();
-  }
-  async function signIn(email,password) {
-    const r = await fetch(`${AUTH}/token?grant_type=password`, { method:'POST', headers:{'apikey':cfg.key,'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
-    if (!r.ok) {
-      const err = await r.json().catch(()=>({}));
-      throw new Error(err.error_description || err.msg || err.message || 'Sign in failed');
-    }
-    const data = await r.json();
-    accessToken = data.access_token; authUser = data.user;
-    localStorage.setItem('tc_access_token', accessToken);
-    localStorage.setItem('tc_refresh_token', data.refresh_token || '');
-    return data;
-  }
-  async function loadProfile() {
-    const rows = await rest('profiles', `?id=eq.${authUser.id}&select=*`);
-    if (!rows[0]) throw new Error('Your login exists, but no TotalConstruct profile is assigned yet.');
-    return rows[0];
-  }
-  async function loadProjects(profile) {
-    const rows = await rest('projects', '?select=*&order=created_at.desc');
-    let profiles = [];
-    try { profiles = await rest('profiles','?select=id,display_name,first_name,last_name'); } catch(e) {}
-    const names = Object.fromEntries(profiles.map(p=>[p.id,p.display_name || [p.first_name,p.last_name].filter(Boolean).join(' ') || 'TBD']));
-    return rows.map(p=>({
-      id:p.id, job:p.job_number||'TBD', name:p.name, client:p.client_name||'TBD', status:p.status||'Active', prob:100,
-      contract:Number(p.contract_value||0), originalContract:Number(p.original_contract_value||0), estimatedCost:Number(p.forecast_cost||0), forecastCost:Number(p.forecast_cost||0),
-      costToDate:Number(p.cost_to_date||0), billings:Number(p.billings_to_date||0), earnedRevenue:Number(p.billings_to_date||0), fee:0, feeEarned:0, feeBilled:0, feeCollected:0, ohRecovery:0,
-      start:p.start_date||'', end:p.substantial_completion_date||'', pm:names[p.project_manager_id]||'TBD', super:names[p.superintendent_id]||'TBD',
-      contractType:p.contract_method||'TBD', region:'', city:p.city||'', estValue:Number(p.contract_value||0), subValue:0, consultantFee:0, taxWithhold:0
-    }));
-  }
-  async function loadLiveCollections() {
-    const projectById = Object.fromEntries((state.projects||[]).map(p=>[p.id,p.name]));
-    try {
-      const rows = await rest('rfis','?select=*&order=created_at.desc');
-      state.rfis = rows.map(r=>({project:projectById[r.project_id]||'', id:r.rfi_no, subject:r.subject, bic:r.current_ball_in_court||'', due:(r.due_at||'').slice(0,10), activity:r.schedule_activity_id?'Linked':'Pending', float:0, delay:0, tie:r.schedule_activity_id?'Linked':'Pending', status:r.status||'Open'}));
-    } catch(e) { console.warn(e); }
-    try {
-      const rows = await rest('submittals','?select=*&order=created_at.desc');
-      state.submittals = rows.map(s=>({project:projectById[s.project_id]||'', id:s.submittal_no, spec:'', desc:s.description, sub:'', bic:s.current_ball_in_court||'', ros:s.required_on_site||'', lead:'', activity:s.schedule_activity_id?'Linked':'Pending', exposure:0, tie:s.schedule_activity_id?'Linked':'Pending', status:s.status||'Pending'}));
-    } catch(e) { console.warn(e); }
-    try {
-      const acts = await rest('schedule_activities','?select=*&order=planned_start.asc');
-      state.schedule = state.schedule || {versions:[{id:1,label:'Live',date:new Date().toISOString().slice(0,10)}],activities:[]};
-      state.schedule.activities = acts.map(a=>({project:projectById[a.project_id]||'', id:a.activity_id, activity:a.name, planned:Number(a.percent_complete||0), actual:Number(a.percent_complete||0), critical:!!a.critical, status:a.status||'Not Started'}));
-    } catch(e) { console.warn(e); }
-  }
-
-  function buildLogin() {
-    const card = document.querySelector('.login-card'); if (!card) return;
-    card.style.width = 'min(400px,88vw)';
-    card.innerHTML = `
-      <div class="mark">TC</div>
-      <div><div class="eyebrow">TOTALCONSTRUCT OS</div><h1>Commercial</h1><p>Secure project operations portal.</p></div>
-      <div class="field"><label>Email</label><input id="tcEmail" type="email" autocomplete="username" placeholder="you@company.com"></div>
-      <div class="field"><label>Password</label><input id="tcPassword" type="password" autocomplete="current-password" placeholder="Password"></div>
-      <button class="btn primary wide" id="tcLoginBtn">Sign in</button>
-      <div id="tcLoginMsg" class="muted small">Connected to TotalConstruct Cloud</div>`;
-    document.getElementById('tcLoginBtn').onclick = async () => {
-      const msg=document.getElementById('tcLoginMsg'); msg.textContent='Signing in…'; msg.style.color='';
-      try {
-        await signIn(document.getElementById('tcEmail').value.trim(), document.getElementById('tcPassword').value);
-        await bootLive();
-      } catch(e) { msg.textContent=e.message; msg.style.color='#b9382e'; }
-    };
-  }
-
-  async function bootLive() {
-    if (!authUser) {
-      const r = await fetch(`${AUTH}/user`, {headers:headers()});
-      if (!r.ok) throw new Error('Session expired. Please sign in again.');
-      authUser = await r.json();
-    }
-    const profile = await loadProfile();
-    const projects = await loadProjects(profile);
-    if (projects.length) state.projects = projects;
-    const fullName = profile.display_name || [profile.first_name,profile.last_name].filter(Boolean).join(' ') || profile.email || 'User';
-    currentUser = { id:profile.id, name:fullName, initials:fullName.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(), role:profile.role, projects:(state.projects||[]).map(p=>p.id), permissions:rolePermissions[profile.role]||['project'] };
-    await loadLiveCollections();
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    document.getElementById('userAvatar').textContent=currentUser.initials;
-    syncProjectSelect(); renderAll(); refreshBanner();
-  }
-
-  window.addProject = async function() {
-    try {
-      const name=prompt('Project / opportunity name'); if(!name)return;
-      const companyRows = await rest('company_users', `?user_id=eq.${authUser.id}&active=eq.true&select=company_id&limit=1`);
-      if(!companyRows[0]) throw new Error('No company assignment found for this user.');
-      const value=+(prompt('Contract / estimated value')||0);
-      await insert('projects',{company_id:companyRows[0].company_id,name,status:'preconstruction',contract_value:value,original_contract_value:value,forecast_cost:0,cost_to_date:0,billings_to_date:0,collections_to_date:0});
-      state.projects=await loadProjects(await loadProfile()); currentUser.projects=state.projects.map(p=>p.id); syncProjectSelect(); renderAll(); refreshBanner();
-    } catch(e) { alert(e.message); }
-  };
-
-  window.addRfi = async function() {
-    const p=currentProject(); const subject=prompt('RFI subject'); if(!subject)return;
-    try {
-      const count=(await rest('rfis',`?project_id=eq.${p.id}&select=id`)).length+1;
-      await insert('rfis',{project_id:p.id,rfi_no:'RFI-'+String(count).padStart(3,'0'),subject,question:prompt('Question / clarification requested')||subject,initiated_by_type:'GC',initiated_by_user_id:authUser.id,current_ball_in_court:'GC',status:'open',created_by:authUser.id});
-      await loadLiveCollections(); renderPage('rfis'); renderNav();
-    } catch(e){ alert(e.message); }
-  };
-
-  window.addSub = async function() {
-    const p=currentProject(); const desc=prompt('Submittal description'); if(!desc)return;
-    try {
-      const count=(await rest('submittals',`?project_id=eq.${p.id}&select=id`)).length+1;
-      await insert('submittals',{project_id:p.id,submittal_no:'SUB-'+String(count).padStart(3,'0'),revision_no:0,description:desc,submitted_by_user_id:authUser.id,current_ball_in_court:'GC',status:'pending'});
-      await loadLiveCollections(); renderPage('submittals'); renderNav();
-    } catch(e){ alert(e.message); }
-  };
-
-  buildLogin();
-  if(accessToken){ bootLive().catch(()=>{ localStorage.removeItem('tc_access_token'); localStorage.removeItem('tc_refresh_token'); }); }
+  if (!cfg.url || !cfg.key) { console.error('TotalConstruct: Supabase runtime config missing'); return; }
+  const SUPABASE_ROOT=String(cfg.url).trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
+  const API=SUPABASE_ROOT+'/rest/v1', AUTH=SUPABASE_ROOT+'/auth/v1';
+  let accessToken=localStorage.getItem('tc_access_token')||'', authUser=null;
+  const rolePermissions={executive:['all'],admin:['all'],accounting:['project','financial_project','wip','payapps','contracts','employees_cost','timesheet','accounting','reports'],pm:['project','financial_project','contracts','rfi','submittal','schedule','payapps','internal','external','quality','tasks','meetings','daily','tm','procurement','closeout','timesheet','safety','equipment','drawings'],apm:['project','rfi','submittal','schedule','contracts','internal','external','tasks','meetings','daily','quality','procurement','closeout','drawings'],superintendent:['project','field','rfi','submittal','schedule','safety','timesheet','internal','quality','daily','tasks','tm','equipment','drawings'],safety:['project','safety','daily','tasks','reports'],qa_qc:['project','quality','daily','tasks','closeout','drawings'],employee:['project','timesheet','daily','tasks','drawings'],subcontractor:['project','rfi','submittal','schedule','daily','external'],architect:['project','rfi','submittal','schedule','drawings','meetings','tasks','external'],engineer:['project','rfi','submittal','schedule','drawings','meetings','tasks','external'],owner:['project','schedule','payapps','drawings','meetings','external'],lender:['project','payapps','schedule','drawings','reports']};
+  function headers(extra={}){return Object.assign({'apikey':cfg.key,'Content-Type':'application/json','Prefer':'return=representation'},accessToken?{'Authorization':'Bearer '+accessToken}:{},extra)}
+  async function rest(table,query=''){const r=await fetch(`${API}/${table}${query}`,{headers:headers()});if(!r.ok)throw new Error(`${table}: ${r.status} ${await r.text()}`);return r.json()}
+  async function insert(table,body){const r=await fetch(`${API}/${table}`,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(`${table}: ${r.status} ${await r.text()}`);return r.json()}
+  async function signIn(email,password){const r=await fetch(`${AUTH}/token?grant_type=password`,{method:'POST',headers:{'apikey':cfg.key,'Content-Type':'application/json'},body:JSON.stringify({email,password})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error_description||e.msg||e.message||'Sign in failed')}const d=await r.json();accessToken=d.access_token;authUser=d.user;localStorage.setItem('tc_access_token',accessToken);localStorage.setItem('tc_refresh_token',d.refresh_token||'');return d}
+  async function loadProfile(){const rows=await rest('profiles',`?id=eq.${authUser.id}&select=*`);if(!rows[0])throw new Error('Your login exists, but no TotalConstruct profile is assigned yet.');return rows[0]}
+  async function loadProjects(){const rows=await rest('projects','?select=*&order=created_at.desc');let profiles=[];try{profiles=await rest('profiles','?select=id,display_name,first_name,last_name')}catch(e){}const names=Object.fromEntries(profiles.map(p=>[p.id,p.display_name||[p.first_name,p.last_name].filter(Boolean).join(' ')||'TBD']));return rows.map(p=>({id:p.id,job:p.job_number||'TBD',name:p.name,client:p.client_name||'TBD',status:p.status||'Active',prob:100,contract:Number(p.contract_value||0),originalContract:Number(p.original_contract_value||0),estimatedCost:Number(p.forecast_cost||0),forecastCost:Number(p.forecast_cost||0),costToDate:Number(p.cost_to_date||0),billings:Number(p.billings_to_date||0),earnedRevenue:Number(p.billings_to_date||0),fee:0,feeEarned:0,feeBilled:0,feeCollected:0,ohRecovery:0,start:p.start_date||'',end:p.substantial_completion_date||'',pm:names[p.project_manager_id]||'TBD',super:names[p.superintendent_id]||'TBD',contractType:p.contract_method||'TBD',region:'',city:p.city||'',estValue:Number(p.contract_value||0),subValue:0,consultantFee:0,taxWithhold:0}))}
+  async function loadLiveCollections(){const projectById=Object.fromEntries((state.projects||[]).map(p=>[p.id,p.name]));try{const rows=await rest('rfis','?select=*&order=created_at.desc');state.rfis=rows.map(r=>({project:projectById[r.project_id]||'',id:r.rfi_no,subject:r.subject,bic:r.current_ball_in_court||'',due:(r.due_at||'').slice(0,10),activity:r.schedule_activity_id?'Linked':'Pending',float:0,delay:0,tie:r.schedule_activity_id?'Linked':'Pending',status:r.status||'Open'}))}catch(e){console.warn(e)}try{const rows=await rest('submittals','?select=*&order=created_at.desc');state.submittals=rows.map(s=>({project:projectById[s.project_id]||'',id:s.submittal_no,spec:'',desc:s.description,sub:'',bic:s.current_ball_in_court||'',ros:s.required_on_site||'',lead:'',activity:s.schedule_activity_id?'Linked':'Pending',exposure:0,tie:s.schedule_activity_id?'Linked':'Pending',status:s.status||'Pending'}))}catch(e){console.warn(e)}try{const acts=await rest('schedule_activities','?select=*&order=planned_start.asc');state.schedule=state.schedule||{versions:[{id:1,label:'Live',date:new Date().toISOString().slice(0,10)}],activities:[]};state.schedule.activities=acts.map(a=>({project:projectById[a.project_id]||'',id:a.activity_id,activity:a.name,planned:Number(a.percent_complete||0),actual:Number(a.percent_complete||0),critical:!!a.critical,status:a.status||'Not Started'}))}catch(e){console.warn(e)}}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function openRecordForm(opts){document.getElementById('tcRecordModal')?.remove();const modal=document.createElement('div');modal.id='tcRecordModal';modal.className='modal';const fields=opts.fields.map(f=>`<div class="field"><label>${esc(f.label)}${f.required?' *':''}</label>${f.type==='textarea'?`<textarea name="${esc(f.name)}" rows="${f.rows||4}" ${f.required?'required':''}>${esc(f.value||'')}</textarea>`:f.type==='select'?`<select name="${esc(f.name)}">${(f.options||[]).map(o=>`<option value="${esc(o.value??o)}" ${(o.value??o)===f.value?'selected':''}>${esc(o.label??o)}</option>`).join('')}</select>`:`<input name="${esc(f.name)}" type="${f.type||'text'}" value="${esc(f.value||'')}" ${f.required?'required':''}>`}</div>`).join('');modal.innerHTML=`<div style="min-height:100%;display:grid;place-items:center;padding:18px"><form id="tcRecordForm" class="card" style="width:min(760px,96vw);max-height:92vh;overflow:auto"><div class="head"><div><h1 style="font-size:22px">${esc(opts.title)}</h1><div class="sub">${esc(opts.subtitle||'')}</div></div><button type="button" class="icon-btn" id="tcRecordClose">×</button></div>${fields}<div class="actions section"><button class="btn primary" type="submit">${esc(opts.submitLabel||'Save')}</button><button class="btn" type="button" id="tcRecordCancel">Cancel</button></div><div id="tcRecordMsg" class="muted small section"></div></form></div>`;document.body.appendChild(modal);const close=()=>modal.remove();modal.querySelector('#tcRecordClose').onclick=close;modal.querySelector('#tcRecordCancel').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.querySelector('form').onsubmit=async e=>{e.preventDefault();const msg=modal.querySelector('#tcRecordMsg');msg.textContent='Saving…';const data=Object.fromEntries(new FormData(e.currentTarget).entries());try{await opts.onSave(data);close()}catch(err){msg.textContent=err.message;msg.style.color='#b9382e'}}}
+  function projectScheduleOptions(p){return [{value:'',label:'Not linked'},...(state.schedule?.activities||[]).filter(a=>a.project===p.name).map(a=>({value:a.id,label:`${a.id} — ${a.activity}`}))]}
+  function buildLogin(){const card=document.querySelector('.login-card');if(!card)return;card.style.width='min(400px,88vw)';card.innerHTML=`<div class="mark">TC</div><div><div class="eyebrow">TOTALCONSTRUCT OS</div><h1>Commercial</h1><p>Secure project operations portal.</p></div><div class="field"><label>Email</label><input id="tcEmail" type="email" autocomplete="username" placeholder="you@company.com"></div><div class="field"><label>Password</label><input id="tcPassword" type="password" autocomplete="current-password" placeholder="Password"></div><button class="btn primary wide" id="tcLoginBtn">Sign in</button><div id="tcLoginMsg" class="muted small">Connected to TotalConstruct Cloud</div>`;document.getElementById('tcLoginBtn').onclick=async()=>{const msg=document.getElementById('tcLoginMsg');msg.textContent='Signing in…';msg.style.color='';try{await signIn(document.getElementById('tcEmail').value.trim(),document.getElementById('tcPassword').value);await bootLive()}catch(e){msg.textContent=e.message;msg.style.color='#b9382e'}}}
+  async function bootLive(){if(!authUser){const r=await fetch(`${AUTH}/user`,{headers:headers()});if(!r.ok)throw new Error('Session expired. Please sign in again.');authUser=await r.json()}const profile=await loadProfile(),projects=await loadProjects();if(projects.length)state.projects=projects;const fullName=profile.display_name||[profile.first_name,profile.last_name].filter(Boolean).join(' ')||profile.email||'User';currentUser={id:profile.id,name:fullName,initials:fullName.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase(),role:profile.role,projects:(state.projects||[]).map(p=>p.id),permissions:rolePermissions[profile.role]||['project']};await loadLiveCollections();document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('userAvatar').textContent=currentUser.initials;syncProjectSelect();renderAll();refreshBanner()}
+  window.addProject=async function(){const p=currentProject();openRecordForm({title:'Add Project / Opportunity',subtitle:'Create a company project record.',fields:[{name:'name',label:'Project / Opportunity Name',required:true},{name:'value',label:'Contract / Estimated Value',type:'number'}],onSave:async d=>{const companyRows=await rest('company_users',`?user_id=eq.${authUser.id}&active=eq.true&select=company_id&limit=1`);if(!companyRows[0])throw new Error('No company assignment found for this user.');await insert('projects',{company_id:companyRows[0].company_id,name:d.name,status:'preconstruction',contract_value:Number(d.value||0),original_contract_value:Number(d.value||0),forecast_cost:0,cost_to_date:0,billings_to_date:0,collections_to_date:0});state.projects=await loadProjects();currentUser.projects=state.projects.map(x=>x.id);syncProjectSelect();renderAll();refreshBanner()}})};
+  window.addRfi=function(){const p=currentProject();if(!p)return;openRecordForm({title:'New RFI',subtitle:`${p.job} · ${p.name}`,fields:[{name:'subject',label:'Subject',required:true},{name:'question',label:'Question / Clarification Requested',type:'textarea',required:true},{name:'bic',label:'Ball in Court',type:'select',value:'Architect',options:['Architect','Engineer','Owner','GC','Subcontractor']},{name:'due',label:'Response Due',type:'date'},{name:'activity',label:'Schedule Activity',type:'select',options:projectScheduleOptions(p)},{name:'drawing',label:'Drawing / Detail Reference'},{name:'spec',label:'Specification Reference'},{name:'distribution',label:'Distribution / Recipients'}],onSave:async d=>{const count=(await rest('rfis',`?project_id=eq.${p.id}&select=id`)).length+1;const body={project_id:p.id,rfi_no:'RFI-'+String(count).padStart(3,'0'),subject:d.subject,question:d.question,initiated_by_type:'GC',initiated_by_user_id:authUser.id,current_ball_in_court:d.bic||'GC',status:'open',created_by:authUser.id};if(d.due)body.due_at=d.due;if(d.activity)body.schedule_activity_id=d.activity;await insert('rfis',body);await loadLiveCollections();renderPage('rfis');renderNav()}})};
+  window.addSub=function(){const p=currentProject();if(!p)return;openRecordForm({title:'New Submittal',subtitle:`${p.job} · ${p.name}`,fields:[{name:'description',label:'Description',required:true},{name:'spec',label:'Specification Section'},{name:'bic',label:'Ball in Court',type:'select',value:'GC',options:['GC','Architect','Engineer','Owner','Subcontractor']},{name:'ros',label:'Required on Site',type:'date'},{name:'activity',label:'Schedule Activity',type:'select',options:projectScheduleOptions(p)},{name:'subcontractor',label:'Submitting Subcontractor / Vendor'},{name:'distribution',label:'Distribution / Reviewers'}],onSave:async d=>{const count=(await rest('submittals',`?project_id=eq.${p.id}&select=id`)).length+1;const body={project_id:p.id,submittal_no:'SUB-'+String(count).padStart(3,'0'),revision_no:0,description:d.description,submitted_by_user_id:authUser.id,current_ball_in_court:d.bic||'GC',status:'pending'};if(d.ros)body.required_on_site=d.ros;if(d.activity)body.schedule_activity_id=d.activity;await insert('submittals',body);await loadLiveCollections();renderPage('submittals');renderNav()}})};
+  window.tcOpenRecordForm=openRecordForm;
+  buildLogin();if(accessToken){bootLive().catch(()=>{localStorage.removeItem('tc_access_token');localStorage.removeItem('tc_refresh_token')})}
 })();
