@@ -24,7 +24,7 @@ for(const token of ['Company Vault','Legal Hold','dailyRestorePoints','disasterS
 const accounting=fs.readFileSync(path.join(root,'r1-accounting.js'),'utf8');
 for(const token of ['QuickBooks','Plaid','401','depreci'])if(!accounting.toLowerCase().includes(token.toLowerCase()))errors.push(`accounting requirement missing: ${token}`);
 const security=fs.readFileSync(path.join(root,'r1-security.js'),'utf8');
-for(const token of ['controllercpa','capitalplanning','storagevault','legalreview','access'])if(!security.includes(token))errors.push(`security role guard missing protected area: ${token}`);
+for(const token of ['pagePermissions','managementOnly','financials','payapps','rfis','submittals','schedule','drawings','meetings','daily','quality','safety','equipment','closeout','controllercpa','capitalplanning','storagevault','legalreview','access','window.tcSecurity'])if(!security.includes(token))errors.push(`security role/navigation guard missing: ${token}`);
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_runtime_snapshot','writeSnapshot','loadSnapshot','lastCloudWrite','lastCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/reopen requirement missing: ${token}`);
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
