@@ -3,8 +3,8 @@
  if(!cfg.url||!cfg.key)return;
  const root=String(cfg.url).trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
  const API=root+'/rest/v1';
- const projectTracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
- const companyTracked=['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites'];
+ const projectTracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','internalMessages','externalMessages','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
+ const companyTracked=['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites','audit'];
  function token(){return localStorage.getItem('tc_access_token')||''}
  function userId(){return window.tcAuth?.getUserId?.()||null}
  function headers(extra={}){return Object.assign({'apikey':cfg.key,'Content-Type':'application/json','Prefer':'return=representation'},token()?{'Authorization':'Bearer '+token()}: {},extra)}
@@ -12,9 +12,9 @@
  async function insert(table,body){const r=await fetch(`${API}/${table}`,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(`${table}: ${r.status} ${await r.text()}`);return r.json()}
  function current(){try{return typeof currentProject==='function'?currentProject():null}catch(e){return null}}
  function belongsToProject(record,prj){if(!record||typeof record!=='object')return false;return record.project===prj.name||record.project_id===prj.id||record.projectId===prj.id}
- function projectSnapshot(prj){const data={};for(const k of projectTracked){if(!Array.isArray(state?.[k]))continue;data[k]=state[k].filter(x=>belongsToProject(x,prj))}return {kind:'r1_project_snapshot',version:2,project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
+ function projectSnapshot(prj){const data={};for(const k of projectTracked){if(!Array.isArray(state?.[k]))continue;data[k]=state[k].filter(x=>belongsToProject(x,prj))}return {kind:'r1_project_snapshot',version:3,project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
  function mergeProjectSnapshot(prj,snapState){for(const k of projectTracked){if(!Array.isArray(snapState?.[k]))continue;const existing=Array.isArray(state[k])?state[k]:[];const others=existing.filter(x=>!belongsToProject(x,prj));state[k]=others.concat(snapState[k])}}
- function companySnapshot(companyId){const data={};for(const k of companyTracked){if(state&&state[k]!==undefined)data[k]=state[k]}return {kind:'r1_company_snapshot',version:2,company_id:companyId,saved_at:new Date().toISOString(),state:data}}
+ function companySnapshot(companyId){const data={};for(const k of companyTracked){if(state&&state[k]!==undefined)data[k]=state[k]}return {kind:'r1_company_snapshot',version:3,company_id:companyId,saved_at:new Date().toISOString(),state:data}}
  function mergeCompanySnapshot(snapState){for(const k of companyTracked){if(snapState&&snapState[k]!==undefined)state[k]=snapState[k]}}
  let writing=false,pending=false,lastLoaded='',companyIdCache='',companyLoaded=false,companyWriting=false,companyPending=false;
  async function getCompanyId(){if(companyIdCache)return companyIdCache;const uid=userId();if(!uid||!token())return '';const rows=await rest('company_users',`?user_id=eq.${encodeURIComponent(uid)}&active=eq.true&select=company_id&limit=1`);companyIdCache=rows?.[0]?.company_id||'';return companyIdCache}
