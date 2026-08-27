@@ -35,6 +35,7 @@ if(projectList.includes("'equipment'"))errors.push('Company asset/equipment regi
 if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(!companyList.includes("'audit'"))errors.push('Audit/access history must persist at company scope.');
 for(const token of ["'internalMessages'","'externalMessages'"])if(!projectList.includes(token))errors.push(`Project correspondence collection missing from project persistence: ${token}`);
+for(const token of ['scheduleActivities','state.schedule.activities','snapState.scheduleActivities','data.payapp','state.payapps[prj.name]'])if(!cloud.includes(token))errors.push(`Project non-array persistence missing: ${token}`);
 if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))errors.push('Cloud reopen must not overwrite entire multi-project state arrays.');
 if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load must be keyed to authenticated company ID, not current project.');
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
