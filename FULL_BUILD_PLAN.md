@@ -1,0 +1,1 @@
+Implementation branch will stage wholesale TotalConstruct R1 changes against the scope baseline in TOTALCONSTRUCT_FULL_SCOPE.md.
