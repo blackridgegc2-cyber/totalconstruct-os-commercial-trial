@@ -2,14 +2,14 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
 const app=fs.readFileSync(path.join(root,'api/app.js'),'utf8');
 for(const f of required.filter(x=>/^r1-.*\.js$/.test(x))){if(!app.includes('/'+f))errors.push(`api/app.js does not inject ${f}`)}
 if(!app.includes('/r1-ui.css'))errors.push('api/app.js does not inject r1-ui.css');
-for(const token of ['VERCEL_GIT_COMMIT_SHA','buildSha'])if(!app.includes(token))errors.push(`app bootstrap missing build identity: ${token}`);
+for(const token of ['VERCEL_GIT_COMMIT_SHA','buildSha','pdfjs-dist','xlsx.full.min.js'])if(!app.includes(token))errors.push(`app bootstrap/import runtime missing: ${token}`);
 const live=fs.readFileSync(path.join(root,'live.js'),'utf8');
 for(const token of ['window.tcOpenRecordForm','window.addRfi','window.addSub','window.tcAuth','getAccessToken'])if(!live.includes(token))errors.push(`live.js missing ${token}`);
 const invite=fs.readFileSync(path.join(root,'api/invite-user.js'),'utf8');
@@ -18,6 +18,10 @@ if(invite.includes('SUPABASE_SERVICE_ROLE_KEY'))errors.push('invite-user must no
 const secureInvite=fs.readFileSync(path.join(root,'r1-invite-secure.js'),'utf8');
 for(const token of ['/api/invite-user','Authorization','Bearer ','serverConfirmed'])if(!secureInvite.includes(token))errors.push(`secure employee invite workflow missing: ${token}`);
 if(secureInvite.includes('Read Only / Auditor'))errors.push('Employee invite must not map legal/audit reviewers to a normal employee role; use Legal / Audit Review instead.');
+const entryUx=fs.readFileSync(path.join(root,'r1-entry-ux.js'),'utf8');
+for(const token of ['tcEntrySheet','Add to Bid Board / Opportunity','Owner / Client','Project Type','Delivery Method','Employee Email Address','Upload / Add Contract'])if(!entryUx.includes(token))errors.push(`structured entry UX missing: ${token}`);
+const docImport=fs.readFileSync(path.join(root,'r1-document-import.js'),'utf8');
+for(const token of ['project-documents','Upload Contract + Auto-Fill','Upload Budget + Auto-Fill','extractContract','extractBudget','storagePath','forecast_cost','Contract Extraction Review','Budget Import Review'])if(!docImport.includes(token))errors.push(`document import workflow missing: ${token}`);
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
@@ -31,15 +35,18 @@ for(const token of ['pagePermissions','managementOnly','financials','payapps','r
 if(security.includes("page.innerHTML='<div class=\"head\"><div><h1>Restricted"))errors.push('Restricted handling must not destructively replace page contents.');
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_project_snapshot','r1_company_snapshot','projectTracked','companyTracked','belongsToProject','mergeProjectSnapshot','mergeCompanySnapshot','writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId','lastCloudWrite','lastCloudLoad','lastCompanyCloudWrite','lastCompanyCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/scope requirement missing: ${token}`);
-for(const token of ["'accounting'","'equipment'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'","'audit'","'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
+for(const token of ["'accounting'","'equipment'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'","'audit'","'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
 const projectList=(cloud.match(/const projectTracked=\[(.*?)\];/s)||[])[1]||'';
 const companyList=(cloud.match(/const companyTracked=\[(.*?)\];/s)||[])[1]||'';
 if(projectList.includes("'equipment'"))errors.push('Company asset/equipment register must not be project-scoped.');
 if(projectList.includes("'branding'"))errors.push('Company branding/logo must not be project-scoped.');
+if(projectList.includes("'bidBoard'"))errors.push('Company Bid Board must not be project-scoped.');
+if(!projectList.includes("'budgetImports'"))errors.push('Budget import history must persist at project scope.');
 if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(!companyList.includes("'branding'"))errors.push('Company branding/logo must persist at company scope.');
+if(!companyList.includes("'bidBoard'"))errors.push('Bid Board opportunity intake must persist at company scope.');
 if(!companyList.includes("'audit'"))errors.push('Audit/access history must persist at company scope.');
-for(const token of ["'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'"])if(!companyList.includes(token))errors.push(`Company assumption/release/branding state missing from company persistence: ${token}`);
+for(const token of ["'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'"])if(!companyList.includes(token))errors.push(`Company assumption/release/branding/pipeline state missing from company persistence: ${token}`);
 for(const token of ["'internalMessages'","'externalMessages'"])if(!projectList.includes(token))errors.push(`Project correspondence collection missing from project persistence: ${token}`);
 for(const token of ['scheduleActivities','state.schedule.activities','snapState.scheduleActivities','data.payapp','state.payapps[prj.name]'])if(!cloud.includes(token))errors.push(`Project non-array persistence missing: ${token}`);
 if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))errors.push('Cloud reopen must not overwrite entire multi-project state arrays.');
