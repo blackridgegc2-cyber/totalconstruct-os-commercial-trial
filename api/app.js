@@ -7,7 +7,8 @@ module.exports = function handler(req, res) {
     let html = fs.readFileSync(htmlPath, 'utf8');
     const config = {
       url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      key: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ''
+      key: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || '',
+      readOnly: process.env.VERCEL_ENV !== 'production' || process.env.VERCEL_GIT_COMMIT_REF !== 'main'
     };
     const inject = `\n<script>window.__TC_SUPABASE__=${JSON.stringify(config)};<\/script>\n<script src="/live.js"><\/script>\n`;
     html = html.replace('</body>', inject + '</body>');
