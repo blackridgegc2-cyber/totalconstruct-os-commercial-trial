@@ -34,6 +34,13 @@
   }})
  }
  function costLine(){const p=typeof currentProject==='function'?currentProject():null;if(!p)return;form({title:'Add Budget / Cost Line',subtitle:p.name,fields:[{name:'code',label:'CSI / Cost Code',required:true},{name:'item',label:'Work Item',required:true},{name:'cls',label:'Classification',type:'select',options:['SUB','GR','OHP','MAT','LAB','EQUIP']},{name:'budget',label:'Original / Current Budget',type:'number'},{name:'forecast',label:'Forecast at Completion',type:'number'}],onSave:async d=>{state.costLines=state.costLines||[];state.costLines.push({project:p.name,code:d.code,item:d.item,cls:d.cls,budget:+d.budget||0,committed:0,actual:0,forecast:+d.forecast||+d.budget||0});save('Added cost line',d.item)}})}
- function wire(){const gc=$('#globalCreate');if(gc){gc.onclick=chooser;gc.dataset.tcHandled='1'}const ac=$('#addCostLine');if(ac){ac.onclick=costLine;ac.dataset.tcHandled='1'}}
+ function wire(){
+  let gc=$('#globalCreate');
+  if(gc&&!gc.dataset.tcHandled){
+   const clean=gc.cloneNode(true);gc.replaceWith(clean);gc=clean;
+   gc.onclick=chooser;gc.dataset.tcHandled='1';
+  }
+  const ac=$('#addCostLine');if(ac){ac.onclick=costLine;ac.dataset.tcHandled='1'}
+ }
  new MutationObserver(wire).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',wire);setTimeout(wire,500);
 })();
