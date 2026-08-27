@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -22,6 +22,14 @@ const entryUx=fs.readFileSync(path.join(root,'r1-entry-ux.js'),'utf8');
 for(const token of ['tcEntrySheet','Add to Bid Board / Opportunity','Owner / Client','Project Type','Delivery Method','Employee Email Address','Upload / Add Contract'])if(!entryUx.includes(token))errors.push(`structured entry UX missing: ${token}`);
 const docImport=fs.readFileSync(path.join(root,'r1-document-import.js'),'utf8');
 for(const token of ['project-documents','Upload Contract + Auto-Fill','Upload Budget + Auto-Fill','extractContract','extractBudget','storagePath','forecast_cost','Contract Extraction Review','Budget Import Review'])if(!docImport.includes(token))errors.push(`document import workflow missing: ${token}`);
+const templates=fs.readFileSync(path.join(root,'r1-template-library.js'),'utf8');
+for(const token of ['Company Templates & AI Document Intake','Upload Company Template','Upload Document for AI Read','Pay Application','Lien Waiver','Notice / NOI','Meeting Agenda','Meeting Minutes','project-documents','Print / Save PDF'])if(!templates.includes(token))errors.push(`template library missing: ${token}`);
+const moduleForms=fs.readFileSync(path.join(root,'r1-module-forms.js'),'utf8');
+for(const token of ['Company Form / AI Document Tools','Preview / Print / Save PDF','correspondence','Notice / NOI','Pay Application','Lien Waiver','Meeting Agenda','Meeting Minutes','Subcontract / Work Order','Upload + AI Read'])if(!moduleForms.includes(token))errors.push(`module form integration missing: ${token}`);
+const formRenderers=fs.readFileSync(path.join(root,'r1-form-renderers.js'),'utf8');
+for(const token of ['CONDITIONAL WAIVER OF LIEN','WORK ORDER TO BLANKET SUBCONTRACT AGREEMENT','Meeting Agenda','Meeting Minutes','PROJECT NOTICE / NOI','Notary Public','Subcontractor Initials','Exhibit G','window.tcFormRenderers'])if(!formRenderers.includes(token))errors.push(`dedicated Blackridge form renderer missing: ${token}`);
+const printBridge=fs.readFileSync(path.join(root,'r1-print-bridge.js'),'utf8');
+for(const token of ['tcTemplateLibrary','tcFormRenderers','Lien Waiver','Subcontract / Work Order','Meeting Agenda','Meeting Minutes','Notice / NOI','__brcRendererBridge'])if(!printBridge.includes(token))errors.push(`print renderer bridge missing: ${token}`);
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
@@ -35,18 +43,21 @@ for(const token of ['pagePermissions','managementOnly','financials','payapps','r
 if(security.includes("page.innerHTML='<div class=\"head\"><div><h1>Restricted"))errors.push('Restricted handling must not destructively replace page contents.');
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_project_snapshot','r1_company_snapshot','projectTracked','companyTracked','belongsToProject','mergeProjectSnapshot','mergeCompanySnapshot','writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId','lastCloudWrite','lastCloudLoad','lastCompanyCloudWrite','lastCompanyCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/scope requirement missing: ${token}`);
-for(const token of ["'accounting'","'equipment'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'","'audit'","'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
+for(const token of ["'accounting'","'equipment'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'","'audit'","'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'","'templateLibrary'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
 const projectList=(cloud.match(/const projectTracked=\[(.*?)\];/s)||[])[1]||'';
 const companyList=(cloud.match(/const companyTracked=\[(.*?)\];/s)||[])[1]||'';
 if(projectList.includes("'equipment'"))errors.push('Company asset/equipment register must not be project-scoped.');
 if(projectList.includes("'branding'"))errors.push('Company branding/logo must not be project-scoped.');
 if(projectList.includes("'bidBoard'"))errors.push('Company Bid Board must not be project-scoped.');
+if(projectList.includes("'templateLibrary'"))errors.push('Company template library must not be project-scoped.');
 if(!projectList.includes("'budgetImports'"))errors.push('Budget import history must persist at project scope.');
+if(!projectList.includes("'documentIntake'"))errors.push('AI document intake history must persist at project scope.');
 if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(!companyList.includes("'branding'"))errors.push('Company branding/logo must persist at company scope.');
 if(!companyList.includes("'bidBoard'"))errors.push('Bid Board opportunity intake must persist at company scope.');
+if(!companyList.includes("'templateLibrary'"))errors.push('Company template library must persist at company scope.');
 if(!companyList.includes("'audit'"))errors.push('Audit/access history must persist at company scope.');
-for(const token of ["'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'"])if(!companyList.includes(token))errors.push(`Company assumption/release/branding/pipeline state missing from company persistence: ${token}`);
+for(const token of ["'taxModel'","'companyHealth'","'capitalPlan'","'overhead'","'releaseGate'","'branding'","'bidBoard'","'templateLibrary'"])if(!companyList.includes(token))errors.push(`Company assumption/release/branding/pipeline/template state missing from company persistence: ${token}`);
 for(const token of ["'internalMessages'","'externalMessages'"])if(!projectList.includes(token))errors.push(`Project correspondence collection missing from project persistence: ${token}`);
 for(const token of ['scheduleActivities','state.schedule.activities','snapState.scheduleActivities','data.payapp','state.payapps[prj.name]'])if(!cloud.includes(token))errors.push(`Project non-array persistence missing: ${token}`);
 if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))errors.push('Cloud reopen must not overwrite entire multi-project state arrays.');
