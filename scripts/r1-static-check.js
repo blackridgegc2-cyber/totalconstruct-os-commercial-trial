@@ -9,6 +9,7 @@ for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missi
 const app=fs.readFileSync(path.join(root,'api/app.js'),'utf8');
 for(const f of required.filter(x=>/^r1-.*\.js$/.test(x))){if(!app.includes('/'+f))errors.push(`api/app.js does not inject ${f}`)}
 if(!app.includes('/r1-ui.css'))errors.push('api/app.js does not inject r1-ui.css');
+for(const token of ['VERCEL_GIT_COMMIT_SHA','buildSha'])if(!app.includes(token))errors.push(`app bootstrap missing build identity: ${token}`);
 const live=fs.readFileSync(path.join(root,'live.js'),'utf8');
 for(const token of ['window.tcOpenRecordForm','window.addRfi','window.addSub','window.tcAuth','getAccessToken'])if(!live.includes(token))errors.push(`live.js missing ${token}`);
 const invite=fs.readFileSync(path.join(root,'api/invite-user.js'),'utf8');
@@ -44,11 +45,11 @@ if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load 
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
 const acceptance=fs.readFileSync(path.join(root,'r1-acceptance.js'),'utf8');
-for(const token of ['Training / Sample','writeSnapshot','loadSnapshot','acceptanceTest','Acceptance cleanup','tcRoleTest.apply','tcSecurity.allowed','Returned to actual login','window.tcAcceptance','otherTaskFingerprint','Cross-project merge isolation','finally'])if(!acceptance.includes(token))errors.push(`safe acceptance harness missing: ${token}`);
+for(const token of ['Training / Sample','writeSnapshot','loadSnapshot','acceptanceTest','Acceptance cleanup','tcRoleTest.apply','tcSecurity.allowed','Returned to actual login','window.tcAcceptance','otherTaskFingerprint','Cross-project merge isolation','finally','acceptanceBuildSha','buildSha'])if(!acceptance.includes(token))errors.push(`safe acceptance harness missing: ${token}`);
 if(!acceptance.includes('/(training|sample)/i'))errors.push('Acceptance harness must block database writes outside Training / Sample projects.');
 if(!acceptance.includes("writeSnapshot('R1 acceptance cleanup'"))errors.push('Acceptance harness must write a cleanup snapshot after any successful test write.');
 const releaseGate=fs.readFileSync(path.join(root,'r1-release-gate.js'),'utf8');
-for(const token of ['R1 Release Readiness','representativeWorkflows','projectSwitching','roleViews','realInvite','mobileField','acceptanceStatus','READY','BLOCKED','window.tcReleaseGate'])if(!releaseGate.includes(token))errors.push(`release readiness gate missing: ${token}`);
+for(const token of ['R1 Release Readiness','representativeWorkflows','projectSwitching','roleViews','realInvite','mobileField','acceptanceStatus','READY','BLOCKED','window.tcReleaseGate','evidence','builds','acceptanceBuildSha','buildSha','STALE'])if(!releaseGate.includes(token))errors.push(`release readiness gate missing: ${token}`);
 const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
 for(const token of ['navIcons','dataset.icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
 const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
