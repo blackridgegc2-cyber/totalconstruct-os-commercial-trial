@@ -1,0 +1,8 @@
+(()=>{
+ const $=s=>document.querySelector(s);
+ function ensure(){state.persistenceHealth=state.persistenceHealth||{lastLocalSave:null,lastCloudLoad:null,lastCloudWrite:null,offlineQueue:0,recoveryReady:true};}
+ const originalSave=window.save;
+ window.save=function(action='Saved data',record='System'){ensure();state.persistenceHealth.lastLocalSave=new Date().toISOString();try{return originalSave(action,record)}catch(e){state.persistenceHealth.recoveryReady=false;throw e}};
+ function inject(){ensure();if(!(currentUser?.permissions||[]).includes('all'))return;const home=$('#home');if(!home||$('#tcPersistenceHealth'))return;const d=document.createElement('div');d.id='tcPersistenceHealth';d.className='card section';d.innerHTML=`<h3>Data Persistence / Recovery Health</h3><div class="grid3"><div><b>Browser Persistence</b><div class="small muted">${state.persistenceHealth.lastLocalSave?'Last save '+new Date(state.persistenceHealth.lastLocalSave).toLocaleString():'Waiting for first save'}</div></div><div><b>Recovery Architecture</b><div class="small muted">7 nightly restore points + protected 30-day snapshot</div></div><div><b>Offline Queue</b><div class="small muted">${state.persistenceHealth.offlineQueue||0} item(s) pending sync</div></div></div><div class="callout section">Release verification must confirm cloud persistence and reopen behavior for every core record type before production promotion.</div>`;home.appendChild(d)}
+ new MutationObserver(inject).observe(document.documentElement,{childList:true,subtree:true});addEventListener('DOMContentLoaded',inject);setTimeout(inject,900)
+})();
