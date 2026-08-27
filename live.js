@@ -5,8 +5,12 @@
     return;
   }
 
-  const API = cfg.url.replace(/\/$/, '') + '/rest/v1';
-  const AUTH = cfg.url.replace(/\/$/, '') + '/auth/v1';
+  const SUPABASE_ROOT = String(cfg.url)
+    .trim()
+    .replace(/\/+$/, '')
+    .replace(/\/(rest\/v1|auth\/v1)$/i, '');
+  const API = SUPABASE_ROOT + '/rest/v1';
+  const AUTH = SUPABASE_ROOT + '/auth/v1';
   let accessToken = localStorage.getItem('tc_access_token') || '';
   let authUser = null;
 
@@ -37,7 +41,10 @@
   }
   async function signIn(email,password) {
     const r = await fetch(`${AUTH}/token?grant_type=password`, { method:'POST', headers:{'apikey':cfg.key,'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
-    if (!r.ok) throw new Error((await r.json().catch(()=>({}))).error_description || 'Sign in failed');
+    if (!r.ok) {
+      const err = await r.json().catch(()=>({}));
+      throw new Error(err.error_description || err.msg || err.message || 'Sign in failed');
+    }
     const data = await r.json();
     accessToken = data.access_token; authUser = data.user;
     localStorage.setItem('tc_access_token', accessToken);
@@ -90,7 +97,7 @@
       <button class="btn primary wide" id="tcLoginBtn">Sign in</button>
       <div id="tcLoginMsg" class="muted small">Connected to TotalConstruct Cloud</div>`;
     document.getElementById('tcLoginBtn').onclick = async () => {
-      const msg=document.getElementById('tcLoginMsg'); msg.textContent='Signing in…';
+      const msg=document.getElementById('tcLoginMsg'); msg.textContent='Signing in…'; msg.style.color='';
       try {
         await signIn(document.getElementById('tcEmail').value.trim(), document.getElementById('tcPassword').value);
         await bootLive();
@@ -116,7 +123,6 @@
     syncProjectSelect(); renderAll(); refreshBanner();
   }
 
-  const originalAddProject = window.addProject;
   window.addProject = async function() {
     try {
       const name=prompt('Project / opportunity name'); if(!name)return;
