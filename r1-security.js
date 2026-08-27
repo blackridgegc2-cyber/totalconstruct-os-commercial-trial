@@ -17,7 +17,7 @@
  function restrictPage(page){
   let mask=page.querySelector(':scope > .tcRestrictedMask');
   if(!mask){mask=document.createElement('div');mask.className='tcRestrictedMask card';mask.style.cssText='position:relative;z-index:3;margin:18px;padding:22px';mask.innerHTML='<div class="head"><div><h1>Restricted</h1><div class="sub">Your role does not have access to this function.</div></div></div><div>Access is controlled by your assigned TotalConstruct role and project permissions. Contact a company Administrator if this access is required.</div>';page.prepend(mask)}
-  [...page.children].forEach(c=>{if(c!==mask){c.dataset.tcWasDisplay=c.style.display||'';c.style.display='none'}});page.dataset.tcRestricted='1';mask.style.display='block';
+  [...page.children].forEach(c=>{if(c!==mask){if(c.dataset.tcWasDisplay===undefined)c.dataset.tcWasDisplay=c.style.display||'';c.style.display='none'}});page.dataset.tcRestricted='1';mask.style.display='block';
  }
  function unrestrictPage(page){if(page.dataset.tcRestricted!=='1')return;const mask=page.querySelector(':scope > .tcRestrictedMask');if(mask)mask.style.display='none';[...page.children].forEach(c=>{if(c!==mask&&c.dataset.tcWasDisplay!==undefined){c.style.display=c.dataset.tcWasDisplay;delete c.dataset.tcWasDisplay}});delete page.dataset.tcRestricted}
  function guard(){
@@ -31,6 +31,7 @@
   $$('[data-sensitive-action]').forEach(b=>{const need=(b.dataset.sensitiveAction||'all').split(',');const ok=hasAny(need);b.disabled=!ok;b.title=ok?'':'Insufficient permission';});
   const gc=$('#globalCreate');if(gc){const p=perms();const canCreate=p.includes('all')||['rfi','submittal','meetings','daily','field','tasks','tm','quality','safety','procurement','schedule','contracts','accounting','equipment','closeout','internal','external','financial_project'].some(x=>p.includes(x));gc.style.display=canCreate?'':'none';gc.setAttribute('aria-hidden',canCreate?'false':'true')}
  }
+ document.addEventListener('click',e=>{const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation();const page=document.getElementById(id);if(page)restrictPage(page);return false}},true);
  window.tcSecurity={allowed,guard,pagePermissions};
  new MutationObserver(()=>{try{guard()}catch(e){console.warn('R1 security guard',e)}}).observe(document.documentElement,{subtree:true,childList:true});
  addEventListener('DOMContentLoaded',()=>setTimeout(guard,600));setInterval(guard,3000);
