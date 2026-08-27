@@ -24,6 +24,8 @@ const security=fs.readFileSync(path.join(root,'r1-security.js'),'utf8');
 for(const token of ['controllercpa','capitalplanning','storagevault','legalreview','access'])if(!security.includes(token))errors.push(`security role guard missing protected area: ${token}`);
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_runtime_snapshot','writeSnapshot','loadSnapshot','lastCloudWrite','lastCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/reopen requirement missing: ${token}`);
+const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
+for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
 const jsFiles=required.filter(x=>x.endsWith('.js'));
 for(const f of jsFiles){const src=fs.readFileSync(path.join(root,f),'utf8');try{new Function(src)}catch(e){errors.push(`${f} syntax parse failed: ${e.message}`)}}
 if(errors.length){console.error('\nR1 STATIC CHECK FAILED');errors.forEach(e=>console.error(' - '+e));process.exit(1)}
