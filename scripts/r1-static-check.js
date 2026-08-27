@@ -33,6 +33,9 @@ const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
 for(const token of ['navIcons','dataset.icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
 const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
 for(const token of ['content:attr(data-icon)','max-width:700px','tc-nav-open #tcNavScrim','overflow-x:auto'])if(!uiCss.includes(token))errors.push(`responsive navigation CSS missing: ${token}`);
+const globalCreate=fs.readFileSync(path.join(root,'r1-globalcreate.js'),'utf8');
+for(const token of ['allowedRecords','can(rule[1])','financial_project','Your role does not have permission'])if(!globalCreate.includes(token))errors.push(`role-aware global Create authorization missing: ${token}`);
+if(!globalCreate.includes("['Project / Opportunity',['all']]"))errors.push('Project / Opportunity creation must remain management-only.');
 const jsFiles=required.filter(x=>x.endsWith('.js'));
 for(const f of jsFiles){const src=fs.readFileSync(path.join(root,f),'utf8');try{new Function(src)}catch(e){errors.push(`${f} syntax parse failed: ${e.message}`)}}
 if(errors.length){console.error('\nR1 STATIC CHECK FAILED');errors.forEach(e=>console.error(' - '+e));process.exit(1)}
