@@ -3,7 +3,7 @@
  if(!cfg.url||!cfg.key)return;
  const root=String(cfg.url).trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
  const API=root+'/rest/v1';
- const projectTracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','internalMessages','externalMessages','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates'];
+ const projectTracked=['meetings','daily','tasks','tm','quality','incidents','warranties','subcontractorProfiles','compliance','closeoutItems','warrantyRequests','bidders','savedReports','procurement','contracts','correspondence','internalMessages','externalMessages','costLines','purchases','fieldReports','aeObservations','projectPhotos','designIssues','veItems','ownerDecisions','projectStatusUpdates','budgetImports'];
  const companyTracked=['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites','audit','taxModel','companyHealth','capitalPlan','overhead','releaseGate','branding','bidBoard'];
  function token(){return localStorage.getItem('tc_access_token')||''}
  function userId(){return window.tcAuth?.getUserId?.()||null}
@@ -15,7 +15,7 @@
  function projectSnapshot(prj){const data={};for(const k of projectTracked){if(!Array.isArray(state?.[k]))continue;data[k]=state[k].filter(x=>belongsToProject(x,prj))}
   data.scheduleActivities=(state?.schedule?.activities||[]).filter(x=>belongsToProject(x,prj));
   if(state?.payapps?.[prj.name]!==undefined)data.payapp=state.payapps[prj.name];
-  return {kind:'r1_project_snapshot',version:4,project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
+  return {kind:'r1_project_snapshot',version:5,project_id:prj.id,project_name:prj.name,saved_at:new Date().toISOString(),state:data}}
  function mergeProjectSnapshot(prj,snapState){for(const k of projectTracked){if(!Array.isArray(snapState?.[k]))continue;const existing=Array.isArray(state[k])?state[k]:[];const others=existing.filter(x=>!belongsToProject(x,prj));state[k]=others.concat(snapState[k])}
   if(Array.isArray(snapState?.scheduleActivities)){state.schedule=state.schedule||{versions:[],activities:[]};const existing=Array.isArray(state.schedule.activities)?state.schedule.activities:[];state.schedule.activities=existing.filter(x=>!belongsToProject(x,prj)).concat(snapState.scheduleActivities)}
   if(snapState?.payapp!==undefined){state.payapps=state.payapps||{};state.payapps[prj.name]=snapState.payapp}
