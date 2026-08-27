@@ -30,7 +30,7 @@ for(const token of ['form_instances','r1_runtime_snapshot','writeSnapshot','load
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
 const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
-for(const token of ['navIcons','data-icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
+for(const token of ['navIcons','dataset.icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
 const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
 for(const token of ['content:attr(data-icon)','max-width:700px','tc-nav-open #tcNavScrim','overflow-x:auto'])if(!uiCss.includes(token))errors.push(`responsive navigation CSS missing: ${token}`);
 const jsFiles=required.filter(x=>x.endsWith('.js'));
