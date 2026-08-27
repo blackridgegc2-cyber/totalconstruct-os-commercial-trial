@@ -29,6 +29,10 @@ const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_runtime_snapshot','writeSnapshot','loadSnapshot','lastCloudWrite','lastCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/reopen requirement missing: ${token}`);
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
+const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
+for(const token of ['navIcons','data-icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
+const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
+for(const token of ['content:attr(data-icon)','max-width:700px','tc-nav-open #tcNavScrim','overflow-x:auto'])if(!uiCss.includes(token))errors.push(`responsive navigation CSS missing: ${token}`);
 const jsFiles=required.filter(x=>x.endsWith('.js'));
 for(const f of jsFiles){const src=fs.readFileSync(path.join(root,f),'utf8');try{new Function(src)}catch(e){errors.push(`${f} syntax parse failed: ${e.message}`)}}
 if(errors.length){console.error('\nR1 STATIC CHECK FAILED');errors.forEach(e=>console.error(' - '+e));process.exit(1)}
