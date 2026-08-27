@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-persistence.js','r1-security.js','r1-verify.js','api/app.js','api/invite-user.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -12,7 +12,8 @@ if(!app.includes('/r1-ui.css'))errors.push('api/app.js does not inject r1-ui.css
 const live=fs.readFileSync(path.join(root,'live.js'),'utf8');
 for(const token of ['window.tcOpenRecordForm','window.addRfi','window.addSub'])if(!live.includes(token))errors.push(`live.js missing ${token}`);
 const invite=fs.readFileSync(path.join(root,'api/invite-user.js'),'utf8');
-for(const token of ['SUPABASE_SERVICE_ROLE_KEY','authorization','admin','executive'])if(!invite.toLowerCase().includes(token.toLowerCase()))errors.push(`invite-user security check missing token: ${token}`);
+for(const token of ['authorization','functions/v1/invite-employee','apikey'])if(!invite.toLowerCase().includes(token.toLowerCase()))errors.push(`invite-user edge-function proxy missing token: ${token}`);
+if(invite.includes('SUPABASE_SERVICE_ROLE_KEY'))errors.push('invite-user must not require or expose the Supabase service role in Vercel');
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
