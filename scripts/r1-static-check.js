@@ -28,7 +28,11 @@ for(const token of ['pagePermissions','managementOnly','financials','payapps','r
 if(security.includes("page.innerHTML='<div class=\"head\"><div><h1>Restricted"))errors.push('Restricted handling must not destructively replace page contents.');
 const cloud=fs.readFileSync(path.join(root,'r1-cloud.js'),'utf8');
 for(const token of ['form_instances','r1_project_snapshot','r1_company_snapshot','projectTracked','companyTracked','belongsToProject','mergeProjectSnapshot','mergeCompanySnapshot','writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId','lastCloudWrite','lastCloudLoad','lastCompanyCloudWrite','lastCompanyCloudLoad'])if(!cloud.includes(token))errors.push(`cloud persistence/scope requirement missing: ${token}`);
-for(const token of ["'accounting'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
+for(const token of ["'accounting'","'equipment'","'moduleConfig'","'storage'","'vaultProjects'","'legalHolds'","'invites'"])if(!cloud.includes(token))errors.push(`company snapshot missing corporate collection: ${token}`);
+const projectList=(cloud.match(/const projectTracked=\[(.*?)\];/s)||[])[1]||'';
+const companyList=(cloud.match(/const companyTracked=\[(.*?)\];/s)||[])[1]||'';
+if(projectList.includes("'equipment'"))errors.push('Company asset/equipment register must not be project-scoped.');
+if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(cloud.includes('for(const [k,v] of Object.entries(snap.state))state[k]=v'))errors.push('Cloud reopen must not overwrite entire multi-project state arrays.');
 if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load must be keyed to authenticated company ID, not current project.');
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
