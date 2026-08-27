@@ -1,0 +1,60 @@
+(()=>{
+ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const today=()=>new Date().toISOString().slice(0,10);
+ function currentPageEl(){return $('.page.active')||$('#home')||$('main')||document.body}
+ function fieldHtml(f){
+  const req=f.required?'required':'';
+  const cls=f.full?'tcEntryField full':'tcEntryField';
+  if(f.type==='textarea')return `<div class="${cls}"><label>${esc(f.label)}${f.required?' *':''}</label><textarea name="${esc(f.name)}" rows="${f.rows||4}" ${req}>${esc(f.value||'')}</textarea></div>`;
+  if(f.type==='select')return `<div class="${cls}"><label>${esc(f.label)}${f.required?' *':''}</label><select name="${esc(f.name)}" ${req}>${(f.options||[]).map(o=>{const v=o?.value??o,l=o?.label??o;return `<option value="${esc(v)}" ${String(v)===String(f.value??'')?'selected':''}>${esc(l)}</option>`}).join('')}</select></div>`;
+  if(f.type==='file')return `<div class="${cls}"><label>${esc(f.label)}${f.required?' *':''}</label><input name="${esc(f.name)}" type="file" ${f.accept?`accept="${esc(f.accept)}"`:''} ${req}><div class="small muted">${esc(f.help||'')}</div></div>`;
+  return `<div class="${cls}"><label>${esc(f.label)}${f.required?' *':''}</label><input name="${esc(f.name)}" type="${esc(f.type||'text')}" value="${esc(f.value||'')}" ${f.placeholder?`placeholder="${esc(f.placeholder)}"`:''} ${req}></div>`
+ }
+ function openEntrySheet(opts){
+  $('#tcEntrySheet')?.remove();
+  const host=currentPageEl();
+  const wrap=document.createElement('div');wrap.id='tcEntrySheet';wrap.className='card section tcEntrySheet';
+  wrap.innerHTML=`<div class="head"><div><h2>${esc(opts.title)}</h2><div class="sub">${esc(opts.subtitle||'Complete the fields below. Required fields are marked with an asterisk.')}</div></div><div class="actions"><button type="button" class="btn" id="tcEntryClose">Close</button></div></div><form id="tcEntryForm"><div class="tcEntryGrid">${(opts.fields||[]).map(fieldHtml).join('')}</div><div class="actions section"><button class="btn primary" type="submit">${esc(opts.submitLabel||'Save Record')}</button><button class="btn" type="button" id="tcEntryCancel">Cancel</button></div><div id="tcEntryMsg" class="small muted section"></div></form>`;
+  host.prepend(wrap);wrap.scrollIntoView({behavior:'smooth',block:'start'});
+  const close=()=>wrap.remove();$('#tcEntryClose').onclick=close;$('#tcEntryCancel').onclick=close;
+  $('#tcEntryForm').onsubmit=async e=>{e.preventDefault();const msg=$('#tcEntryMsg');msg.textContent='Saving…';const fd=new FormData(e.currentTarget),data={};for(const [k,v] of fd.entries())data[k]=v;try{await opts.onSave(data,e.currentTarget);msg.textContent='Saved.';setTimeout(close,250)}catch(err){msg.textContent=err.message||String(err);msg.style.color='#b9382e'}};
+ }
+ window.tcOpenRecordForm=openEntrySheet;
+ function ensureStyles(){if($('#tcEntryUxStyles'))return;const s=document.createElement('style');s.id='tcEntryUxStyles';s.textContent=`.tcEntrySheet{border:2px solid #d9dee3;box-shadow:0 12px 34px #0001}.tcEntrySheet h2{margin:0;font-size:22px}.tcEntryGrid{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:12px}.tcEntryField{display:grid;gap:5px}.tcEntryField.full{grid-column:1/-1}.tcEntryField label{font-size:11px;color:var(--muted);font-weight:800}.tcEntryField input,.tcEntryField select,.tcEntryField textarea{width:100%}@media(max-width:1050px){.tcEntryGrid{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.tcEntryGrid{grid-template-columns:1fr}.tcEntryField.full{grid-column:auto}}`;document.head.appendChild(s)}
+ function companyId(){return window.tcCloud?.getCompanyId?.()}
+ window.addProject=async function(){
+  openEntrySheet({title:'Add to Bid Board / Opportunity',subtitle:'Complete the opportunity record now so the Bid Board, pipeline, estimating and WIP views use consistent information.',submitLabel:'Add to Bid Board',fields:[
+   {name:'name',label:'Project / Opportunity Name',required:true},{name:'job',label:'Bid / Opportunity No.'},{name:'stage',label:'Stage',type:'select',value:'Lead',options:['Lead','Qualified','Preconstruction','Pricing','Bidding','Negotiating','Award Pending','Awarded','Lost','No Bid']},
+   {name:'client',label:'Owner / Client',required:true},{name:'contact',label:'Owner Contact'},{name:'contactEmail',label:'Owner Contact Email',type:'email'},
+   {name:'city',label:'City'},{name:'state',label:'State',type:'select',value:'TX',options:['TX','OK','LA','NM','AR','Other']},{name:'address',label:'Project Address',full:true},
+   {name:'projectType',label:'Project Type',type:'select',options:['Ground-Up Commercial','Tenant Improvement','Renovation / Remodel','Education','Retail','Office','Industrial / Warehouse','Self Storage','Healthcare','Hospitality','Multifamily','Mixed Use','Other']},{name:'delivery',label:'Delivery Method',type:'select',options:['Hard Bid','Negotiated','CMAR','Design-Build','GMP','Cost Plus','TBD']},{name:'contractType',label:'Expected Contract Type',type:'select',options:['Lump Sum','GMP','Cost Plus','Unit Price','TBD']},
+   {name:'value',label:'Estimated Contract Value',type:'number',required:true},{name:'probability',label:'Win Probability %',type:'number',value:'25'},{name:'bidDue',label:'Bid / Proposal Due',type:'date'},
+   {name:'estimator',label:'Estimator / Precon Lead'},{name:'pm',label:'Proposed PM'},{name:'superintendent',label:'Proposed Superintendent'},
+   {name:'architect',label:'Architect / Designer'},{name:'leadSource',label:'Lead Source',type:'select',options:['Owner / Repeat Client','Architect / Engineer','Referral','Lead Platform','Plan Room','Developer','Broker','Public Posting','Other']},{name:'competitor',label:'Known GC / Competition'},
+   {name:'start',label:'Anticipated Start',type:'date'},{name:'end',label:'Anticipated Completion',type:'date'},{name:'notes',label:'Scope / Pursuit Notes',type:'textarea',full:true}
+  ],onSave:async d=>{
+   const cid=await companyId();if(!cid)throw new Error('No company assignment found for this user.');
+   if(typeof insert!=='function'&& !window.tcCloud?.insert)throw new Error('Cloud insert service unavailable.');
+   const ins=window.tcCloud?.insert;
+   await ins('projects',{company_id:cid,name:d.name,status:'preconstruction',client_name:d.client||null,city:d.city||null,contract_method:d.delivery||null,contract_value:Number(d.value||0),original_contract_value:Number(d.value||0),forecast_cost:0,cost_to_date:0,billings_to_date:0,collections_to_date:0,start_date:d.start||null,substantial_completion_date:d.end||null});
+   state.bidBoard=state.bidBoard||[];state.bidBoard.push({project:d.name,job:d.job,stage:d.stage,client:d.client,contact:d.contact,contactEmail:d.contactEmail,city:d.city,state:d.state,address:d.address,projectType:d.projectType,delivery:d.delivery,contractType:d.contractType,value:+d.value||0,probability:+d.probability||0,bidDue:d.bidDue,estimator:d.estimator,pm:d.pm,superintendent:d.superintendent,architect:d.architect,leadSource:d.leadSource,competitor:d.competitor,start:d.start,end:d.end,notes:d.notes,created:new Date().toISOString()});
+   if(typeof save==='function')save('Added opportunity to Bid Board',d.name);
+   if(typeof renderAll==='function')renderAll();
+  }})
+ };
+ function contractUpload(){const p=typeof currentProject==='function'?currentProject():null;if(!p)return;
+  openEntrySheet({title:'Upload / Add Contract',subtitle:'Upload the executed or draft contract first. TotalConstruct will store the source document and prepare contract fields for AI extraction/review rather than making you re-key the contract.',submitLabel:'Save Contract Intake',fields:[
+   {name:'file',label:'Contract Document',type:'file',accept:'.pdf,.doc,.docx,.txt',required:true,help:'PDF, Word or text contract.'},{name:'contractKind',label:'Contract Type',type:'select',options:['Owner Contract','Subcontract','Purchase Order','Consultant Agreement','Amendment / Change','Other']},{name:'status',label:'Status',type:'select',options:['Draft','Under Review','Executed','Superseded']},
+   {name:'counterparty',label:'Owner / Vendor / Subcontractor'},{name:'contractNo',label:'Contract Number'},{name:'effectiveDate',label:'Effective Date',type:'date'},
+   {name:'manualValue',label:'Known Contract Value (optional)',type:'number'},{name:'retainage',label:'Known Retainage % (optional)',type:'number'},{name:'notes',label:'Notes / Special Instructions for AI Review',type:'textarea',full:true}
+  ],onSave:async d=>{const f=d.file;if(!(f instanceof File)||!f.name)throw new Error('Select the contract document.');state.contracts=state.contracts||[];state.contracts.push({project:p.name,id:'CON-'+String(state.contracts.length+1).padStart(3,'0'),fileName:f.name,fileType:f.type||'',fileSize:f.size||0,contractKind:d.contractKind,status:d.status,counterparty:d.counterparty,contractNo:d.contractNo,effectiveDate:d.effectiveDate,value:+d.manualValue||0,retainage:+d.retainage||0,notes:d.notes,aiStatus:'Queued for contract extraction',aiFields:{contractValue:null,retainage:null,noticeDays:null,liquidatedDamages:null,insurance:null,bonds:null,paymentTerms:null,changeOrderTerms:null,substantialCompletion:null,termination:null},uploadedAt:new Date().toISOString()});if(typeof save==='function')save('Uploaded contract for extraction',f.name);if(typeof renderAll==='function')renderAll()}})
+ }
+ function wireContracts(){const root=$('#contracts');if(!root)return;[...root.querySelectorAll('button')].forEach(b=>{if(/add contract|new contract|upload contract|contract/i.test(b.textContent)&&!/change|filter|export/i.test(b.textContent)){b.onclick=contractUpload;b.dataset.tcContractIntake='1'}})}
+ function wireInvite(){const b=$('#tcInviteEmployee');if(!b||b.dataset.tcEntryInvite==='1')return;b.dataset.tcEntryInvite='1';b.onclick=()=>openEntrySheet({title:'Invite Employee',subtitle:'Enter the employee email address that should receive the TotalConstruct invitation.',submitLabel:'Send Invitation',fields:[
+   {name:'name',label:'Employee Name',required:true},{name:'email',label:'Employee Email Address',type:'email',placeholder:'employee@company.com',required:true},{name:'role',label:'Role',type:'select',required:true,options:['Project Manager','APM / Project Engineer','Superintendent','Accounting / Controller','Estimator / Preconstruction','Safety','Field Employee','Executive / Operations']},{name:'projectScope',label:'Initial Project Access',type:'select',options:[{value:'current',label:'Current Project Only'},{value:'all',label:'All Assigned Projects'}]}
+  ],onSave:async d=>{const token=window.tcAuth?.getAccessToken?.()||'';if(!token)throw new Error('Sign in again before sending an invitation.');const p=typeof currentProject==='function'?currentProject():null;const r=await fetch('/api/invite-user',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({name:d.name,email:d.email,role:d.role,project_id:d.projectScope==='current'?(p?.id||null):null})});const result=await r.json().catch(()=>({}));if(!r.ok)throw new Error(result.error||result.message||'Invitation failed.');state.invites=state.invites||[];state.invites.push({name:d.name,email:d.email,role:d.role,sent:new Date().toLocaleString(),status:'Invite Pending',serverConfirmed:true});if(typeof save==='function')save('Sent employee invitation',d.email);if(typeof renderAll==='function')renderAll()}})}
+ function sweep(){ensureStyles();wireContracts();wireInvite()}
+ new MutationObserver(()=>{try{sweep()}catch(e){console.warn('Entry UX',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',sweep);setTimeout(sweep,800);setInterval(sweep,3500);
+ window.tcEntryUx={openEntrySheet,contractUpload};
+})();
