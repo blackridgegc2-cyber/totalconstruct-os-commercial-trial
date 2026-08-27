@@ -2,6 +2,7 @@
  const $=s=>document.querySelector(s);
  function manager(){return !!currentUser&&(currentUser.permissions||[]).includes('all')}
  function current(){try{return currentProject()}catch(e){return null}}
+ function buildSha(){return window.__TC_SUPABASE__?.buildSha||'unknown'}
  function isSample(p){return !!p&&/(training|sample)/i.test(`${p.name||''} ${p.job||''}`)}
  function line(name,ok,detail=''){return `<div class="statline"><span>${name}</span><b><span class="status ${ok?'green':'red'}">${ok?'PASS':'FAIL'}</span>${detail?` · ${detail}`:''}</b></div>`}
  function otherTaskFingerprint(p){return JSON.stringify((state.tasks||[]).filter(x=>x.project!==p.name).map(x=>[x.project,x.title,x.owner,x.due,x.status]))}
@@ -13,6 +14,7 @@
    add('Management test context',manager(),currentUser?.role||'Unknown role');
    add('Training / Sample project selected',isSample(p),p?.name||'No project selected');
    add('Authenticated cloud session',!!window.tcAuth?.isAuthenticated?.(),window.tcAuth?.isAuthenticated?.()?'Signed in':'Not signed in');
+   add('Deployed build identity',buildSha()!=='unknown',buildSha().slice(0,12));
    add('Cloud persistence module',!!window.tcCloud,'Project/company cloud module');
    add('Role-security module',!!window.tcSecurity,'Navigation/action permission guard');
    add('Role simulator',!!window.tcRoleTest,'Management-only UI acceptance tool');
@@ -47,10 +49,10 @@
     }catch(e){add('Acceptance cleanup',false,e.message)}
    }
    try{window.tcRoleTest?.restore?.()}catch(_){}
-   const passed=results.filter(x=>x.ok).length,total=results.length;state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastAcceptanceTest=new Date().toISOString();state.persistenceHealth.acceptanceStatus=passed===total?'Passed':'Failed';state.persistenceHealth.acceptanceSummary=`${passed}/${total}`;
-   out.innerHTML=`<div class="grid3"><div><b>Result</b><div class="small muted">${passed===total?'PASS':'FAIL'}</div></div><div><b>Checks</b><div class="small muted">${passed} of ${total} passed</div></div><div><b>Project</b><div class="small muted">${p?.name||'None'}</div></div></div><div class="section">${results.map(x=>line(x.name,x.ok,x.detail)).join('')}</div>`;btn.disabled=false;
+   const passed=results.filter(x=>x.ok).length,total=results.length;state.persistenceHealth=state.persistenceHealth||{};state.persistenceHealth.lastAcceptanceTest=new Date().toISOString();state.persistenceHealth.acceptanceStatus=passed===total?'Passed':'Failed';state.persistenceHealth.acceptanceSummary=`${passed}/${total}`;state.persistenceHealth.acceptanceBuildSha=buildSha();
+   out.innerHTML=`<div class="grid3"><div><b>Result</b><div class="small muted">${passed===total?'PASS':'FAIL'}</div></div><div><b>Checks</b><div class="small muted">${passed} of ${total} passed</div></div><div><b>Build</b><div class="small muted">${buildSha().slice(0,12)}</div></div></div><div class="section">${results.map(x=>line(x.name,x.ok,x.detail)).join('')}</div>`;btn.disabled=false;
   }
  }
- function inject(){if(!manager())return;const home=$('#home');if(!home)return;let box=$('#tcAcceptancePanel');if(!box){box=document.createElement('div');box.id='tcAcceptancePanel';box.className='card section';home.appendChild(box)}const p=current();box.innerHTML=`<h3>R1 Acceptance Test</h3><div class="small muted">Runs a controlled create → cloud save → remove → reopen → verify → cleanup cycle, plus role-permission checks. It also verifies that reopening the sample project does not alter task records belonging to other projects. Database writes are blocked unless the current project name contains Training or Sample.</div><div class="actions section"><button class="btn primary" id="tcAcceptanceRun" type="button" ${isSample(p)?'':'disabled'}>Run Safe Acceptance Test</button><span class="small muted">Current project: ${p?.name||'None'}${isSample(p)?'':' — select Training / Sample Project'}</span></div><div id="tcAcceptanceResults" class="section"></div>`;$('#tcAcceptanceRun')?.addEventListener('click',run)}
- new MutationObserver(()=>{try{inject()}catch(e){console.warn('R1 acceptance panel',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',()=>setTimeout(inject,1000));setTimeout(inject,1500);setInterval(()=>{if($('#tcAcceptancePanel'))inject()},12000);window.tcAcceptance={run,isSample};
+ function inject(){if(!manager())return;const home=$('#home');if(!home)return;let box=$('#tcAcceptancePanel');if(!box){box=document.createElement('div');box.id='tcAcceptancePanel';box.className='card section';home.appendChild(box)}const p=current();box.innerHTML=`<h3>R1 Acceptance Test</h3><div class="small muted">Runs a controlled create → cloud save → remove → reopen → verify → cleanup cycle, plus role-permission checks. It also verifies that reopening the sample project does not alter task records belonging to other projects. Database writes are blocked unless the current project name contains Training or Sample. Results are valid only for build ${buildSha().slice(0,12)}.</div><div class="actions section"><button class="btn primary" id="tcAcceptanceRun" type="button" ${isSample(p)?'':'disabled'}>Run Safe Acceptance Test</button><span class="small muted">Current project: ${p?.name||'None'}${isSample(p)?'':' — select Training / Sample Project'}</span></div><div id="tcAcceptanceResults" class="section"></div>`;$('#tcAcceptanceRun')?.addEventListener('click',run)}
+ new MutationObserver(()=>{try{inject()}catch(e){console.warn('R1 acceptance panel',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',()=>setTimeout(inject,1000));setTimeout(inject,1500);setInterval(()=>{if($('#tcAcceptancePanel'))inject()},12000);window.tcAcceptance={run,isSample,buildSha};
 })();
