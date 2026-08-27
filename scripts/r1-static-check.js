@@ -44,8 +44,9 @@ if(!cloud.includes("form_data->>company_id"))errors.push('Company snapshot load 
 const persistence=fs.readFileSync(path.join(root,'r1-persistence.js'),'utf8');
 for(const token of ['Test Cloud Save + Reopen','tcCloud.writeSnapshot','tcCloud.loadSnapshot','cloudTestStatus'])if(!persistence.includes(token))errors.push(`interactive persistence verification missing: ${token}`);
 const acceptance=fs.readFileSync(path.join(root,'r1-acceptance.js'),'utf8');
-for(const token of ['Training / Sample','writeSnapshot','loadSnapshot','acceptanceTest','Acceptance cleanup','tcRoleTest.apply','tcSecurity.allowed','Returned to actual login','window.tcAcceptance'])if(!acceptance.includes(token))errors.push(`safe acceptance harness missing: ${token}`);
+for(const token of ['Training / Sample','writeSnapshot','loadSnapshot','acceptanceTest','Acceptance cleanup','tcRoleTest.apply','tcSecurity.allowed','Returned to actual login','window.tcAcceptance','otherTaskFingerprint','Cross-project merge isolation','finally'])if(!acceptance.includes(token))errors.push(`safe acceptance harness missing: ${token}`);
 if(!acceptance.includes('/(training|sample)/i'))errors.push('Acceptance harness must block database writes outside Training / Sample projects.');
+if(!acceptance.includes("writeSnapshot('R1 acceptance cleanup'"))errors.push('Acceptance harness must write a cleanup snapshot after any successful test write.');
 const ui=fs.readFileSync(path.join(root,'r1-ui.js'),'utf8');
 for(const token of ['navIcons','dataset.icon','aria-expanded','tcNavScrim','Escape'])if(!ui.includes(token))errors.push(`responsive navigation behavior missing: ${token}`);
 const uiCss=fs.readFileSync(path.join(root,'r1-ui.css'),'utf8');
