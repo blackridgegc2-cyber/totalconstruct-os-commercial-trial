@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -39,6 +39,9 @@ for(const token of ['content:attr(data-icon)','max-width:700px','tc-nav-open #tc
 const globalCreate=fs.readFileSync(path.join(root,'r1-globalcreate.js'),'utf8');
 for(const token of ['allowedRecords','can(rule[1])','financial_project','Your role does not have permission'])if(!globalCreate.includes(token))errors.push(`role-aware global Create authorization missing: ${token}`);
 if(!globalCreate.includes("['Project / Opportunity',['all']]"))errors.push('Project / Opportunity creation must remain management-only.');
+const roleTest=fs.readFileSync(path.join(root,'r1-role-test.js'),'utf8');
+for(const token of ['View As','Actual Login','allowedManager','permsByRole','window.tcRoleTest','TEST VIEW'])if(!roleTest.includes(token))errors.push(`role acceptance simulator missing: ${token}`);
+if(!roleTest.includes("return p.includes('all')"))errors.push('View As role simulator must remain management-only.');
 const jsFiles=required.filter(x=>x.endsWith('.js'));
 for(const f of jsFiles){const src=fs.readFileSync(path.join(root,f),'utf8');try{new Function(src)}catch(e){errors.push(`${f} syntax parse failed: ${e.message}`)}}
 if(errors.length){console.error('\nR1 STATIC CHECK FAILED');errors.forEach(e=>console.error(' - '+e));process.exit(1)}
