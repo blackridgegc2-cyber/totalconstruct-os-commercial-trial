@@ -1,11 +1,16 @@
 (()=>{
  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+ const navIcons={home:'⌂',wip:'W',financials:'$',payapps:'$',contracts:'C',subcontractors:'S',drawings:'D',rfis:'R',submittals:'U',schedule:'G',meetings:'M',daily:'F',quality:'Q',safety:'!',equipment:'A',warranty:'W',closeout:'✓',preconstruction:'P',procurement:'B',integrations:'↔',settings:'⚙',workspace:'◫',storagevault:'V',legalreview:'L',access:'U',audit:'A',controllercpa:'C',capitalplanning:'$',accountinghub:'$'};
+ function decorateNav(){
+  $$('.nav').forEach(n=>{const id=n.dataset.page||n.dataset.jump||'';const label=(n.textContent||'').trim();n.dataset.icon=navIcons[id]||label.slice(0,1).toUpperCase()||'›';if(label&&!n.title)n.title=label;n.setAttribute('aria-label',label||id||'Navigation')});
+ }
+ function setNavOpen(open){document.body.classList.toggle('tc-nav-open',!!open);const b=$('#tcMenuBtn');if(b){b.setAttribute('aria-expanded',open?'true':'false');b.setAttribute('aria-label',open?'Close navigation':'Open navigation')}const s=$('#tcNavScrim');if(s)s.hidden=!open;}
  function installResponsiveNav(){
-  if($('#tcMenuBtn'))return;
-  const header=document.querySelector('header'), aside=document.querySelector('aside'); if(!header||!aside)return;
-  const b=document.createElement('button'); b.id='tcMenuBtn';b.className='btn dark';b.type='button';b.setAttribute('aria-label','Open navigation');b.textContent='☰';header.insertBefore(b,header.firstChild);
-  b.onclick=()=>document.body.classList.toggle('tc-nav-open');
-  aside.addEventListener('click',e=>{if(e.target.closest('.nav')&&innerWidth<=700)document.body.classList.remove('tc-nav-open')});
+  const header=document.querySelector('header'), aside=document.querySelector('aside'); if(!header||!aside)return;decorateNav();
+  let b=$('#tcMenuBtn');if(!b){b=document.createElement('button');b.id='tcMenuBtn';b.className='btn dark';b.type='button';b.setAttribute('aria-controls',aside.id||'tcSidebar');b.setAttribute('aria-expanded','false');b.textContent='☰';header.insertBefore(b,header.firstChild);b.onclick=()=>setNavOpen(!document.body.classList.contains('tc-nav-open'))}
+  if(!aside.id)aside.id='tcSidebar';
+  let scrim=$('#tcNavScrim');if(!scrim){scrim=document.createElement('button');scrim.id='tcNavScrim';scrim.type='button';scrim.hidden=true;scrim.setAttribute('aria-label','Close navigation');document.body.appendChild(scrim);scrim.onclick=()=>setNavOpen(false)}
+  if(!aside.dataset.r1NavWired){aside.dataset.r1NavWired='1';aside.addEventListener('click',e=>{if(e.target.closest('.nav')&&innerWidth<=700)setNavOpen(false)});addEventListener('keydown',e=>{if(e.key==='Escape')setNavOpen(false)});addEventListener('resize',()=>{decorateNav();if(innerWidth>1100)setNavOpen(false)})}
  }
  function modal(opts){if(!window.tcOpenRecordForm){alert('Form engine is loading. Please retry.');return}window.tcOpenRecordForm(opts)}
  function p(){return typeof currentProject==='function'?currentProject():null}
@@ -14,5 +19,5 @@
  window.tcAddDaily=()=>{const prj=p();if(!prj)return;modal({title:'Daily Report',subtitle:`${prj.job} · ${prj.name} · field entry is saved once and reused throughout the project record`,fields:[{name:'date',label:'Report Date',type:'date',value:new Date().toISOString().slice(0,10),required:true},{name:'weather',label:'Weather',value:'Auto-fill from project location when weather service is connected'},{name:'workers',label:'Total Workers',type:'number'},{name:'activity',label:'Work Performed',type:'textarea',rows:5,required:true},{name:'scheduleActivity',label:'Schedule Activity',type:'select',options:schedOptions(prj)},{name:'issue',label:'Issues / Delays / Observations',type:'textarea',rows:4},{name:'photos',label:'Photo Notes / References',type:'textarea',rows:3}],onSave:async d=>{const sa=((state.schedule&&state.schedule.activities)||[]).find(x=>x.id===d.scheduleActivity);state.daily=state.daily||[];state.daily.push({project:prj.name,date:d.date,weather:d.weather,rain:'',workers:Number(d.workers||0),activity:d.activity,scheduleActivity:sa?.activity||'',planned:sa?.planned||0,actual:sa?.actual||0,issue:d.issue,photoNotes:d.photos});save('Created daily report',d.date)}})};
  window.tcAddTask=()=>{const prj=p();if(!prj)return;modal({title:'New Task / Action Item',subtitle:prj.name,fields:[{name:'source',label:'Source / Related Record'},{name:'task',label:'Task',required:true},{name:'owner',label:'Responsible Party',value:prj.pm||''},{name:'due',label:'Due Date',type:'date'},{name:'status',label:'Status',type:'select',value:'Open',options:['Open','In Progress','On Hold','Complete']}],onSave:async d=>{state.tasks=state.tasks||[];state.tasks.push({project:prj.name,id:'T-'+String(state.tasks.length+1).padStart(3,'0'),source:d.source||'Manual',task:d.task,owner:d.owner,due:d.due,status:d.status});save('Added task',d.task)}})};
  function wire(){installResponsiveNav();const mt=[...document.querySelectorAll('#meetings button')].find(x=>x.textContent.includes('Meeting'));if(mt)mt.onclick=window.tcAddMeeting;const dr=[...document.querySelectorAll('#daily button')].find(x=>x.textContent.includes('Daily Report'));if(dr)dr.onclick=window.tcAddDaily;const tk=$('#addTask');if(tk)tk.onclick=window.tcAddTask;}
- const mo=new MutationObserver(()=>wire());mo.observe(document.documentElement,{childList:true,subtree:true});addEventListener('resize',installResponsiveNav);addEventListener('DOMContentLoaded',wire);setTimeout(wire,300);
+ const mo=new MutationObserver(()=>wire());mo.observe(document.documentElement,{childList:true,subtree:true});addEventListener('DOMContentLoaded',wire);setTimeout(wire,300);
 })();
