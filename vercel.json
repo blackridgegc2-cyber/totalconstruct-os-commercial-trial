@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/api/app" },
+    { "source": "/index.html", "destination": "/api/app" }
+  ],
+  "headers": [
+    {
+      "source": "/live.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
+      ]
+    }
+  ]
+}
