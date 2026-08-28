@@ -15,7 +15,7 @@ requireTokens('r1-notifications.js',['window.tcNotify','window.tcConfirm','Contr
 requireTokens('r1-professional-forms.js',['Project Administration / RFI','Project Administration / Submittal','Financial Controls / Pay Application','Closeout / Turnover'],'professional forms');
 requireTokens('r1-document-import.js',['project-documents','extractContract','extractBudget','Contract Extraction Review','Budget Import Review'],'document import');
 requireTokens('r1-template-library.js',['Company Forms & Customization','Customize / Upload Company Form','Upload Project Document + AI Read','Upload Document for AI Read','project-documents','company-templates','Notice / NOI','Subcontract / Work Order'],'template/customization library');
-requireTokens('r1-module-forms.js',['Create, Customize & AI Document Tools','Add New','Customize Forms','Upload + AI Read','Preview / Print / Save PDF','Notice / NOI','Subcontract / Work Order'],'module creation/customization controls');
+requireTokens('r1-module-forms.js',['Add New','Customize Forms','Upload + AI Read','Preview / Print / Save PDF','Notice / NOI','Subcontract / Work Order'],'module creation/customization controls');
 requireTokens('r1-package-controls.js',['Document Package Control','Executed Contract / Work Order','Issued Notice / NOI','Upload + AI Read','Missing','Expired','Hold'],'document package controls');
 requireTokens('r1-workflow-gates.js',['Workflow Release Gate','Approve Pay App','Release Payment','Issue Contract / Work Order','Issue Notice / NOI','Required','Missing','Expired','Hold'],'workflow release gates');
 requireTokens('r1-record-lifecycle.js',['recordLifecycles','separationOfDuties','financialApprovalThresholds','Independent Review Required','Approval Authority Required'],'record lifecycle');
