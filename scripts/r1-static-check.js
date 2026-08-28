@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-package-controls.js','r1-workflow-gates.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-notifications.js','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-professional-forms.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-package-controls.js','r1-workflow-gates.js','r1-record-lifecycle.js','r1-change-controls.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -12,6 +12,10 @@ if(!app.includes('/r1-ui.css'))errors.push('api/app.js does not inject r1-ui.css
 for(const token of ['VERCEL_GIT_COMMIT_SHA','buildSha','pdfjs-dist','xlsx.full.min.js'])if(!app.includes(token))errors.push(`app bootstrap/import runtime missing: ${token}`);
 const live=fs.readFileSync(path.join(root,'live.js'),'utf8');
 for(const token of ['window.tcOpenRecordForm','window.addRfi','window.addSub','window.tcAuth','getAccessToken'])if(!live.includes(token))errors.push(`live.js missing ${token}`);
+const notifications=fs.readFileSync(path.join(root,'r1-notifications.js'),'utf8');
+for(const token of ['window.tcNotify','window.tcConfirm','Workflow','tcNotice','tcConfirmPanel'])if(!notifications.includes(token))errors.push(`professional notification system missing: ${token}`);
+const professional=fs.readFileSync(path.join(root,'r1-professional-forms.js'),'utf8');
+for(const token of ['Field Operations / Daily Report','Project Administration / Meeting','Financial Controls / Pay Application','Project Administration / RFI','Project Administration / Submittal','Project Closeout / Requirement','Question / Clarification','Specification / Schedule','Review / Turnover'])if(!professional.includes(token))errors.push(`professional workflow form missing: ${token}`);
 const invite=fs.readFileSync(path.join(root,'api/invite-user.js'),'utf8');
 for(const token of ['authorization','functions/v1/invite-employee','apikey'])if(!invite.toLowerCase().includes(token.toLowerCase()))errors.push(`invite-user edge-function proxy missing token: ${token}`);
 if(invite.includes('SUPABASE_SERVICE_ROLE_KEY'))errors.push('invite-user must not require or expose the Supabase service role in Vercel');
@@ -33,7 +37,11 @@ for(const token of ['tcTemplateLibrary','tcFormRenderers','Pay Application','Lie
 const packages=fs.readFileSync(path.join(root,'r1-package-controls.js'),'utf8');
 for(const token of ['Document Package Control','Signed Pay Application','Conditional Lien Waiver','Executed Contract / Work Order','Issued Notice / NOI','Attached','Missing','Expired','Hold','Upload + AI Read','window.tcPackageControls'])if(!packages.includes(token))errors.push(`document package control missing: ${token}`);
 const workflowGates=fs.readFileSync(path.join(root,'r1-workflow-gates.js'),'utf8');
-for(const token of ['Workflow Release Gate','Approve Pay App','Release Payment','Issue Contract / Work Order','Issue Notice / NOI','Distribute Meeting Record','Required','Missing','Expired','Hold','workflowReleases','window.tcWorkflowGates'])if(!workflowGates.includes(token))errors.push(`workflow release gate missing: ${token}`);
+for(const token of ['Workflow Release Gate','Approve Pay App','Release Payment','Issue Contract / Work Order','Issue Notice / NOI','Distribute Meeting Record','Required','Missing','Expired','Hold','workflowReleases','window.tcWorkflowGates','tcNotify'])if(!workflowGates.includes(token))errors.push(`workflow release gate missing: ${token}`);
+const lifecycle=fs.readFileSync(path.join(root,'r1-record-lifecycle.js'),'utf8');
+for(const token of ['recordLifecycles','separationOfDuties','financialApprovalThresholds','pmApprovalLimit','executiveApprovalThreshold','executivePaymentThreshold','Independent Review Required','Approval Authority Required','window.tcRecordLifecycle'])if(!lifecycle.includes(token))errors.push(`controlled record lifecycle missing: ${token}`);
+const change=fs.readFileSync(path.join(root,'r1-change-controls.js'),'utf8');
+for(const token of ['changeOrders','Pricing Complete','Internal Approved','Submitted to Owner','Owner Approved','Executed','scheduleDays','window.tcChangeControls'])if(!change.includes(token))errors.push(`change order/COP control missing: ${token}`);
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
@@ -54,10 +62,7 @@ if(projectList.includes("'equipment'"))errors.push('Company asset/equipment regi
 if(projectList.includes("'branding'"))errors.push('Company branding/logo must not be project-scoped.');
 if(projectList.includes("'bidBoard'"))errors.push('Company Bid Board must not be project-scoped.');
 if(projectList.includes("'templateLibrary'"))errors.push('Company template library must not be project-scoped.');
-if(!projectList.includes("'budgetImports'"))errors.push('Budget import history must persist at project scope.');
-if(!projectList.includes("'documentIntake'"))errors.push('AI document intake history must persist at project scope.');
-if(!projectList.includes("'packageControls'"))errors.push('Document package controls must persist at project scope.');
-if(!projectList.includes("'workflowReleases'"))errors.push('Controlled workflow release audit records must persist at project scope.');
+for(const token of ["'budgetImports'","'documentIntake'","'packageControls'","'workflowReleases'","'recordLifecycles'","'changeOrders'"])if(!projectList.includes(token))errors.push(`Project controlled workflow collection missing from persistence: ${token}`);
 if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(!companyList.includes("'branding'"))errors.push('Company branding/logo must persist at company scope.');
 if(!companyList.includes("'bidBoard'"))errors.push('Bid Board opportunity intake must persist at company scope.');
