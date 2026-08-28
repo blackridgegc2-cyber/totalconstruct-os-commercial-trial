@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-package-controls.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 for(const f of required){if(!fs.existsSync(path.join(root,f)))errors.push(`Missing required file: ${f}`)}
@@ -27,9 +27,11 @@ for(const token of ['Company Templates & AI Document Intake','Upload Company Tem
 const moduleForms=fs.readFileSync(path.join(root,'r1-module-forms.js'),'utf8');
 for(const token of ['Company Form / AI Document Tools','Preview / Print / Save PDF','correspondence','Notice / NOI','Pay Application','Lien Waiver','Meeting Agenda','Meeting Minutes','Subcontract / Work Order','Upload + AI Read'])if(!moduleForms.includes(token))errors.push(`module form integration missing: ${token}`);
 const formRenderers=fs.readFileSync(path.join(root,'r1-form-renderers.js'),'utf8');
-for(const token of ['CONDITIONAL WAIVER OF LIEN','WORK ORDER TO BLANKET SUBCONTRACT AGREEMENT','Meeting Agenda','Meeting Minutes','PROJECT NOTICE / NOI','Notary Public','Subcontractor Initials','Exhibit G','window.tcFormRenderers'])if(!formRenderers.includes(token))errors.push(`dedicated Blackridge form renderer missing: ${token}`);
+for(const token of ['APPLICATION FOR PAYMENT','CONTINUATION / SCHEDULE OF VALUES','PAY APPLICATION PACKAGE CONTROL','CONDITIONAL WAIVER OF LIEN','WORK ORDER TO BLANKET SUBCONTRACT AGREEMENT','Meeting Agenda','Meeting Minutes','PROJECT NOTICE / NOI','Notary Public','Subcontractor Initials','Exhibit G','window.tcFormRenderers'])if(!formRenderers.includes(token))errors.push(`dedicated Blackridge form renderer missing: ${token}`);
 const printBridge=fs.readFileSync(path.join(root,'r1-print-bridge.js'),'utf8');
-for(const token of ['tcTemplateLibrary','tcFormRenderers','Lien Waiver','Subcontract / Work Order','Meeting Agenda','Meeting Minutes','Notice / NOI','__brcRendererBridge'])if(!printBridge.includes(token))errors.push(`print renderer bridge missing: ${token}`);
+for(const token of ['tcTemplateLibrary','tcFormRenderers','Pay Application','Lien Waiver','Subcontract / Work Order','Meeting Agenda','Meeting Minutes','Notice / NOI','__brcRendererBridge'])if(!printBridge.includes(token))errors.push(`print renderer bridge missing: ${token}`);
+const packages=fs.readFileSync(path.join(root,'r1-package-controls.js'),'utf8');
+for(const token of ['Document Package Control','Signed Pay Application','Conditional Lien Waiver','Executed Contract / Work Order','Issued Notice / NOI','Attached','Missing','Expired','Hold','Upload + AI Read','window.tcPackageControls'])if(!packages.includes(token))errors.push(`document package control missing: ${token}`);
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
@@ -52,6 +54,7 @@ if(projectList.includes("'bidBoard'"))errors.push('Company Bid Board must not be
 if(projectList.includes("'templateLibrary'"))errors.push('Company template library must not be project-scoped.');
 if(!projectList.includes("'budgetImports'"))errors.push('Budget import history must persist at project scope.');
 if(!projectList.includes("'documentIntake'"))errors.push('AI document intake history must persist at project scope.');
+if(!projectList.includes("'packageControls'"))errors.push('Document package controls must persist at project scope.');
 if(!companyList.includes("'equipment'"))errors.push('Company asset/equipment register must persist at company scope.');
 if(!companyList.includes("'branding'"))errors.push('Company branding/logo must persist at company scope.');
 if(!companyList.includes("'bidBoard'"))errors.push('Bid Board opportunity intake must persist at company scope.');
