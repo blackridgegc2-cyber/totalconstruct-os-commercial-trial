@@ -13,9 +13,9 @@ for(const token of ['VERCEL_GIT_COMMIT_SHA','buildSha','pdfjs-dist','xlsx.full.m
 const live=fs.readFileSync(path.join(root,'live.js'),'utf8');
 for(const token of ['window.tcOpenRecordForm','window.addRfi','window.addSub','window.tcAuth','getAccessToken'])if(!live.includes(token))errors.push(`live.js missing ${token}`);
 const notifications=fs.readFileSync(path.join(root,'r1-notifications.js'),'utf8');
-for(const token of ['window.tcNotify','window.tcConfirm','Workflow','tcNotice','tcConfirmPanel'])if(!notifications.includes(token))errors.push(`professional notification system missing: ${token}`);
+for(const token of ['window.tcNotify','window.tcConfirm','tcNotice','tcConfirmPanel','Controlled Action'])if(!notifications.includes(token))errors.push(`professional notification system missing: ${token}`);
 const professional=fs.readFileSync(path.join(root,'r1-professional-forms.js'),'utf8');
-for(const token of ['Field Operations / Daily Report','Project Administration / Meeting','Financial Controls / Pay Application','Project Administration / RFI','Project Administration / Submittal','Project Closeout / Requirement','Question / Clarification','Specification / Schedule','Review / Turnover'])if(!professional.includes(token))errors.push(`professional workflow form missing: ${token}`);
+for(const token of ['Field Operations / Daily Report','Project Administration / Meeting','Financial Controls / Pay Application','Project Administration / RFI','Project Administration / Submittal','Closeout / Turnover','Question / Clarification','Schedule / Procurement','Review / Turnover'])if(!professional.includes(token))errors.push(`professional workflow form missing: ${token}`);
 const invite=fs.readFileSync(path.join(root,'api/invite-user.js'),'utf8');
 for(const token of ['authorization','functions/v1/invite-employee','apikey'])if(!invite.toLowerCase().includes(token.toLowerCase()))errors.push(`invite-user edge-function proxy missing token: ${token}`);
 if(invite.includes('SUPABASE_SERVICE_ROLE_KEY'))errors.push('invite-user must not require or expose the Supabase service role in Vercel');
@@ -41,7 +41,7 @@ for(const token of ['Workflow Release Gate','Approve Pay App','Release Payment',
 const lifecycle=fs.readFileSync(path.join(root,'r1-record-lifecycle.js'),'utf8');
 for(const token of ['recordLifecycles','separationOfDuties','financialApprovalThresholds','pmApprovalLimit','executiveApprovalThreshold','executivePaymentThreshold','Independent Review Required','Approval Authority Required','window.tcRecordLifecycle'])if(!lifecycle.includes(token))errors.push(`controlled record lifecycle missing: ${token}`);
 const change=fs.readFileSync(path.join(root,'r1-change-controls.js'),'utf8');
-for(const token of ['changeOrders','Pricing Complete','Internal Approved','Submitted to Owner','Owner Approved','Executed','scheduleDays','window.tcChangeControls'])if(!change.includes(token))errors.push(`change order/COP control missing: ${token}`);
+for(const token of ['changeOrders','Pricing Complete','Internal Approved','Submitted to Owner','Owner Approved','Executed','name:\'days\'','Schedule Days','window.tcChangeControls'])if(!change.includes(token))errors.push(`change order/COP control missing: ${token}`);
 const field=fs.readFileSync(path.join(root,'r1-field.js'),'utf8');
 for(const token of ['photo','offline','observation'])if(!field.toLowerCase().includes(token))errors.push(`field workflow missing ${token}`);
 const admin=fs.readFileSync(path.join(root,'r1-admin.js'),'utf8');
