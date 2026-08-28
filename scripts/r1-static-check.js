@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const root=process.cwd();
 const required=[
- 'index.html','live.js','r1-ui.js','r1-ui.css','r1-notifications.js','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-professional-forms.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-package-controls.js','r1-workflow-gates.js','r1-record-lifecycle.js','r1-change-controls.js','r1-subcontract-workflow.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
+ 'index.html','live.js','r1-ui.js','r1-ui.css','r1-notifications.js','r1-workflows.js','r1-finance.js','r1-admin.js','r1-invite-secure.js','r1-operational2.js','r1-actions.js','r1-accounting.js','r1-field.js','r1-hardening.js','r1-cloud.js','r1-persistence.js','r1-security.js','r1-globalcreate.js','r1-role-test.js','r1-action-guard.js','r1-acceptance.js','r1-release-gate.js','r1-branding.js','r1-entry-ux.js','r1-professional-forms.js','r1-document-import.js','r1-template-library.js','r1-form-renderers.js','r1-module-forms.js','r1-print-bridge.js','r1-package-controls.js','r1-workflow-gates.js','r1-record-lifecycle.js','r1-change-controls.js','r1-subcontract-workflow.js','r1-ai-intake-review.js','r1-verify.js','api/app.js','api/invite-user.js','api/health.js'
 ];
 const errors=[];
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
@@ -21,6 +21,7 @@ requireTokens('r1-workflow-gates.js',['Workflow Release Gate','Approve Pay App',
 requireTokens('r1-record-lifecycle.js',['recordLifecycles','separationOfDuties','financialApprovalThresholds','Independent Review Required','Approval Authority Required'],'record lifecycle');
 requireTokens('r1-change-controls.js',['changeOrders','Pricing Complete','Internal Approved','Submitted to Owner','Owner Approved','Executed','Schedule Days'],'change controls');
 requireTokens('r1-subcontract-workflow.js',['NOI → Subcontract Assembly','Scope Development','NOI Negotiation','NOI Executed','Subcontract Assembly','Ready to Issue','Add to Scope','Modify & Add','Deny / Exclude','Subcontract Readiness','AI suggestions never silently change contractual scope or amount'],'NOI/subcontract workflow');
+requireTokens('r1-ai-intake-review.js',['AI Upload Review & Routing','AI Review Required','Approve','Modify & Approve','Re-route','Reject','Subcontractor Bid','Notice / NOI','Contracts / NOI','Preconstruction / Bid History','Ready for Invite','sourceDocumentId','Financial, contract and schedule information requires authorized human approval'],'AI intake review/routing');
 requireTokens('r1-security.js',['pagePermissions','managementOnly','financials','payapps','rfis','submittals','schedule','drawings','meetings','daily','quality','safety','closeout','window.tcSecurity'],'security/navigation guard');
 requireTokens('r1-cloud.js',['writeSnapshot','loadSnapshot','writeCompanySnapshot','loadCompanySnapshot','getCompanyId'],'cloud persistence');
 requireTokens('r1-release-gate.js',['R1 Release Readiness','READY','BLOCKED','buildSha','STALE'],'release readiness');
