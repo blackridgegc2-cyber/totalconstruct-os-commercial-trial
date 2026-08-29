@@ -28,6 +28,8 @@ jobs:
         run: node scripts/r1-static-check.js
       - name: Training Center isolation gate
         run: node scripts/r1-training-safety-check.js
+      - name: Modern R1 module gate
+        run: node scripts/r1-modern-module-check.js
       - name: Verify no service-role secret is exposed to browser files
         shell: bash
         run: |
