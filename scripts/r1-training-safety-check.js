@@ -1,11 +1,12 @@
 const fs=require('fs');
 const must=(file,tokens)=>{const src=fs.readFileSync(file,'utf8');for(const t of tokens)if(!src.includes(t))throw new Error(`${file} missing safety token: ${t}`)};
-for(const f of ['r1-training-isolation.js','r1-training-company-sandbox.js','r1-legacy-action-guard.js','r1-cloud.js','r1-finance.js','r1-accounting.js','api/app.js'])if(!fs.existsSync(f))throw new Error(`Missing required safety file: ${f}`);
+for(const f of ['r1-training-isolation.js','r1-training-company-sandbox.js','r1-legacy-action-guard.js','r1-cloud.js','r1-finance.js','r1-accounting.js','r1-acceptance.js','api/app.js'])if(!fs.existsSync(f))throw new Error(`Missing required safety file: ${f}`);
 must('r1-training-isolation.js',['tcIsTrainingProject','tcProductionProjects','renderWip','renderOH','renderFees','renderResources']);
 must('r1-training-company-sandbox.js',['Training Sandbox','guardCompanyWrite','trainingCompanySandbox','accounting','taxModel','companyHealth','capitalPlan','overhead']);
 must('r1-cloud.js',['isTraining(prj)','writeCompanySnapshot','if(!isTraining(current()))setTimeout(()=>writeCompanySnapshot']);
 must('r1-finance.js',['productionProjects()','Training Center data is excluded','Production projects only']);
 must('r1-accounting.js',['accountingProjects()','Training Center cannot receive production company costs','trainingSandbox:training']);
 must('r1-legacy-action-guard.js',['isLegacy(window.addTask)','isLegacy(window.addTime)','isLegacy(window.addEmployee)','isLegacy(window.addUser)','isLegacy(window.addMessage)','isLegacy(window.globalCreate)']);
+must('r1-acceptance.js',['Training company-cloud write blocked','Production project financials unchanged','Company models unchanged after Training reopen','companyFingerprint','productionProjectFingerprint']);
 must('api/app.js',['r1-training-company-sandbox.js','r1-legacy-action-guard.js']);
-console.log('Training Center isolation and legacy-action safety gate passed.');
+console.log('Training Center isolation, runtime acceptance, and legacy-action safety gate passed.');
