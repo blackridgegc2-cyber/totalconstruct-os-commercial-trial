@@ -19,9 +19,10 @@
     };
   }
 
-  // These are company/portfolio financial reports. Training remains available in the
-  // project selector and project modules, but is removed while company totals render.
-  ['renderWip','renderOH','renderFees'].forEach(name=>{
+  // Company / portfolio views must never count the permanent Training Center as production work.
+  // Training remains selectable for training and role testing, but is excluded from executive
+  // dashboards, opportunity/portfolio boards, WIP, OH recovery, fee reporting and resource rollups.
+  ['renderHome','renderBoard','renderWip','renderOH','renderFees','renderResources'].forEach(name=>{
     try{
       if(typeof window[name]==='function'&&!window[name].__tcTrainingIsolated){
         const wrapped=withProductionProjects(window[name]);
