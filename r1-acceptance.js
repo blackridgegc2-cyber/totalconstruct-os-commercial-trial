@@ -8,6 +8,9 @@
  function taskText(x){return String(x?.task??x?.title??'')}
  function taskFingerprint(list){return JSON.stringify((list||[]).map(x=>[x.project,taskText(x),x.owner,x.due,x.status,x.source||'']))}
  function otherTaskFingerprint(p){return taskFingerprint((state.tasks||[]).filter(x=>x.project!==p.name))}
+ function cloneSafe(v){try{return JSON.parse(JSON.stringify(v))}catch(e){return v}}
+ function companyFingerprint(){const keys=window.tcCloud?.companyTracked||['accounting','equipment','moduleConfig','storage','vaultProjects','legalHolds','invites','audit','taxModel','companyHealth','capitalPlan','overhead','releaseGate','branding','bidBoard','templateLibrary'];const out={};for(const k of keys)if(state?.[k]!==undefined)out[k]=cloneSafe(state[k]);return JSON.stringify(out)}
+ function productionProjectFingerprint(){const list=window.tcProductionProjects?.()||[];return JSON.stringify(list.map(x=>[x.id,x.job,x.name,x.contract,x.originalContract,x.forecastCost,x.costToDate,x.billings,x.earnedRevenue,x.fee,x.ohRecovery]))}
  async function run(){
   const btn=$('#tcAcceptanceRun'),out=$('#tcAcceptanceResults');if(!btn||!out)return;
   const p=current(),results=[];let marker='',wrote=false,cleanupNeeded=false;btn.disabled=true;out.innerHTML='<div class="muted">Running acceptance checks…</div>';
@@ -20,16 +23,23 @@
    add('Cloud persistence module',!!window.tcCloud,'Project/company cloud module');
    add('Role-security module',!!window.tcSecurity,'Navigation/action permission guard');
    add('Role simulator',!!window.tcRoleTest,'Management-only UI acceptance tool');
+   add('Training production filter',!!window.tcProductionProjects&&!!window.tcIsTrainingProject,'Production-only project filter available');
    if(!manager()||!isSample(p)||!window.tcCloud)throw new Error('Acceptance writes are allowed only for a management login on the Training / Sample project.');
+
+   const companyBefore=companyFingerprint();
+   const productionBefore=productionProjectFingerprint();
+   const companyWrite=await tcCloud.writeCompanySnapshot('R1 Training isolation probe','Acceptance Test');
+   add('Training company-cloud write blocked',companyWrite===false,companyWrite===false?'Company snapshot correctly refused':'Unexpected company snapshot write');
+   add('Company models unchanged after block',companyFingerprint()===companyBefore,'Accounting / OH / tax / capital / company state unchanged');
 
    marker='TC-ACCEPT-'+Date.now();state.tasks=state.tasks||[];
    const beforeTasks=(state.tasks||[]).filter(x=>x.project===p.name);
    const before=beforeTasks.length;
    const selectedBefore=taskFingerprint(beforeTasks);
    const otherBefore=otherTaskFingerprint(p);
-   state.tasks.push({project:p.name,id:'AC-'+Date.now(),source:'Acceptance Test',task:marker,owner:'Acceptance Test',due:new Date().toISOString().slice(0,10),status:'Open',acceptanceTest:true});cleanupNeeded=true;
+   state.tasks.push({project:p.name,projectId:p.id,id:'AC-'+Date.now(),source:'Acceptance Test',task:marker,owner:'Acceptance Test',due:new Date().toISOString().slice(0,10),status:'Open',acceptanceTest:true});cleanupNeeded=true;
    const inserted=state.tasks.some(x=>x.project===p.name&&taskText(x)===marker&&x.source==='Acceptance Test');add('Real task record shape',inserted,'Uses project/id/source/task/owner/due/status fields');
-   wrote=await tcCloud.writeSnapshot('R1 acceptance write',marker);add('Project cloud write',!!wrote,wrote?'Snapshot written':'Write failed');
+   wrote=await tcCloud.writeSnapshot('R1 acceptance write',marker);add('Project cloud write',!!wrote,wrote?'Training project snapshot written':'Write failed');
    if(!wrote)throw new Error(state.persistenceHealth?.cloudError||'Acceptance cloud write failed.');
 
    state.tasks=state.tasks.filter(x=>taskText(x)!==marker);
@@ -38,6 +48,8 @@
    const countAfter=selectedAfterRecords.length;add('Selected-project count isolation',countAfter===before,`${before} baseline / ${countAfter} after reopen`);
    const selectedAfter=taskFingerprint(selectedAfterRecords);add('Selected-project content isolation',selectedAfter===selectedBefore,selectedAfter===selectedBefore?'Baseline tasks unchanged':'Baseline task content changed');
    const otherAfter=otherTaskFingerprint(p);add('Cross-project merge isolation',otherAfter===otherBefore,otherAfter===otherBefore?'Other project tasks unchanged':'Other project task state changed');
+   add('Production project financials unchanged',productionProjectFingerprint()===productionBefore,'Production project cost/revenue fields unchanged');
+   add('Company models unchanged after Training reopen',companyFingerprint()===companyBefore,'Company financial/cost models unchanged');
    if(!reopened||!returned)throw new Error('Cloud reopen did not restore the acceptance record.');
 
    if(window.tcRoleTest&&window.tcSecurity){
@@ -60,6 +72,6 @@
    out.innerHTML=`<div class="grid3"><div><b>Result</b><div class="small muted">${passed===total?'PASS':'FAIL'}</div></div><div><b>Checks</b><div class="small muted">${passed} of ${total} passed</div></div><div><b>Build</b><div class="small muted">${buildSha().slice(0,12)}</div></div></div><div class="section">${results.map(x=>line(x.name,x.ok,x.detail)).join('')}</div>`;btn.disabled=false;
   }
  }
- function inject(){if(!manager())return;const home=$('#home');if(!home)return;let box=$('#tcAcceptancePanel');if(!box){box=document.createElement('div');box.id='tcAcceptancePanel';box.className='card section';home.appendChild(box)}const p=current();box.innerHTML=`<h3>R1 Acceptance Test</h3><div class="small muted">Runs a controlled real-shape task create → cloud save → remove → reopen → verify → cleanup cycle, plus role-permission checks. It verifies selected-project and cross-project task isolation. Database writes are blocked unless the current project name contains Training or Sample. Results are valid only for build ${buildSha().slice(0,12)}.</div><div class="actions section"><button class="btn primary" id="tcAcceptanceRun" type="button" ${isSample(p)?'':'disabled'}>Run Safe Acceptance Test</button><span class="small muted">Current project: ${p?.name||'None'}${isSample(p)?'':' — select Training / Sample Project'}</span></div><div id="tcAcceptanceResults" class="section"></div>`;$('#tcAcceptanceRun')?.addEventListener('click',run)}
- new MutationObserver(()=>{try{inject()}catch(e){console.warn('R1 acceptance panel',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',()=>setTimeout(inject,1000));setTimeout(inject,1500);setInterval(()=>{if($('#tcAcceptancePanel'))inject()},12000);window.tcAcceptance={run,isSample,buildSha};
+ function inject(){if(!manager())return;const home=$('#home');if(!home)return;let box=$('#tcAcceptancePanel');if(!box){box=document.createElement('div');box.id='tcAcceptancePanel';box.className='card section';home.appendChild(box)}const p=current();box.innerHTML=`<h3>R1 Acceptance Test</h3><div class="small muted">Runs a controlled Training-project create → cloud save → remove → reopen → verify → cleanup cycle, role-permission checks, and explicit company-model isolation probes. It verifies Training cannot write a company snapshot or alter production project financials, accounting, overhead, tax, capital or other company-scoped models. Database writes are blocked unless the current project name contains Training or Sample. Results are valid only for build ${buildSha().slice(0,12)}.</div><div class="actions section"><button class="btn primary" id="tcAcceptanceRun" type="button" ${isSample(p)?'':'disabled'}>Run Safe Acceptance Test</button><span class="small muted">Current project: ${p?.name||'None'}${isSample(p)?'':' — select Training / Sample Project'}</span></div><div id="tcAcceptanceResults" class="section"></div>`;$('#tcAcceptanceRun')?.addEventListener('click',run)}
+ new MutationObserver(()=>{try{inject()}catch(e){console.warn('R1 acceptance panel',e)}}).observe(document.documentElement,{subtree:true,childList:true});addEventListener('DOMContentLoaded',()=>setTimeout(inject,1000));setTimeout(inject,1500);setInterval(()=>{if($('#tcAcceptancePanel'))inject()},12000);window.tcAcceptance={run,isSample,buildSha,companyFingerprint,productionProjectFingerprint};
 })();
