@@ -1,7 +1,7 @@
 (()=>{
  const prj=()=>typeof currentProject==='function'?currentProject():null,user=()=>window.currentUser||(typeof currentUser!=='undefined'?currentUser:null)||{},esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),now=()=>new Date().toISOString(),notify=(m,o={})=>window.tcNotify?window.tcNotify(m,o):console.warn(m);
  const belongs=x=>{const p=prj();return x&&(x.projectId===p?.id||x.project===p?.name)};
- function ensure(){state.warrantyMilestones=state.warrantyMilestones||[];state.assetRecords=state.assetRecords||[];state.warrantyClaims=state.warrantyClaims||[]}
+ function ensure(){state.warrantyMilestones=state.warrantyMilestones||[];state.assetRecords=state.assetRecords||[];state.warrantyClaims=state.warrantyClaims||[];if(window.tcCloud?.projectTracked&&!window.tcCloud.projectTracked.includes('warrantyMilestones'))window.tcCloud.projectTracked.push('warrantyMilestones')}
  function persist(a,r){if(typeof window.save==='function')window.save(a,r);window.tcCloud?.writeSnapshot?.(a,r)}
  const day=v=>{if(!v)return null;const d=new Date(v+'T12:00:00');return Number.isNaN(d.getTime())?null:d};
  const iso=d=>d?d.toISOString().slice(0,10):'';
