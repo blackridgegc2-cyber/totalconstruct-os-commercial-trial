@@ -4,8 +4,8 @@
     if(p.isTraining===true||p.is_training===true)return true;
     const id=String(p.id||'').toLowerCase();
     const job=String(p.job||p.job_number||'').toLowerCase();
-    const name=String(p.name||'').toLowerCase();
-    return id==='training'||job.startsWith('sample-')||name.includes('totalconstruct training')||name.includes('training / sample');
+    const name=String(p.name||'').trim().toLowerCase();
+    return id==='training'||id.startsWith('training-')||job.startsWith('sample-')||job.startsWith('training-')||name==='training project'||name.includes('training project')||name.includes('totalconstruct training')||name.includes('training / sample')||name.includes('sample project');
   }
   window.tcIsTrainingProject=isTrainingProject;
   window.tcProductionProjects=()=>((state&&Array.isArray(state.projects))?state.projects:[]).filter(p=>!isTrainingProject(p));
@@ -31,4 +31,13 @@
       }
     }catch(e){console.warn('Training isolation',name,e)}
   });
+
+  // Remove the legacy trial label after isolation is active so the dashboard accurately reflects totals.
+  try{
+    const home=document.getElementById('home');
+    if(home){
+      const sub=home.querySelector('.sub');
+      if(sub&&sub.textContent.includes('Training Project included'))sub.textContent=sub.textContent.replace(/\s*·\s*Training Project included/g,' · Training excluded from company totals');
+    }
+  }catch(e){console.warn('Training isolation label',e)}
 })();
