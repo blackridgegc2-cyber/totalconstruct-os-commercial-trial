@@ -1,0 +1,44 @@
+name: R1 Verification
+
+on:
+  push:
+    branches: [full-build-r1]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax checks
+        shell: bash
+        run: |
+          set -e
+          for f in live.js r1-*.js api/*.js scripts/*.js; do
+            [ -f "$f" ] && node --check "$f"
+          done
+      - name: R1 static release gate
+        run: node scripts/r1-static-check.js
+      - name: Training Center isolation gate
+        run: node scripts/r1-training-safety-check.js
+      - name: Modern R1 module gate
+        run: node scripts/r1-modern-module-check.js
+      - name: Verify no service-role secret is exposed to browser files
+        shell: bash
+        run: |
+          set -e
+          if grep -R --line-number --exclude='invite-user.js' --exclude='r1-static-check.js' 'SUPABASE_SERVICE_ROLE_KEY' index.html live.js r1-*.js 2>/dev/null; then
+            echo 'Privileged service role reference found in browser-delivered code.'
+            exit 1
+          fi
+      - name: Verify protected production branch remains separate
+        shell: bash
+        run: |
+          test "$GITHUB_REF_NAME" != "main" || echo 'Main verification run only; no automatic production deployment configured.'

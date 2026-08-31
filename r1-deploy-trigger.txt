@@ -1,0 +1,2 @@
+Deployment retrigger marker for TotalConstruct OS Commercial R1 mobile login fix.
+Target build lineage includes commit 987b4cb11ccd3c5a09b6a76775fa57ec597f1627.
