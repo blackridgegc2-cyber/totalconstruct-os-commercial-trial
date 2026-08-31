@@ -13,6 +13,7 @@ module.exports = function handler(req, res) {
     html = html.replace('</body>', inject + '</body>');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('X-TotalConstruct-Form-System', 'PR6-complete');
     res.status(200).send(html);
   } catch (err) {
     res.status(500).send('TotalConstruct bootstrap error: ' + err.message);
