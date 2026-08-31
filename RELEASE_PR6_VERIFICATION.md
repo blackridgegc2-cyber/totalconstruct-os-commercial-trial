@@ -16,10 +16,10 @@
 ## Verification completed for PR #6
 
 - Branch: `fix/enterprise-form-system`
-- Vercel preview deployment for commit `0e1d9741a692f4157a58fe26e444aa3c13ed4df7`: READY.
-- GitHub combined commit status: Vercel `success`.
-- Preview root endpoint returned HTTP 200 and includes `live.js`, `enterprise-forms.js`, `enterprise-forms-v2.js`, and `enterprise-forms-v3.js` in the deployed HTML.
-- PR remained mergeable at final implementation pass.
+- Final application preview reached READY on Vercel.
+- GitHub combined commit status on the verified application commit reported Vercel `success`.
+- Preview root endpoint returned HTTP 200 and included `live.js`, `enterprise-forms.js`, `enterprise-forms-v2.js`, and `enterprise-forms-v3.js`.
+- PR remained mergeable through final implementation pass.
 
 ## Release caveat
 
