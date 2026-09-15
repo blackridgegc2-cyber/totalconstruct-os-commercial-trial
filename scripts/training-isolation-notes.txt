@@ -1,0 +1,1 @@
+Classifier and late-render wrapper timing hardened; CI fixture reflects authenticated TRN-001 WIP failure.
