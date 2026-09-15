@@ -30,6 +30,8 @@ jobs:
         run: node scripts/r1-training-safety-check.js
       - name: Training financial isolation regression gate
         run: node scripts/verify-training-financial-isolation.js
+      - name: Authenticated Training WIP fixture gate
+        run: node scripts/verify-training-financial-fixture.js
       - name: Modern R1 module gate
         run: node scripts/r1-modern-module-check.js
       - name: Verify no service-role secret is exposed to browser files
