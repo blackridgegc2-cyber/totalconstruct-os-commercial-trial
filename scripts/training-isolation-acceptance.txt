@@ -1,0 +1,1 @@
+Pass only when authenticated production WIP contains no Training project row and no Training financial contribution.
