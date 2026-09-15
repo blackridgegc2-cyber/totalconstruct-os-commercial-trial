@@ -5,7 +5,7 @@
     const id=String(p.id||'').toLowerCase();
     const job=String(p.job||p.job_number||'').toLowerCase();
     const name=String(p.name||'').trim().toLowerCase();
-    return id==='training'||id.startsWith('training-')||job.startsWith('sample-')||job.startsWith('training-')||name==='training project'||name.includes('training project')||name.includes('totalconstruct training')||name.includes('training / sample')||name.includes('sample project');
+    return id==='training'||id.startsWith('training-')||job.startsWith('sample-')||job.startsWith('training-')||job.startsWith('trn-')||name==='training project'||name.includes('training project')||name.includes('totalconstruct training')||name.includes('training / sample')||name.includes('sample project');
   }
   window.tcIsTrainingProject=isTrainingProject;
   window.tcProductionProjects=()=>((state&&Array.isArray(state.projects))?state.projects:[]).filter(p=>!isTrainingProject(p));
@@ -19,18 +19,28 @@
     };
   }
 
-  // Company / portfolio views must never count the permanent Training Center as production work.
-  // Training remains selectable for training and role testing, but is excluded from executive
-  // dashboards, opportunity/portfolio boards, WIP, OH recovery, fee reporting and resource rollups.
-  ['renderHome','renderBoard','renderWip','renderOH','renderFees','renderResources'].forEach(name=>{
+  function isolate(name){
     try{
-      if(typeof window[name]==='function'&&!window[name].__tcTrainingIsolated){
-        const wrapped=withProductionProjects(window[name]);
-        wrapped.__tcTrainingIsolated=true;
-        window[name]=wrapped;
-      }
-    }catch(e){console.warn('Training isolation',name,e)}
-  });
+      const fn=window[name];
+      if(typeof fn!=='function'||fn.__tcTrainingIsolated)return false;
+      const wrapped=withProductionProjects(fn);
+      wrapped.__tcTrainingIsolated=true;
+      wrapped.__tcTrainingOriginal=fn;
+      window[name]=wrapped;
+      return true;
+    }catch(e){console.warn('Training isolation',name,e);return false}
+  }
+
+  // Company / portfolio views must never count Training Center records as production work.
+  // Some render functions are declared after this core module loads, so isolation is re-applied
+  // after boot/render initialization instead of relying on a one-time startup race.
+  const companyViews=['renderHome','renderBoard','renderWip','renderOH','renderFees','renderResources'];
+  function install(){companyViews.forEach(isolate)}
+  install();
+  setTimeout(install,0);
+  setTimeout(install,500);
+  setTimeout(install,1500);
+  setInterval(install,3000);
 
   // Remove the legacy trial label after isolation is active so the dashboard accurately reflects totals.
   try{
