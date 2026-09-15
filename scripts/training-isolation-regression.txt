@@ -1,0 +1,1 @@
+TRN-001 must be excluded from all production portfolio financial rollups.
