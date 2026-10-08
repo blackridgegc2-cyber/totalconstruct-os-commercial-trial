@@ -5,9 +5,19 @@ const now=()=>new Date().toISOString();
 function clean(v){return String(v??'').trim()}
 function num(v){if(typeof v==='number')return Number.isFinite(v)?v:0;const n=Number(String(v??'').replace(/[$,% ,]/g,''));return Number.isFinite(n)?n:0}
 function uniqueId(){return 'PRJ-'+Date.now()+'-'+Math.random().toString(36).slice(2,7).toUpperCase()}
-async function createProject(payload={},files=[]){window.state=window.state||{};state.projects=state.projects||[];state.projectLifecycle=state.projectLifecycle||{};state.documentFolders=state.documentFolders||[];state.projectSourceDocuments=state.projectSourceDocuments||[];const name=clean(payload.name);if(!name)throw new Error('Project Name is required.');const id=payload.id||uniqueId();if(state.projects.some(p=>p.id===id))throw new Error('Project ID already exists.');const createdAt=payload.createdAt||now();const project={...payload,id,name,status:payload.status||'Active',contractType:clean(payload.contractType),originalContract:num(payload.contractValue),contract:num(payload.contractValue),createdAt,updatedAt:createdAt,budgetStatus:payload.budgetStatus||'Detailed Budget Required',intakeReviewed:true};state.projects.push(project);state.projectLifecycle[id]={projectId:id,project:name,stage:payload.contractValue?'Contract Award / Baseline':'Inception / Pursuit',contractType:project.contractType,createdAt,updatedAt:createdAt,contractDrawingSetId:'',contractBudgetVersionId:'',originalContractValue:project.originalContract};for(const [code,folderName] of FOLDERS){if(!state.documentFolders.some(f=>f.projectId===id&&f.code===code))state.documentFolders.push({id:`F-${id}-${code}`,projectId:id,project:name,code,name:folderName,path:`${id}/${code}_${folderName.replace(/[^a-z0-9]+/gi,'_')}`,locked:false,createdAt})}
-const refs=Array.isArray(payload.sourceFiles)?payload.sourceFiles:[];for(const f of refs)state.projectSourceDocuments.push({id:`SRC-${id}-${state.projectSourceDocuments.length+1}`,projectId:id,project:name,name:f.name||'Source Document',size:Number(f.size||0),type:f.type||'',lastModified:f.lastModified||'',folderCode:'06',sourceReference:payload.sourceReferences||{},immutableSource:true,status:'Intake Source',createdAt,createdBy:payload.createdBy||'Authorized User'});
-window.save?.('Created project and initialized lifecycle','Projects');try{await window.tcCloud?.writeCompanySnapshot?.('Created project and initialized lifecycle','Projects')}catch(e){console.warn('Project cloud snapshot',e);throw new Error('Project was initialized locally but cloud persistence failed. Reconnect before continuing formal operations.')}return project}
+async function createProject(payload={},files=[]){
+ const name=clean(payload.name);
+ if(!name)throw new Error('Project Name is required.');
+ if(!window.tcCloud?.createProject)throw new Error('Authenticated database project creation is not connected. Local-only creation is disabled.');
+ // Cloud implementation must save the project and each original source document.
+ // Do not report success if any required upload is missing.
+ const result=await window.tcCloud.createProject(payload,files);
+ if(!result||!result.id||!/^[0-9a-f-]{36}$/i.test(String(result.id)))
+  throw new Error('Project service did not confirm a persistent UUID.');
+ if(files.length && (!Array.isArray(result.uploadedFiles)||result.uploadedFiles.length!==files.length))
+  throw new Error('Project created, but original source upload verification failed. Reconcile before proceeding.');
+ return result;
+}
 function install(){if(window.tcProjectLifecycle&&!window.tcProjectLifecycle.createProject)window.tcProjectLifecycle.createProject=createProject}
 window.tcCanonicalProjectCreate={createProject,install};install();addEventListener('tc:r1-ready',install);setTimeout(install,500);
 })();
