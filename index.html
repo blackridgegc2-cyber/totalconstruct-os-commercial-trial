@@ -136,6 +136,7 @@ table{font-size:13px} th{font-size:12px;padding:11px 10px} td{padding:11px 10px}
 
     <section class="page active" id="home"></section>
     <section class="page" id="projectboard"></section>
+    <section class="page" id="newproject"></section>
     <section class="page" id="wip"></section>
     <section class="page" id="oh"></section>
     <section class="page" id="fees"></section>
@@ -359,7 +360,7 @@ function backlog(p){return Math.max(0,p.contract-p.billings)}
 function feeRemaining(p){return p.fee-p.feeEarned}
 function statusClass(s){s=(s||'').toLowerCase();if(s.includes('approved')||s.includes('current')||s.includes('complete')||s.includes('active'))return'green';if(s.includes('expired')||s.includes('denied')||s.includes('hold')||s.includes('overdue'))return'red';if(s.includes('pending')||s.includes('soon')||s.includes('suggest')||s.includes('open'))return'amber';return'gray'}
 const navModel=[
- ['Corporate',['home','Executive Dashboard','project'],['projectboard','Project / Opportunity Board','project'],['wip','WIP / Contract Status','wip'],['oh','OH Recovery','all'],['fees','Fee Tally','all'],['employees','Employees','employees_cost'],['timesheets','Timesheets / Expenses','timesheet'],['resources','Resource Planning','project'],['access','Users / Access','all'],['userdashboards','User Dashboards','all']],
+ ['Corporate',['home','Executive Dashboard','project'],['newproject','+ New Project','all'],['projectboard','Project / Opportunity Board','project'],['wip','WIP / Contract Status','wip'],['oh','OH Recovery','all'],['fees','Fee Tally','all'],['employees','Employees','employees_cost'],['timesheets','Timesheets / Expenses','timesheet'],['resources','Resource Planning','project'],['access','Users / Access','all'],['userdashboards','User Dashboards','all']],
  ['Project Financials',['financials','Cost Controls','financial_project'],['payapps','Pay Applications','payapps'],['contracts','Contracts / Insurance','contracts'],['subcontractors','Subcontractors','project'],['warranty','Warranty / Assets','project']],
  ['Project Management',['preconstruction','Preconstruction','project'],['compliance','Compliance','project'],['statusreport','Project Status Report','project'],['rfis','RFIs','project'],['submittals','Submittals','project'],['schedule','Schedule / Delays','schedule'],['drawings','Drawings / Takeoff','project'],['meetings','Meetings','project'],['tasks','Tasks / Action Items','project'],['correspondence','Correspondence','project']],
  ['Field Operations',['daily','Daily Reports / Weather','project'],['tm','T&M Tickets','project'],['procurement','Procurement / Deliveries','project'],['quality','Quality / Action Plans','project'],['safety','Safety / OSHA','project'],['equipment','Equipment / Fleet','project']],
@@ -372,7 +373,7 @@ function head(title,sub,actions=''){return `<div class="head"><div><h1>${title}<
 function kpi(label,value,foot=''){return `<div class="card kpi"><div class="label">${label}</div><div class="value">${value}</div><div class="foot">${foot}</div></div>`}
 function table(headers,rows){return `<div class="table-wrap"><table><tr>${headers.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')}</table></div>`}
 function renderPage(id){
- const fn=({home:renderHome,projectboard:renderBoard,wip:renderWip,oh:renderOH,fees:renderFees,employees:renderEmployees,timesheets:renderTime,resources:renderResources,access:renderAccess,userdashboards:renderUserDashboards,financials:renderFinancials,payapps:renderPayapps,contracts:renderContracts,subcontractors:renderSubcontractors,preconstruction:renderPreconstruction,compliance:renderCompliance,statusreport:renderStatusReport,warranty:renderWarranty,rfis:renderRFIs,submittals:renderSubs,schedule:renderSchedule,drawings:renderDrawings,meetings:renderMeetings,tasks:renderTasks,correspondence:renderCorrespondence,daily:renderDaily,tm:renderTM,procurement:renderProcurement,quality:renderQuality,safety:renderSafety,equipment:renderEquipment,closeout:renderCloseout,bidders:renderBidders,reports:renderReports,audit:renderAudit,integrations:renderIntegrations,settings:renderSettings}[id]||renderHome);
+ const fn=({home:renderHome,newproject:renderNewProject,projectboard:renderBoard,wip:renderWip,oh:renderOH,fees:renderFees,employees:renderEmployees,timesheets:renderTime,resources:renderResources,access:renderAccess,userdashboards:renderUserDashboards,financials:renderFinancials,payapps:renderPayapps,contracts:renderContracts,subcontractors:renderSubcontractors,preconstruction:renderPreconstruction,compliance:renderCompliance,statusreport:renderStatusReport,warranty:renderWarranty,rfis:renderRFIs,submittals:renderSubs,schedule:renderSchedule,drawings:renderDrawings,meetings:renderMeetings,tasks:renderTasks,correspondence:renderCorrespondence,daily:renderDaily,tm:renderTM,procurement:renderProcurement,quality:renderQuality,safety:renderSafety,equipment:renderEquipment,closeout:renderCloseout,bidders:renderBidders,reports:renderReports,audit:renderAudit,integrations:renderIntegrations,settings:renderSettings}[id]||renderHome);
  try{fn()}catch(err){
    console.error('TotalConstruct render error',id,err);
    const el=document.getElementById(id)||document.getElementById('home');
@@ -381,6 +382,49 @@ function renderPage(id){
 }
 function resetTrialData(){localStorage.removeItem('totalconstruct_commercial_v2');location.reload()}
 function renderAll(){renderNav();renderPage(currentPage)}
+function renderNewProject(){
+ const host=document.getElementById('newproject');if(!host)return;
+ if(!allowed('all')){host.textContent='Company administrator access required to create projects.';return}
+ const key='tc_new_project_draft_v1';
+ let draft={};try{draft=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}
+ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const fields=[
+ ['job','Job Number','text','e.g. 26-101'],
+ ['name','Project Name','text','Required'],
+ ['client','Owner / Client','text','Owner entity'],
+ ['address','Site Address','text','Street address'],
+ ['city','City','text',''],
+ ['region','Region / County','text',''],
+ ['contractType','Contract Method','text','CMAR / Design-Build / GMP'],
+ ['pm','Project Manager','text',''],
+ ['super','Superintendent','text',''],
+ ['start','Anticipated Start','date',''],
+ ['end','Anticipated Completion','date','']
+ ];
+ const field=(k,label,type,placeholder)=>'<label style="display:block;margin:7px 0">'+esc(label)+'<input data-np="'+k+'" type="'+type+'" placeholder="'+esc(placeholder)+'" value="'+esc(draft[k]||'')+'" style="display:block;width:100%;padding:9px;margin-top:4px"></label>';
+ host.innerHTML=head('New Project','Central setup workspace · enter project information once, then configure documents, budgets, agreements and schedule')+
+ '<div class="card section"><h3>1. Project Information</h3><p class="muted small">Drafts are stored in this browser only. Creating a live project requires authenticated cloud persistence; this screen will not silently create a local-only project.</p><div id="tcNewProjectFields" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">'+fields.map(x=>field(...x)).join('')+'</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button type="button" class="btn primary" id="tcSaveNewProject">Save Setup Draft</button><button type="button" class="btn" id="tcCreateCloudProject">Create Live Project</button></div><p id="tcNewProjectStatus" role="status"></p></div>'+
+ '<div class="grid section">'+
+ '<div class="card"><h3>2. Contracts & Agreements</h3><p>Separate preconstruction and construction contracts, fee schedules, retainage and owner payments.</p><button class="btn" type="button" data-np-jump="contracts">Open Contracts</button></div>'+
+ '<div class="card"><h3>3. Plans & Documents</h3><p>Upload plans, specifications and agreements. AI extraction requires review before applying any information.</p><button class="btn" type="button" data-np-jump="drawings">Open Drawings</button></div>'+
+ '<div class="card"><h3>4. Budget & CSI Codes</h3><p>Download the Excel-compatible CSV, classify costs and validate a completed budget.</p><button class="btn" type="button" id="tcNPTemplate">Download Budget Template</button><button class="btn" type="button" data-np-jump="financials">Cost Controls</button></div>'+
+ '<div class="card"><h3>5. Schedule & Team</h3><p>Set milestones, assigned PM and superintendent, trades and long-lead procurement.</p><button class="btn" type="button" data-np-jump="schedule">Open Schedule</button></div>'+
+ '<div class="card"><h3>6. Review & Activate</h3><p>Validate the owner agreements, budgets, document access and project status before release.</p><p class="muted small">Cloud activation is blocked until the project has been securely created.</p></div></div>';
+ const read=()=>{const obj={};host.querySelectorAll('[data-np]').forEach(el=>obj[el.dataset.np]=el.value.trim());return obj};
+ const status=host.querySelector('#tcNewProjectStatus');
+ host.querySelector('#tcSaveNewProject').onclick=()=>{const d=read();localStorage.setItem(key,JSON.stringify(d));status.textContent='Setup draft saved to this browser only. It has not been created as a live project.'};
+ host.querySelector('#tcCreateCloudProject').onclick=async()=>{
+  const d=read();if(!d.name||!d.job){status.textContent='Project name and job number are required.';return}
+  if(typeof window.tcCloud?.createProject!=='function'){status.textContent='Secure project creation is not connected. Draft may be saved, but no live project has been created.';return}
+  const btn=host.querySelector('#tcCreateCloudProject');btn.disabled=true;status.textContent='Creating authenticated project...';
+  try{const result=await window.tcCloud.createProject({name:d.name,job_number:d.job,client_name:d.client,address:d.address,city:d.city,contract_method:d.contractType,start_date:d.start||null,substantial_completion_date:d.end||null});
+   if(!result?.id||!result?.company_id)throw Error('Cloud service did not confirm a persisted project');
+   status.textContent='Live project created. Refresh your cloud project list to continue setup.';localStorage.removeItem(key)
+  }catch(err){status.textContent='Project not created: '+String(err.message||err)}finally{btn.disabled=false}
+ };
+ host.querySelectorAll('[data-np-jump]').forEach(btn=>btn.onclick=()=>openPage(btn.dataset.npJump));
+ host.querySelector('#tcNPTemplate').onclick=()=>{if(window.tcBudgetTemplateUI?.download)window.tcBudgetTemplateUI.download();else status.textContent='Budget template is not loaded; open Cost Controls to download it.'};
+}
 function renderUserDashboards(){
  const host=document.getElementById('userdashboards');if(!host)return;
  const executive=String(currentUser?.role||'').toLowerCase()==='executive'&&allowed('all');
