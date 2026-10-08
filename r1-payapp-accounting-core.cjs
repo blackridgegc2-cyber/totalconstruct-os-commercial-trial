@@ -31,7 +31,8 @@ function calculate(lines,{priorCertifiedNetCents=0}={}) {
   if(l.previousCents+l.currentCents+(l.storedCents||0)>l.scheduledCents)throw Error('Earned exceeds scheduled: '+l.id);
  }
  const earned=totals.previousCents+totals.currentCents+totals.storedCents;
- const net=earned-totals.retainageCents;
- return {...totals,earnedCents:earned,certifiedNetCents:net,currentDueCents:net-assertCents(priorCertifiedNetCents)};
+ const priorRetainage=sum(lines.map(l=>l.priorRetainageCents||0));
+ const net=earned-priorRetainage-totals.retainageCents;
+ return {...totals,priorRetainageCents:priorRetainage,earnedCents:earned,certifiedNetCents:net,currentDueCents:net-assertCents(priorCertifiedNetCents)};
 }
 if(typeof module!=='undefined')module.exports={rollForward,transfer,calculate};
