@@ -25,5 +25,5 @@ test('cannot move earned dollars or cross agreements',()=>{
 });
 test('prior certification is not assumed paid',()=>{
  const next=rollForward(prior),calc=calculate(next.lines,{priorCertifiedNetCents:next.priorCertifiedNetCents});
- assert.equal(calc.currentDueCents,50000); // Prior $500 retainage remains; no new work billed.
+ assert.equal(calc.currentDueCents,0); // Prior $500 retainage carries forward; no new work billed.
 });
