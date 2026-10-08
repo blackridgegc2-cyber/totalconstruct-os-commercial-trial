@@ -49,7 +49,7 @@ create table if not exists public.expense_receipts (
  constraint receipt_total_nonnegative check(total_amount is null or total_amount>=0),
  constraint receipt_review_check check(review_status in ('pending_review','approved','rejected','duplicate'))
 );
-alter table public.equipment_assets add constraint equipment_assets_receipt_fk foreign key(receipt_id) references public.expense_receipts(id) on delete set null;
+do $ begin if not exists (select 1 from pg_constraint where conname='equipment_assets_receipt_fk' and conrelid='public.equipment_assets'::regclass) then alter table public.equipment_assets add constraint equipment_assets_receipt_fk foreign key(receipt_id) references public.expense_receipts(id) on delete set null; end if; end $;
 create table if not exists public.equipment_asset_events (
  id uuid primary key default gen_random_uuid(),
  company_id uuid not null references public.companies(id) on delete cascade,
@@ -89,6 +89,9 @@ do $$
 declare tab text;
 begin
  foreach tab in array array['equipment_assets','expense_receipts','expense_receipt_lines','equipment_asset_events'] loop
+  execute format('drop policy if exists %I on public.%I',tab||'_read',tab);
+  execute format('drop policy if exists %I on public.%I',tab||'_insert',tab);
+  execute format('drop policy if exists %I on public.%I',tab||'_update',tab);
   execute format('create policy %I on public.%I for select to authenticated using (exists(select 1 from public.company_members cm where cm.company_id=%I.company_id and cm.user_id=(select auth.uid())))',tab||'_read',tab,tab);
   execute format('create policy %I on public.%I for insert to authenticated with check (exists(select 1 from public.company_members cm where cm.company_id=%I.company_id and cm.user_id=(select auth.uid()) and lower(cm.role) in (''owner'',''admin'',''executive'',''project_manager'',''superintendent'')))',tab||'_insert',tab,tab);
   execute format('create policy %I on public.%I for update to authenticated using (exists(select 1 from public.company_members cm where cm.company_id=%I.company_id and cm.user_id=(select auth.uid()) and lower(cm.role) in (''owner'',''admin'',''executive'',''project_manager''))) with check (exists(select 1 from public.company_members cm where cm.company_id=%I.company_id and cm.user_id=(select auth.uid()) and lower(cm.role) in (''owner'',''admin'',''executive'',''project_manager'')))',tab||'_update',tab,tab,tab);
