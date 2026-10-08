@@ -60,8 +60,7 @@ create policy tc_doc_grants_gc_manage on public.tc_document_category_grants
  with check (public.tc_is_gc_document_admin(project_id) and granted_by=auth.uid());
 create policy tc_doc_grants_self_read on public.tc_document_category_grants
  for select to authenticated
- using (user_id=auth.uid() and exists(select 1 from public.project_members m
- where m.project_id=project_id and m.user_id=auth.uid() and m.active));
+ using (user_id=auth.uid() and public.tc_has_document_category(project_id,category,'view'));
 -- Critical: remove prior broad document SELECT/WRITE policies before activating
 -- category-scoped RLS. PostgreSQL permissive policies combine with OR.
 -- Do not apply this draft alone to production.
