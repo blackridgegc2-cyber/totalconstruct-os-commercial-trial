@@ -1,0 +1,6 @@
+Project_Code,Agreement_Code,CSI_Division,Cost_Code,Cost_Description,Cost_Type,Quantity,Unit,Unit_Cost,Budget_Amount,Vendor_or_Trade,Phase,Notes
+ORCHARD,CONSTRUCTION,01,01-100,General conditions site supervision,GENERAL_CONDITIONS,12,MONTH,0,0,,Construction,Example replace with actual figures
+ORCHARD,CONSTRUCTION,03,03-300,Concrete subcontract,SUBCONTRACT,1,LS,0,0,Concrete Trade,Construction,Example
+ORCHARD,CONSTRUCTION,03,03-301,Concrete material purchased directly,MATERIAL,1,LS,0,0,,Construction,Example
+ORCHARD,CONSTRUCTION,06,06-100,Carpentry self-performed labor,LABOR,1,HR,0,0,,Construction,Example
+ORCHARD,PRECONSTRUCTION,01,01-050,Preconstruction management fee,FEE,1,LS,0,0,,Preconstruction,Separate agreement
