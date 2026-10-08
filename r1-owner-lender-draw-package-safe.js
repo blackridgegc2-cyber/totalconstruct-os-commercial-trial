@@ -28,5 +28,17 @@ function makePicker(available,onChange){
  const chosen=new Set();for(const name of available||[]){const n=normalize(name);const label=document.createElement('label');label.style.cssText='display:block;margin:7px 0';const box=document.createElement('input');box.type='checkbox';box.checked=DEFAULT_SHEETS.includes(n);box.disabled=DEFAULT_SHEETS.includes(n);box.addEventListener('change',()=>{box.checked?chosen.add(n):chosen.delete(n);onChange?.(selection(available,[...chosen]))});label.append(box,document.createTextNode(' '+name+(box.disabled?' (required)':' (optional)')));wrap.append(label)}
  onChange?.(selection(available,[]));return wrap;
 }
-window.tcDrawPackage={DEFAULT_SHEETS,selection,validateBeforeSend,makePicker};
+function mount(project,pa){
+ const target=document.querySelector('#payapps');if(!target||!project||!pa)return;
+ const card=document.createElement('div');card.className='card section';card.style.marginTop='16px';
+ const heading=document.createElement('h3');heading.textContent='Owner / Lender Submission Package — Preview';card.append(heading);
+ const warning=document.createElement('p');warning.textContent='Submission is not connected to secure lender delivery. Do not treat this preview as a transmitted draw.';card.append(warning);
+ const available=Array.isArray(pa.workbookSheets)?pa.workbookSheets:[];
+ const summary=document.createElement('p');card.append(summary);
+ const update=s=>{summary.textContent=s.ready?'Selected worksheet order: '+s.ordered.join(' → '):'Workbook not verified. Missing required worksheets: '+s.missing.join(', ');summary.style.color=s.ready?'inherit':'#a03a2d'};
+ card.append(makePicker(available,update));
+ const note=document.createElement('p');note.textContent='Upload and validate the actual lender workbook before export. Optional attachments require explicit selection for each pay application.';card.append(note);
+ target.append(card);
+}
+window.tcDrawPackage={DEFAULT_SHEETS,selection,validateBeforeSend,makePicker,mount};
 })();
