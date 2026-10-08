@@ -2,14 +2,16 @@
    UI guard only: production must repeat validation in authenticated server transaction. */
 (()=>{'use strict';
 const STORE='tc_dispute_billing_flags_v1';
+// Trial-local flags are not an authoritative production billing source.
+const LOCAL_FLAGS_TRUSTED=false;
 function read(){try{const x=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(x)?x:[]}catch{return []}}
 function relevant(p){return read().filter(f=>f.projectId===p.id||f.projectId===p.name)}
 function project(){try{return typeof currentProject==='function'?currentProject():null}catch{return null}}
 function rows(p){try{return state?.payapps?.[p.name]?.rows||[]}catch{return []}}
-function inspect(){const p=project();if(!p||!window.tcDisputeBilling)return {blocked:true,unresolved:[],error:'Billing guard unavailable'};const flags=relevant(p).map(f=>({...f,projectId:p.id}));return window.tcDisputeBilling.preflight({projectId:p.id,rows:rows(p),flags})}
+function inspect(){const p=project();if(!p||!window.tcDisputeBilling)return {blocked:true,unresolved:[],error:'Billing guard unavailable'};if(!LOCAL_FLAGS_TRUSTED)return {blocked:true,unresolved:[],error:'Server-verified billing flags are not connected'};const flags=relevant(p).map(f=>({...f,projectId:p.id}));return window.tcDisputeBilling.preflight({projectId:p.id,rows:rows(p),flags})}
 function render(){const host=document.querySelector('#payapps'),button=document.querySelector('#finalPA');if(!host||!button)return;
  const result=inspect(),old=document.querySelector('#tc-dispute-billing-warning');if(old)old.remove();
- if(result?.error){button.disabled=true;const card=document.createElement('div');card.id='tc-dispute-billing-warning';card.className='card section';card.textContent='Pay Application finalization disabled: dispute validation unavailable.';host.insertBefore(card,host.firstChild);return}if(!result?.unresolved?.length){button.disabled=false;button.removeAttribute('aria-describedby');return}
+ if(result?.error){button.disabled=true;const card=document.createElement('div');card.id='tc-dispute-billing-warning';card.className='card section';card.textContent='Pay Application finalization disabled: '+result.error+'.';host.insertBefore(card,host.firstChild);return}if(!result?.unresolved?.length){button.disabled=false;button.removeAttribute('aria-describedby');return}
  const card=document.createElement('div');card.id='tc-dispute-billing-warning';card.className='card section';card.setAttribute('role','alert');
  card.style.border='2px solid #ad7318';const heading=document.createElement('h3');heading.textContent='Billing review required — subcontract dispute';card.appendChild(heading);
  const explanation=document.createElement('p');explanation.textContent='Affected SOV entries require documented PM confirmation. A subcontract payment dispute is not automatically an Owner billing hold.';card.appendChild(explanation);
