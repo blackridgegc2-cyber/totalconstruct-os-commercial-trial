@@ -409,7 +409,8 @@ function renderNewProject(){
  '<div class="card"><h3>3. Plans & Documents</h3><p>Upload plans, specifications and agreements. AI extraction requires review before applying any information.</p><button class="btn" type="button" data-np-jump="drawings">Open Drawings</button></div>'+
  '<div class="card"><h3>4. Budget & CSI Codes</h3><p>Download the Excel-compatible CSV, classify costs and validate a completed budget.</p><button class="btn" type="button" id="tcNPTemplate">Download Budget Template</button><button class="btn" type="button" data-np-jump="financials">Cost Controls</button></div>'+
  '<div class="card"><h3>5. Schedule & Team</h3><p>Set milestones, assigned PM and superintendent, trades and long-lead procurement.</p><button class="btn" type="button" data-np-jump="schedule">Open Schedule</button></div>'+
- '<div class="card"><h3>6. Review & Activate</h3><p>Validate the owner agreements, budgets, document access and project status before release.</p><p class="muted small">Cloud activation is blocked until the project has been securely created.</p></div></div>';
+ '<div class="card"><h3>6. Banking & ACH Routing</h3><p>Assign a verified bank destination for owner/lender deposits and a separate account for subcontractor/vendor disbursements. Track overhead and fee/profit as distinct accounting purposes; they may share physical accounts.</p><p class="muted small">Bank details are never saved in browser drafts. Account connection and verification require a secure payment-provider integration and authorized finance approval.</p><div class="metric-row"><span>Revenue / Deposits</span><b>Not connected</b></div><div class="metric-row"><span>General Ledger / Vendor Payments</span><b>Not connected</b></div><div class="metric-row"><span>Overhead</span><b>Not assigned</b></div><div class="metric-row"><span>Fee / Profit</span><b>Not assigned</b></div><button class="btn" type="button" id="tcNPBankSetup">Configure ACH Accounts</button><p class="muted small" id="tcNPBankStatus" role="status"></p></div>'+ 
+ '<div class="card"><h3>7. Review & Activate</h3><p>Validate the owner agreements, budgets, document access and project status before release.</p><p class="muted small">Cloud activation is blocked until the project has been securely created.</p></div></div>';
  const read=()=>{const obj={};host.querySelectorAll('[data-np]').forEach(el=>obj[el.dataset.np]=el.value.trim());return obj};
  const status=host.querySelector('#tcNewProjectStatus');
  host.querySelector('#tcSaveNewProject').onclick=()=>{const d=read();localStorage.setItem(key,JSON.stringify(d));status.textContent='Setup draft saved to this browser only. It has not been created as a live project.'};
@@ -423,6 +424,7 @@ function renderNewProject(){
   }catch(err){status.textContent='Project not created: '+String(err.message||err)}finally{btn.disabled=false}
  };
  host.querySelectorAll('[data-np-jump]').forEach(btn=>btn.onclick=()=>openPage(btn.dataset.npJump));
+ host.querySelector('#tcNPBankSetup').onclick=()=>{host.querySelector('#tcNPBankStatus').textContent='Bank account linking is unavailable until a verified, authenticated provider connection and finance approval workflow are installed. No bank information has been collected or saved.'};
  host.querySelector('#tcNPTemplate').onclick=()=>{if(window.tcBudgetTemplateUI?.download)window.tcBudgetTemplateUI.download();else status.textContent='Budget template is not loaded; open Cost Controls to download it.'};
 }
 function renderUserDashboards(){
