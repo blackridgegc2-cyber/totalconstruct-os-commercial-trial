@@ -8,11 +8,20 @@ module.exports = async function handler(req,res){
  if(!auth.startsWith('Bearer ')) return res.status(401).json({error:'Authentication required'});
  try{
   const {email,name,role,project_id,subcontractor_id,invite_type}=req.body||{};
-  if(!email) return res.status(400).json({error:'Email is required'});
+  if(typeof email!=='string'||email.length>254||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.trim())) return res.status(400).json({error:'Valid email is required'});
+  if(name!=null&&(typeof name!=='string'||name.length>160)) return res.status(400).json({error:'Invalid display name'});
+  if(project_id!=null&&(typeof project_id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(project_id))) return res.status(400).json({error:'Invalid project ID'});
+  if(subcontractor_id!=null&&(typeof subcontractor_id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(subcontractor_id))) return res.status(400).json({error:'Invalid subcontractor ID'});
+  if(invite_type!=null&&!['owner','employee','subcontractor'].includes(String(invite_type).toLowerCase())) return res.status(400).json({error:'Invalid invitation type'});
   const isOwner=String(invite_type||'').toLowerCase()==='owner';
   const isSub=!isOwner&&!!subcontractor_id;
   const roleMap={'Project Manager':'pm','APM / Project Engineer':'apm','Superintendent':'superintendent','Accounting / Controller':'accounting','Estimator / Preconstruction':'employee','Safety':'safety','Field Employee':'employee','Executive / Operations':'executive','Read Only / Auditor':'employee','Admin':'admin','Executive':'executive','PM':'pm','APM':'apm','Employee':'employee'};
-  const normalized=isOwner?'owner':isSub?'subcontractor':(roleMap[role]||String(role||'employee').toLowerCase().replace(/[^a-z_]/g,'_'));
+  const allowedRoles=new Set(['admin','executive','pm','apm','superintendent','accounting','employee','safety','owner','lender','subcontractor']);
+  const requested=roleMap[role]||String(role||'employee').toLowerCase();
+  if(!allowedRoles.has(requested))return res.status(400).json({error:'Unsupported role'});
+  if(!isOwner&&!isSub&&['owner','lender','subcontractor'].includes(requested))return res.status(400).json({error:'External roles require a project-scoped invitation workflow'});
+  if(isOwner&&subcontractor_id)return res.status(400).json({error:'Owner invitation cannot include subcontractor ID'});
+  const normalized=isOwner?'owner':isSub?'subcontractor':requested;
   if((isSub||isOwner)&&!project_id)return res.status(400).json({error:'Project is required for an external portal invitation.'});
   const r=await fetch(root+'/functions/v1/invite-employee',{method:'POST',headers:{apikey:anon,authorization:auth,'content-type':'application/json'},body:JSON.stringify({email,full_name:name||'',role:normalized,project_id:project_id||null,subcontractor_id:subcontractor_id||null,invite_type:isOwner?'owner':isSub?'subcontractor':'employee'})});
   const data=await r.json().catch(()=>({}));
