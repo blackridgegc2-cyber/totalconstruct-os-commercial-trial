@@ -17,3 +17,13 @@ test('rejects owner invite without project',async()=>{assert.equal((await invoke
 test('rejects subcontractor invite without subcontractor identifier',async()=>{assert.equal((await invoke({email:'person@example.com',invite_type:'subcontractor',project_id:'11111111-1111-4111-8111-111111111111'})).status,400)});
 test('rejects conflicting external role',async()=>{assert.equal((await invoke({email:'person@example.com',invite_type:'owner',role:'admin',project_id:'11111111-1111-4111-8111-111111111111'})).status,400)});
 test('rejects invalid project identifier',async()=>{assert.equal((await invoke({email:'person@example.com',invite_type:'owner',project_id:'other-project'})).status,400)});
+
+test('rejects inactive project member before invitation',async()=>{
+ const original=global.fetch;
+ global.fetch=async url=>{
+  if(String(url).includes('/auth/v1/user'))return {ok:true,json:async()=>({id:'22222222-2222-4222-8222-222222222222'})};
+  if(String(url).includes('/rest/v1/project_members'))return {ok:true,json:async()=>[]};
+  throw new Error('Unexpected invitation upstream call');
+ };
+ try{const result=await invoke({email:'person@example.com',role:'PM',project_id:'11111111-1111-4111-8111-111111111111'});assert.equal(result.status,403)}finally{global.fetch=original}
+});
