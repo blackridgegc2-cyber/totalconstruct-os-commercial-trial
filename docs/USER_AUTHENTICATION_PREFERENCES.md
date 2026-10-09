@@ -26,3 +26,12 @@
 Tests must cover new enrollment, failed enrollment, unverified phone, preference changes, revoked device, account recovery, unauthorized device, expired/replayed OTP, changed PDF, role revocation, cross-project access, and signed-copy download.
 
 Implementation status: **specification only**. This file does not establish working phone delivery, passkey enrollment, server-side signing, or database persistence. Track with #18 and #19.
+
+## Multi-method fallback and preferences
+- Permit each user to enroll **two or three** verified authentication methods, choose a primary method and rank secondary/tertiary fallback methods.
+- Offer fallback only for **already enrolled** methods; do not permit enrollment or changing a fallback while an active signing challenge is underway.
+- Supported method bundles: (1) verified phone OTP + platform passkey with user verification, (2) authenticator-app TOTP + platform passkey with user verification, (3) independent registered device passkey with user verification plus a risk-based additional factor where policy requires it.
+- If an OTP channel fails, let the user switch to another enrolled equivalent-assurance bundle; invalidate the abandoned challenge and issue a new server-bound challenge for the same signer, project, document hash and action.
+- A lone SMS code, email link, password or recovery code must never silently satisfy a two-factor signing policy.
+- Recovery after losing all enrolled devices is a separate audited identity-recovery workflow, not a signature-approval shortcut. Require step-up and notify existing verified channels after security changes.
+- Record method identifiers and challenge outcomes in the signature evidence, never secrets, codes, fingerprint images or biometric templates.
