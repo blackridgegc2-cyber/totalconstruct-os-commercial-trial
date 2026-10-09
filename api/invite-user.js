@@ -33,10 +33,10 @@ module.exports = async function handler(req,res){
   const user=await userResponse.json().catch(()=>null);
   if(!user?.id)return res.status(401).json({error:'Invalid session'});
   if(project_id){
-   const membership=await fetch(root+'/rest/v1/project_members?select=role&project_id=eq.'+encodeURIComponent(project_id)+'&user_id=eq.'+encodeURIComponent(user.id)+'&limit=1',{headers:{apikey:anon,authorization:auth}});
+   const membership=await fetch(root+'/rest/v1/project_members?select=role,active&active=eq.true&project_id=eq.'+encodeURIComponent(project_id)+'&user_id=eq.'+encodeURIComponent(user.id)+'&limit=1',{headers:{apikey:anon,authorization:auth}});
    if(!membership.ok)return res.status(403).json({error:'Project invitation authorization unavailable'});
    const rows=await membership.json().catch(()=>[]);
-   if(!Array.isArray(rows)||!rows.some(row=>['admin','executive','pm'].includes(String(row.role||'').toLowerCase())))return res.status(403).json({error:'Insufficient project invitation permissions'});
+   if(!Array.isArray(rows)||!rows.some(row=>row.active===true&&['admin','executive','pm','apm'].includes(String(row.role||'').toLowerCase())))return res.status(403).json({error:'Insufficient project invitation permissions'});
   }else{
    return res.status(403).json({error:'Project scope required for invitations'});
   }
