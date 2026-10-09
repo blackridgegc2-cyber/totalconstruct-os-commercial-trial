@@ -27,3 +27,32 @@ test('rejects inactive project member before invitation',async()=>{
  };
  try{const result=await invoke({email:'person@example.com',role:'PM',project_id:'11111111-1111-4111-8111-111111111111'});assert.equal(result.status,403)}finally{global.fetch=original}
 });
+
+test('permits active project manager and forwards scoped invite',async()=>{
+ const original=global.fetch;let sent=false;
+ global.fetch=async (url,options)=>{
+  const u=String(url);
+  if(u.includes('/auth/v1/user'))return {ok:true,json:async()=>({id:'22222222-2222-4222-8222-222222222222'})};
+  if(u.includes('/rest/v1/project_members')){
+   assert.match(u,/active=eq.true/);
+   return {ok:true,json:async()=>[{role:'pm',active:true}]};
+  }
+  if(u.includes('/functions/v1/invite-employee')){
+   const payload=JSON.parse(options.body);
+   assert.equal(payload.project_id,'11111111-1111-4111-8111-111111111111');
+   assert.equal(payload.role,'owner');sent=true;
+   return {ok:true,json:async()=>({success:true})};
+  }
+  throw new Error('Unexpected URL '+u);
+ };
+ try{const result=await invoke({email:'owner@example.com',invite_type:'owner',project_id:'11111111-1111-4111-8111-111111111111'});assert.equal(result.status,200);assert.equal(sent,true)}finally{global.fetch=original}
+});
+
+test('rejects authenticated user with inactive membership',async()=>{
+ const original=global.fetch;global.fetch=async url=>{
+  if(String(url).includes('/auth/v1/user'))return {ok:true,json:async()=>({id:'22222222-2222-4222-8222-222222222222'})};
+  if(String(url).includes('/rest/v1/project_members'))return {ok:true,json:async()=>[{role:'pm',active:false}]};
+  throw new Error('Must not call invitation service');
+ };
+ try{assert.equal((await invoke({email:'person@example.com',role:'PM',project_id:'11111111-1111-4111-8111-111111111111'})).status,403)}finally{global.fetch=original}
+});
