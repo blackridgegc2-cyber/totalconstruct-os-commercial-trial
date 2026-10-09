@@ -1,0 +1,25 @@
+name: Pay Application Accounting Regression
+on:
+  push:
+    branches: [fix-document-project-intake, main]
+    paths:
+      - 'r1-payapp-accounting-core.cjs'
+      - 'tests/payapp-accounting-core.test.cjs'
+      - '.github/workflows/payapp-accounting.yml'
+  pull_request:
+    paths:
+      - 'r1-payapp-accounting-core.cjs'
+      - 'tests/payapp-accounting-core.test.cjs'
+      - '.github/workflows/payapp-accounting.yml'
+jobs:
+  payapp-accounting:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run financial regression tests
+        run: node --test tests/payapp-accounting-core.test.cjs
