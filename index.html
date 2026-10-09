@@ -389,8 +389,8 @@ function renderNewProject(){
  let draft={};try{draft=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}
  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const fields=[
- ['job','Job Number','text','e.g. 26-101'],
- ['name','Project Name','text','Required'],
+ ['job','Job Number','text','Optional until assigned'],
+ ['name','Project Name','text','Required to create live project'],
  ['client','Owner / Client','text','Owner entity'],
  ['address','Site Address','text','Street address'],
  ['city','City','text',''],
@@ -410,15 +410,24 @@ function renderNewProject(){
  '<div class="card"><h3>4. Budget & CSI Codes</h3><p>Download the Excel-compatible CSV, classify costs and validate a completed budget.</p><button class="btn" type="button" id="tcNPTemplate">Download Budget Template</button><button class="btn" type="button" data-np-jump="financials">Cost Controls</button></div>'+
  '<div class="card"><h3>5. Schedule & Team</h3><p>Set milestones, assigned PM and superintendent, trades and long-lead procurement.</p><button class="btn" type="button" data-np-jump="schedule">Open Schedule</button></div>'+
  '<div class="card"><h3>6. Banking & ACH Routing</h3><p>Assign a verified bank destination for owner/lender deposits and a separate account for subcontractor/vendor disbursements. Track overhead and fee/profit as distinct accounting purposes; they may share physical accounts.</p><p class="muted small">Bank details are never saved in browser drafts. Account connection and verification require a secure payment-provider integration and authorized finance approval.</p><div class="metric-row"><span>Revenue / Deposits</span><b>Not connected</b></div><div class="metric-row"><span>General Ledger / Vendor Payments</span><b>Not connected</b></div><div class="metric-row"><span>Overhead</span><b>Not assigned</b></div><div class="metric-row"><span>Fee / Profit</span><b>Not assigned</b></div><button class="btn" type="button" id="tcNPBankSetup">Configure ACH Accounts</button><p class="muted small" id="tcNPBankStatus" role="status"></p></div>'+ 
- '<div class="card"><h3>7. Review & Activate</h3><p>Validate the owner agreements, budgets, document access and project status before release.</p><p class="muted small">Cloud activation is blocked until the project has been securely created.</p></div></div>';
+ '<div class="card"><h3>7. Review & Activate</h3><p>Review setup progress. Missing optional information can be completed later without preventing project creation.</p><button class="btn" type="button" id="tcNPOutstanding">View Outstanding Items</button><p class="muted small">Live creation requires an authenticated project service; ACH payment links separately require verified payment setup.</p></div></div>'+ 
+ '<div id="tcNPReminder" class="card section" role="status" style="display:none"><span id="tcNPReminderText"></span> <button class="btn" type="button" id="tcNPViewReminder">View Outstanding Items</button> <button class="btn" type="button" id="tcNPDismissReminder">Dismiss</button></div>'+ 
+ '<div id="tcNPChecklist" class="card section" hidden><h3>Outstanding Setup Items</h3><div id="tcNPChecklistItems"></div></div>';
  const read=()=>{const obj={};host.querySelectorAll('[data-np]').forEach(el=>obj[el.dataset.np]=el.value.trim());return obj};
  const status=host.querySelector('#tcNewProjectStatus');
- host.querySelector('#tcSaveNewProject').onclick=()=>{const d=read();localStorage.setItem(key,JSON.stringify(d));status.textContent='Setup draft saved to this browser only. It has not been created as a live project.'};
+ const missing=()=>{const d=read(),items=[];for(const [k,label] of [['name','Project Name'],['job','Job Number'],['client','Owner / Client'],['address','Site Address'],['city','City'],['region','Region / County'],['contractType','Contract Method'],['pm','Project Manager'],['super','Superintendent'],['start','Anticipated Start'],['end','Anticipated Completion']])if(!d[k])items.push({label,section:'Project Information',field:k});
+ items.push({label:'Contracts & Agreements review',section:'Contracts',page:'contracts'},{label:'Plans & Documents review',section:'Documents',page:'drawings'},{label:'Budget & CSI review',section:'Accounting',page:'financials'},{label:'Schedule review',section:'Schedule',page:'schedule'},{label:'ACH deposit / disbursement accounts (optional until payment setup)',section:'Accounting',field:'bank'});return items};
+ const showChecklist=()=>{const panel=host.querySelector('#tcNPChecklist'),list=host.querySelector('#tcNPChecklistItems');panel.hidden=false;list.replaceChildren();missing().forEach(item=>{const line=document.createElement('div');line.className='metric-row';const label=document.createElement('span');label.textContent=item.section+' · '+item.label;const btn=document.createElement('button');btn.className='btn';btn.type='button';btn.textContent='Address';btn.onclick=()=>{if(item.page){openPage(item.page);return}const target=item.field==='bank'?host.querySelector('#tcNPBankSetup'):host.querySelector('[data-np="'+item.field+'"]');target?.scrollIntoView({behavior:'smooth',block:'center'});target?.focus()};line.append(label,btn);list.append(line)});panel.scrollIntoView({behavior:'smooth',block:'nearest'})};
+ const reminder=()=>{const items=missing(),box=host.querySelector('#tcNPReminder');host.querySelector('#tcNPReminderText').textContent=items.length+' setup items can be completed later.';box.style.display='block'};
+ host.querySelector('#tcNPOutstanding').onclick=showChecklist;host.querySelector('#tcNPViewReminder').onclick=showChecklist;host.querySelector('#tcNPDismissReminder').onclick=()=>{host.querySelector('#tcNPReminder').style.display='none'};
+ host.querySelectorAll('[data-np]').forEach(el=>el.addEventListener('change',()=>{localStorage.setItem(key,JSON.stringify(read()))}));
+ reminder();
+ host.querySelector('#tcSaveNewProject').onclick=()=>{const d=read();localStorage.setItem(key,JSON.stringify(d));status.textContent='Setup draft saved to this browser only. Outstanding items can be completed later.';reminder()};
  host.querySelector('#tcCreateCloudProject').onclick=async()=>{
-  const d=read();if(!d.name||!d.job){status.textContent='Project name and job number are required.';return}
+  const d=read();if(!d.name){status.textContent='Project name is required to create a live project; all other fields can be added later.';return}
   if(typeof window.tcCloud?.createProject!=='function'){status.textContent='Secure project creation is not connected. Draft may be saved, but no live project has been created.';return}
   const btn=host.querySelector('#tcCreateCloudProject');btn.disabled=true;status.textContent='Creating authenticated project...';
-  try{const result=await window.tcCloud.createProject({name:d.name,job_number:d.job,client_name:d.client,address:d.address,city:d.city,contract_method:d.contractType,start_date:d.start||null,substantial_completion_date:d.end||null});
+  try{const result=await window.tcCloud.createProject({name:d.name,job_number:d.job||null,client_name:d.client||null,address:d.address||null,city:d.city||null,contract_method:d.contractType||null,start_date:d.start||null,substantial_completion_date:d.end||null});
    if(!result?.id||!result?.company_id)throw Error('Cloud service did not confirm a persisted project');
    status.textContent='Live project created. Refresh your cloud project list to continue setup.';localStorage.removeItem(key)
   }catch(err){status.textContent='Project not created: '+String(err.message||err)}finally{btn.disabled=false}
