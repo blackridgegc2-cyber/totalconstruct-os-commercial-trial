@@ -347,8 +347,9 @@ const pct=n=>(Number(n||0)*100).toFixed(1)+'%';
 const help=txt=>`<span class="help" data-tip="${String(txt).replace(/"/g,'&quot;')}">?</span>`;
 function save(action='Saved data',record='System'){localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state)); if(action) state.audit.unshift({date:new Date().toLocaleString(),user:currentUser?.name||'System',action,record,old:'',new:''});localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state));renderPage(currentPage)}
 function allowed(key){return currentUser?.permissions.includes('all')||currentUser?.permissions.includes(key)}
-function visibleProjects(){return state.projects.filter(p=>currentUser?.permissions.includes('all')||currentUser?.projects.includes(p.id))}
-function currentProject(){let id=$('#projectSelect')?.value;return state.projects.find(p=>p.id===id)||visibleProjects()[0]}
+function isTrainingProject(p){const n=String(p?.name||'').toLowerCase(),j=String(p?.job||p?.jobNumber||'').toUpperCase();return p?.is_training===true||p?.is_demo===true||p?.project_type==='training'||j==='TRN-001'||n.includes('totalconstruct training / sample project')}
+function visibleProjects(){return state.projects.filter(p=>!isTrainingProject(p)&&(currentUser?.permissions.includes('all')||currentUser?.projects.includes(p.id)))}
+function currentProject(){let id=$('#projectSelect')?.value;return visibleProjects().find(p=>p.id===id)||visibleProjects()[0]}
 function gp(p){return p.contract-p.forecastCost}
 function comp(p){return p.forecastCost?p.costToDate/p.forecastCost:0}
 function earned(p){return p.earnedRevenue||p.contract*comp(p)}
@@ -380,7 +381,7 @@ function renderPage(id){
 function resetTrialData(){localStorage.removeItem('totalconstruct_commercial_v2');location.reload()}
 function renderAll(){renderNav();renderPage(currentPage)}
 function renderHome(){let ps=visibleProjects(),active=ps.filter(p=>/Awarded|Active/.test(p.status)).reduce((a,p)=>a+p.contract,0),pipeline=ps.filter(p=>!/Awarded|Active/.test(p.status)).reduce((a,p)=>a+p.contract,0),weighted=ps.reduce((a,p)=>a+p.contract*(p.prob/100),0),fees=ps.reduce((a,p)=>a+p.fee,0),feeEarned=ps.reduce((a,p)=>a+p.feeEarned,0),oh=state.overhead.filter(x=>x.month==='2026-08').reduce((a,x)=>a+x.actual,0),rec=state.company.ohRecovered;
- $('#home').innerHTML=head('Executive Dashboard',`${currentUser.role} · Trial Release 0.6 · Training Project included`) +
+ $('#home').innerHTML=head('Executive Dashboard',`${currentUser.role} · Trial Release 0.6 · Training Project excluded`) +
  `<div class="grid">${kpi('Active Contract Value',money(active),'Awarded / active work')}${kpi('Pipeline',money(pipeline),'Unawarded opportunities')}${kpi('Weighted Pipeline',money(weighted),'Probability weighted')}${kpi('Fee Remaining',money(fees-feeEarned),money(fees)+' total fee')}</div>
  <div class="grid section">${kpi('Monthly Corporate OH',money(oh),help('All current corporate overhead cost for the selected month.'))}${kpi('OH Recovered',money(rec),pct(rec/oh)+' recovered')}${kpi('Unrecovered OH',money(Math.max(0,oh-rec)),'At risk of consuming fee/profit')}${kpi('Net Fee Position',money(feeEarned-Math.max(0,oh-rec)),'Earned fee less unrecovered OH')}</div>
  <div class="two section"><div class="card"><h3>Portfolio</h3>${table(['Project','Status','Contract / Est.','Fee','OH Recovery','PM','Risk'],ps.map(p=>`<tr class="clickable" data-project="${p.id}"><td><b>${p.name}</b><br><span class="muted">${p.job}</span></td><td><span class="status ${statusClass(p.status)}">${p.status}</span></td><td>${money(p.contract)}</td><td>${allowed('all')||allowed('financial_project')?money(p.fee):'Restricted'}</td><td>${allowed('all')?money(p.ohRecovery):'Restricted'}</td><td>${p.pm}</td><td><span class="risk-dot ${p.id==='kingsland'?'risk-med':'risk-low'}"></span>${p.id==='kingsland'?'Decision':'Normal'}</td></tr>`))}</div>
