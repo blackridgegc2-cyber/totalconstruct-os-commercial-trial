@@ -1,0 +1,17 @@
+name: Invitation API Security Regression
+on:
+  push:
+    branches: [main, release/invite-validation-hardening]
+    paths: ['api/invite-user.js', 'tests/invite-user-validation.test.cjs', '.github/workflows/invite-security.yml']
+  pull_request:
+    paths: ['api/invite-user.js', 'tests/invite-user-validation.test.cjs', '.github/workflows/invite-security.yml']
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check api/invite-user.js
+      - run: node --test tests/invite-user-validation.test.cjs
