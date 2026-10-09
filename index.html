@@ -496,6 +496,18 @@ function renderFinancials(){
  $('#addCostLine').onclick=()=>{let code=prompt('CSI / Cost code');if(!code)return;let item=prompt('Work item')||'New Work Item';let cls=prompt('Classification: SUB / GR / OHP / MAT / LAB / EQUIP','SUB')||'SUB';let budget=+(prompt('Original / current budget')||0);state.costLines.push({project:p.name,code,item,cls,budget,committed:0,actual:0,forecast:budget});save('Added cost line',item)};
 }
 function renderPayapps(){let p=currentProject(),pa=state.payapps[p.name];if(!pa){$('#payapps').innerHTML=head('Pay Applications',p.name)+'<div class="card">No pay app structure initialized for this pursuit/project.</div>';window.tcPayAppWorkbench?.mount?.(p);return}let cur=pa.rows.reduce((a,x)=>a+x.current+x.stored,0),cum=pa.prior+cur,ret=cum*pa.retainage/100;$('#payapps').innerHTML=head(`Pay Application #${pa.number}`,`${p.name} · G702/G703-style workflow · prior periods locked`, `<button class="btn bronze" id="finalPA" disabled title="Legacy local-only finalization disabled until secure financial ledger is connected">Finalize / Roll Forward (Unavailable)</button>`)+`<div class="grid">${kpi('Previous Applications',money(pa.prior),'Locked carry-forward')}${kpi('Current Work + Stored',money(cur),'Current period')}${kpi('Retainage',money(ret),pa.retainage+'%')}${kpi('Current Payment Due',money(cur-ret),'G702-style summary')}</div><div class="card section">${table(['SOV','Scheduled Value','Previous Applications','This Period','Stored Materials','Total Completed & Stored','Balance'],pa.rows.map((x,i)=>`<tr><td>${x.sov}</td><td>${money(x.value)}</td><td>${money(x.prev)}</td><td><input class="pa-current" data-i="${i}" type="number" value="${x.current}" style="width:90px"></td><td><input class="pa-stored" data-i="${i}" type="number" value="${x.stored}" style="width:90px"></td><td>${money(x.prev+x.current+x.stored)}</td><td>${money(x.value-x.prev-x.current-x.stored)}</td></tr>`))}</div><div class="callout section">Internal invoice-supported and manually-entered billing can remain separate in the production ledger while the owner/lender-facing continuation sheet presents the combined contractual billing value.</div>`;$$('.pa-current').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].current=+e.value;save('Updated pay app current billing',p.name)});$$('.pa-stored').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].stored=+e.value;save('Updated stored materials',p.name)});$('#finalPA').onclick=()=>finalizePA(p,pa);window.tcDrawPackage?.mount?.(p,pa);window.tcPayAppWorkbench?.mount?.(p)}
+function tcContractSourcePanel(p){
+ const approved=Number(p.contract||0)-Number(p.originalContract||0);
+ const row=(label,value,source)=>'<div class="metric-row"><span><b>'+label+'</b></span><span>'+money(value)+' <small class="muted">· '+source+'</small></span></div>';
+ const el=document.getElementById('tcContractSourcePanel');if(!el)return;
+ el.hidden=false;el.replaceChildren();
+ const h=document.createElement('h3');h.textContent='Contract Value — Source & Calculation';
+ const intro=document.createElement('p');intro.textContent='Project: '+p.name+'. Values shown are from the current project record. Source contract files and approved change-order documents must be explicitly linked before they can be opened or treated as verified.';
+ const breakdown=document.createElement('div');breakdown.innerHTML=row('Original Contract',Number(p.originalContract||0),'Project financial record')+row('Recorded Contract Adjustments',approved,'Project financial record; approval not independently verified')+row('Current Contract',Number(p.contract||0),'Calculated project total');
+ const note=document.createElement('p');note.className='muted small';note.textContent='Document provenance: No verified source-document association was found in this trial view. A source link will appear here only after a persisted document and authorized access are confirmed.';
+ const btn=document.createElement('button');btn.type='button';btn.className='btn';btn.textContent='Upload / Review Contract Documents';btn.onclick=()=>{const upload=document.querySelector('#contracts button[id*="upload"],#contracts button[id*="Upload"]');if(upload&&upload!==btn)upload.click();else alert('Open the Upload Contract + AI Review control at the top of this page. Source links require a secure document repository.')};
+ el.append(h,intro,breakdown,note,btn);el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 function renderContracts(){
  let p=currentProject(),subs=state.contracts.filter(x=>x.project===p.name),ins=state.insurance.filter(x=>x.project===p.name);
  let ownerContact=p.id==='training'?'Jordan Miles · Owner PM · (555) 555-1001 · jordan@sampleclient.test':(p.id==='orchard'?'The Academic Orchard · Owner Contact on File':'Kingsland LAG, LLC · Owner Contact on File');
@@ -504,7 +516,7 @@ function renderContracts(){
    <div class="grid">
     ${kpi('Owner / Client',p.client,'Primary contractual counterparty')}
     ${kpi('Contract Method',p.contractType,help('Delivery/contract mechanism used for this project.'))}
-    ${kpi('Current Contract',money(p.contract),'Original + approved owner changes')}
+    ${'<div role="button" tabindex="0" class="tc-contract-drill" aria-label="View contract value source and calculation" style="cursor:pointer" title="Open contract source and calculation">'+kpi('Current Contract',money(p.contract),'Click for contract source and calculation')+'</div>'}
     ${kpi('Current Completion',p.end,'Current contractual/project completion')}
    </div>
    <div class="section"><div class="metric-row"><span><b>Owner Contact</b></span><span>${ownerContact}</span></div>
@@ -512,8 +524,10 @@ function renderContracts(){
    <div class="metric-row"><span><b>Approved Owner COs</b></span><span>${money(p.contract-p.originalContract)}</span></div>
    <div class="metric-row"><span><b>Contract Form</b></span><span>${p.id==='orchard'?'Modified AIA A133 / project agreement':'Company / Owner Agreement on File'}</span></div></div>
  </div>
+ <div id="tcContractSourcePanel" class="card section" hidden></div>
  <div class="two section"><div class="card"><h3>Subcontract / COI Tracking</h3>${table(['Company','Trade','Contract','COI Expires','CGL','Auto','WC','Umbrella','Compliance'],subs.map(x=>`<tr><td>${x.company}</td><td>${x.trade}</td><td>${money(x.value)}</td><td>${x.expires}</td><td>${x.cgl}</td><td>${x.auto}</td><td>${x.wc}</td><td>${x.umbrella}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div>
- <div class="card"><h3>GC / Project Insurance</h3>${table(['Party','Coverage','Carrier','Effective','Expires','Limit','Status'],ins.map(x=>`<tr><td>${x.party}</td><td>${x.type}</td><td>${x.carrier}</td><td>${x.effective}</td><td>${x.expires}</td><td>${x.limit}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div></div>`
+ <div class="card"><h3>GC / Project Insurance</h3>${table(['Party','Coverage','Carrier','Effective','Expires','Limit','Status'],ins.map(x=>`<tr><td>${x.party}</td><td>${x.type}</td><td>${x.carrier}</td><td>${x.effective}</td><td>${x.expires}</td><td>${x.limit}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div></div>`;
+ const drill=$('#contracts .tc-contract-drill');if(drill){const open=()=>tcContractSourcePanel(p);drill.onclick=open;drill.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}}
 }
 function renderSubcontractors(){
  let p=currentProject(),rows=(state.subcontractorProfiles||[]).filter(x=>x.project===p.name);
