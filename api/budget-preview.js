@@ -1,3 +1,4 @@
+const crypto=require('node:crypto');
 'use strict';
 const {validateBudgetCSV}=require('../r1-project-budget-import-core.cjs');
 const LIMIT=5_000_000;
@@ -25,8 +26,10 @@ module.exports=async(req,res)=>{
   const p=projects[0];
   const members=await supa('/rest/v1/company_members?company_id=eq.'+encodeURIComponent(p.company_id)+'&user_id=eq.'+encodeURIComponent(user.id)+'&select=role',token);
   if(!members.length)return send(res,403,{error:'Company access required'});
+  const fingerprint=crypto.createHash('sha256').update(csv,'utf8').digest('hex');
+  const prior=await supa('/rest/v1/project_budget_imports?company_id=eq.'+encodeURIComponent(p.company_id)+'&project_id=eq.'+encodeURIComponent(p.id)+'&source_sha256=eq.'+fingerprint+'&select=id,status,created_at',token);
   const result=validateBudgetCSV(csv,{projectCode:p.job_number||undefined});
   const sums={};for(const line of result.rows){const k=line.Agreement_Code+' / '+line.Cost_Type;sums[k]=(sums[k]||0)+line.budgetCents}
-  return send(res,200,{valid:result.valid,accepted:result.rows.length,errors:result.errors.slice(0,200),totalCents:result.totalCents,breakdownCents:sums,reviewRequired:true,posted:false,projectId:p.id});
+  return send(res,200,{valid:result.valid,accepted:result.rows.length,errors:result.errors.slice(0,200),totalCents:result.totalCents,breakdownCents:sums,reviewRequired:true,posted:false,duplicate:prior.length>0,existingImport:prior.length?{id:prior[0].id,status:prior[0].status,createdAt:prior[0].created_at}:null,sourceSha256:fingerprint,projectId:p.id});
  }catch(e){console.error('budget-preview',e.message);return send(res,503,{error:'Secure budget validation unavailable; no data posted'})}
 };
