@@ -348,7 +348,7 @@ const help=txt=>`<span class="help" data-tip="${String(txt).replace(/"/g,'&quot;
 function save(action='Saved data',record='System'){localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state)); if(action) state.audit.unshift({date:new Date().toLocaleString(),user:currentUser?.name||'System',action,record,old:'',new:''});localStorage.setItem('totalconstruct_commercial_v2',JSON.stringify(state));renderPage(currentPage)}
 function allowed(key){return currentUser?.permissions.includes('all')||currentUser?.permissions.includes(key)}
 function isTrainingProject(p){const n=String(p?.name||'').toLowerCase(),j=String(p?.job||p?.jobNumber||'').toUpperCase();return p?.is_training===true||p?.is_demo===true||p?.project_type==='training'||j==='TRN-001'||n.includes('totalconstruct training / sample project')}
-function visibleProjects(){return state.projects.filter(p=>!isTrainingProject(p)&&(currentUser?.permissions.includes('all')||currentUser?.projects.includes(p.id)))}
+function visibleProjects(){return state.projects.filter(p=>(window.tcPlaygroundMode?isTrainingProject(p):!isTrainingProject(p))&&(currentUser?.permissions.includes('all')||currentUser?.projects.includes(p.id)))}
 function currentProject(){let id=$('#projectSelect')?.value;return visibleProjects().find(p=>p.id===id)||visibleProjects()[0]}
 function gp(p){return p.contract-p.forecastCost}
 function comp(p){return p.forecastCost?p.costToDate/p.forecastCost:0}
