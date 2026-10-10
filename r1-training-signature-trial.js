@@ -19,8 +19,8 @@ function render(){
   try{
    latest=await req({action:'create',project_id:PROJECT,method:'qr',recipient_name:name,recipient_phone:'+1 (512) 736-1394'});
    const url=new URL('/sign-test.html',location.origin);url.searchParams.set('token',latest.token);
-   const qr='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(url.toString());
-   detail.innerHTML='<p><strong>Scan with your phone</strong> — expires '+esc(new Date(latest.expires_at).toLocaleTimeString())+'</p><img alt="Five-minute test signing QR" width="240" height="240" referrerpolicy="no-referrer" src="'+esc(qr)+'"><p><a href="'+esc(url.toString())+'" target="_blank" rel="noopener noreferrer">Open test signing page</a></p><p id="tcSigStatus">Awaiting explicit signature on phone…</p><button class="btn" id="tcRevokeSig">Revoke request</button>';
+   const qr='';
+   detail.innerHTML='<p><strong>Scan with your phone</strong> — expires '+esc(new Date(latest.expires_at).toLocaleTimeString())+'</p><p>QR generation temporarily disabled. Open the signing page link below.</p><p><a href="'+esc(url.toString())+'" target="_blank" rel="noopener noreferrer">Open test signing page</a></p><p id="tcSigStatus">Awaiting explicit signature on phone…</p><button class="btn" id="tcRevokeSig">Revoke request</button>';
    detail.querySelector('#tcRevokeSig').onclick=async()=>{try{await req({action:'revoke',id:latest.id});detail.querySelector('#tcSigStatus').textContent='Revoked';clearInterval(poll)}catch(e){detail.querySelector('#tcSigStatus').textContent=e.message}};
    if(poll)clearInterval(poll);
    poll=setInterval(async()=>{try{const d=await req({action:'status',id:latest.id});const el=document.getElementById('tcSigStatus');if(el)el.textContent=d.status==='signed'?'TEST SIGNED — server audit recorded':d.status==='pending'?'Awaiting explicit signature on phone…':d.status;if(d.status!=='pending'){clearInterval(poll);poll=null}}catch(e){const el=document.getElementById('tcSigStatus');if(el)el.textContent='Status check: '+e.message}},3000);
