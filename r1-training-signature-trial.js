@@ -20,7 +20,7 @@
   box.querySelector('#tcStartSignatureTrial').onclick=()=>{
    const prior=document.getElementById('tcSignatureRecipientPanel');if(prior){prior.remove();return}
    const panel=document.createElement('div');panel.id='tcSignatureRecipientPanel';panel.className='card section';
-   panel.innerHTML='<h4>Step 1 of 2 — Select Signature Recipient & Method</h4><p>Choose a project recipient or enter a test destination. Choose the recipient and method below. This is a preview only: no QR code or signing request will be generated or delivered until secure signing is enabled.</p><label>Recipient <select id="tcSigRecipient"><option value="executive">Executive Test Recipient — +1 (512) 736-1394</option><option value="owner">Owner (enter contact details)</option><option value="lender">Lender (enter contact details)</option><option value="architect">Architect (enter contact details)</option><option value="other">Other authorized recipient</option></select></label><label>Recipient name <input id="tcSigName" value="Executive Test Recipient"></label><label>Mobile number <input id="tcSigPhone" type="tel" value="+1 (512) 736-1394"></label><label>Email address <input id="tcSigEmail" type="email" placeholder="Optional email destination"></label><label>Delivery method <select id="tcSigMethod"><option value="qr">QR code + phone passkey (preferred)</option><option value="email">Email signing link (backup)</option><option value="sms">SMS signing link (backup)</option></select></label><div class="actions"><button class="btn bronze" id="tcSigQueue">Confirm Recipient & Method (Preview Only)</button><button class="btn" id="tcSigCancel">Cancel</button></div><p id="tcSigRecipientStatus" role="status"></p>';
+   panel.innerHTML='<h4>Step 1 of 2 — Select Signature Recipient & Method</h4><p>Choose a project recipient or enter a test destination. Choose a signing method for this request, then click Continue or press Enter. You can choose differently on each request. This is a preview only: no QR code or signing request will be generated or delivered until secure signing is enabled.</p><label>Recipient <select id="tcSigRecipient"><option value="executive">Executive Test Recipient — +1 (512) 736-1394</option><option value="owner">Owner (enter contact details)</option><option value="lender">Lender (enter contact details)</option><option value="architect">Architect (enter contact details)</option><option value="other">Other authorized recipient</option></select></label><label>Recipient name <input id="tcSigName" value="Executive Test Recipient"></label><label>Mobile number <input id="tcSigPhone" type="tel" value="+1 (512) 736-1394"></label><label>Email address <input id="tcSigEmail" type="email" placeholder="Optional email destination"></label><label>Delivery method <select id="tcSigMethod"><option value="qr">QR code + phone passkey (preferred)</option><option value="email">Email signing link (backup)</option><option value="sms">SMS signing link (backup)</option></select></label><div class="actions"><button class="btn bronze" id="tcSigQueue">Continue (Preview Only)</button><button class="btn" id="tcSigCancel">Cancel</button></div><p id="tcSigRecipientStatus" role="status"></p>';
    box.querySelector('.actions').after(panel);
    panel.querySelector('#tcSigRecipient').onchange=e=>{
     const v=e.target.value,p=recipients[0];
@@ -28,11 +28,13 @@
     panel.querySelector('#tcSigPhone').value=v==='executive'?p.phone:'';
    };
    panel.querySelector('#tcSigCancel').onclick=()=>panel.remove();
-   panel.querySelector('#tcSigQueue').onclick=()=>{
+   const proceed=()=>{
     const name=panel.querySelector('#tcSigName').value.trim(),phone=panel.querySelector('#tcSigPhone').value.trim(),email=panel.querySelector('#tcSigEmail').value.trim(),method=panel.querySelector('#tcSigMethod').value;
     if(!name||(method==='sms'&&!/^\\+?[0-9() .-]{7,22}$/.test(phone))||(method==='email'&&!email.includes('@'))){panel.querySelector('#tcSigRecipientStatus').textContent='Enter recipient name and a valid '+(method==='sms'?'mobile number':'email address')+'.';return}
     save({status:method==='qr'?'Recipient confirmed — QR generation unavailable':'Recipient confirmed — delivery unavailable',recipient:{name,phone,email,method,role:panel.querySelector('#tcSigRecipient').value},requestedAt:new Date().toISOString()});render();
    };
+   panel.querySelector('#tcSigQueue').onclick=proceed;
+   panel.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='BUTTON'){e.preventDefault();proceed()}});
   };
   box.querySelector('#tcResetSignatureTrial').onclick=()=>{localStorage.removeItem(key);render()};
   box.querySelector('#tcSignSignatureTrial').onclick=async()=>{
