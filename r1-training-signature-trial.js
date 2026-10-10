@@ -1,56 +1,35 @@
 (()=>{
- 'use strict';
- const TEST_ID='3beb7e43-ba37-4fb0-859e-12d874f7e705';
- const title='TEST ONLY — G702 Pay Application Digital Signature Trial';
- const key='tc:training-signature-trial:v1';
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
- const project=()=>typeof currentProject==='function'?currentProject():null;
- const active=()=>window.tcPlaygroundMode===true&&project()?.id===TEST_ID;
- const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}};
- const save=d=>localStorage.setItem(key,JSON.stringify(d));
- const recipients=[{name:'Executive Test Recipient',role:'Executive / Administrator',phone:'+1 (512) 736-1394',email:''}];
- const role=()=>window.tcRoleTest?.isActive?.()?document.getElementById('tcViewAsSelect')?.value||'Actual Login':'Actual Login';
- function render(){
-  const host=document.getElementById('payapps');if(!host)return;
-  let box=document.getElementById('tcSignatureTrial');
-  if(!active()){box?.remove();return}
-  if(!box){box=document.createElement('section');box.id='tcSignatureTrial';box.className='card section';host.prepend(box)}
-  const d=read(),r=role();
-  box.innerHTML='<h3>Signature Acceptance Test — Playground Only</h3><p><strong>Not operational:</strong> This preview cannot generate a signing QR or send a request.</p><p><strong>'+title+'</strong></p><p>$0.00 · No legal or payment effect · Training only</p><p>Current test role: <strong>'+esc(r)+'</strong></p><p>Test status: <strong>'+esc(d.status||'Not started')+'</strong></p><div class="actions"><button class="btn bronze" id="tcStartSignatureTrial">Request Signature</button><button class="btn" id="tcSignSignatureTrial">Check Device Compatibility</button><button class="btn" id="tcResetSignatureTrial">Reset Test</button></div><p id="tcSignatureTrialMessage" role="status"></p><small>This is a browser/device capability test only. It does not send an SMS, create a server-verified signature, approve a pay application, or certify a legally binding document.</small>';
-  box.querySelector('#tcStartSignatureTrial').onclick=()=>{
-   const prior=document.getElementById('tcSignatureRecipientPanel');if(prior){prior.remove();return}
-   const panel=document.createElement('div');panel.id='tcSignatureRecipientPanel';panel.className='card section';
-   panel.innerHTML='<h4>Step 1 of 2 — Select Signature Recipient & Method</h4><p>Choose a project recipient or enter a test destination. Choose a signing method for this request, then click Continue or press Enter. You can choose differently on each request. This is a preview only: no QR code or signing request will be generated or delivered until secure signing is enabled.</p><label>Recipient <select id="tcSigRecipient"><option value="executive">Executive Test Recipient — +1 (512) 736-1394</option><option value="owner">Owner (enter contact details)</option><option value="lender">Lender (enter contact details)</option><option value="architect">Architect (enter contact details)</option><option value="other">Other authorized recipient</option></select></label><label>Recipient name <input id="tcSigName" value="Executive Test Recipient"></label><label>Mobile number <input id="tcSigPhone" type="tel" value="+1 (512) 736-1394"></label><label>Email address <input id="tcSigEmail" type="email" placeholder="Optional email destination"></label><label>Delivery method <select id="tcSigMethod"><option value="qr">QR code + phone passkey (preferred)</option><option value="email">Email signing link (backup)</option><option value="sms">SMS signing link (backup)</option></select></label><div class="actions"><button class="btn bronze" id="tcSigQueue">Continue (Preview Only)</button><button class="btn" id="tcSigCancel">Cancel</button></div><p id="tcSigRecipientStatus" role="status"></p>';
-   box.querySelector('.actions').after(panel);
-   panel.querySelector('#tcSigRecipient').onchange=e=>{
-    const v=e.target.value,p=recipients[0];
-    panel.querySelector('#tcSigName').value=v==='executive'?p.name:'';
-    panel.querySelector('#tcSigPhone').value=v==='executive'?p.phone:'';
-   };
-   panel.querySelector('#tcSigCancel').onclick=()=>panel.remove();
-   const proceed=()=>{
-    const name=panel.querySelector('#tcSigName').value.trim(),phone=panel.querySelector('#tcSigPhone').value.trim(),email=panel.querySelector('#tcSigEmail').value.trim(),method=panel.querySelector('#tcSigMethod').value;
-    if(!name||(method==='sms'&&!/^\\+?[0-9() .-]{7,22}$/.test(phone))||(method==='email'&&!email.includes('@'))){panel.querySelector('#tcSigRecipientStatus').textContent='Enter recipient name and a valid '+(method==='sms'?'mobile number':'email address')+'.';return}
-    save({status:method==='qr'?'Recipient confirmed — QR generation unavailable':'Recipient confirmed — delivery unavailable',recipient:{name,phone,email,method,role:panel.querySelector('#tcSigRecipient').value},requestedAt:new Date().toISOString()});render();
-   };
-   panel.querySelector('#tcSigQueue').onclick=proceed;
-   panel.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='BUTTON'){e.preventDefault();proceed()}});
-  };
-  box.querySelector('#tcResetSignatureTrial').onclick=()=>{localStorage.removeItem(key);render()};
-  box.querySelector('#tcSignSignatureTrial').onclick=async()=>{
-    const msg=document.getElementById('tcSignatureTrialMessage');
-    if(!window.PublicKeyCredential||!navigator.credentials){msg.textContent='WebAuthn is unavailable in this browser or context.';return}
-    if(!window.isSecureContext){msg.textContent='Secure HTTPS is required.';return}
-    try{
-      const available=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      if(!available){msg.textContent='No platform authenticator detected. Configure Windows Hello or a phone passkey to continue.';return}
-      msg.textContent='Device authentication is available. A server-issued challenge and registered credential are required before an actual signing prompt can be completed.';
-      save({...read(),status:'Device authenticator available; server signing not configured',checkedAt:new Date().toISOString()});
-    }catch(e){msg.textContent='Device capability check failed: '+e.message}
-  };
- }
- document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="payapps"],[data-jump="payapps"]'))setTimeout(render,180)},true);
- document.addEventListener('change',e=>{if(e.target.id==='tcViewAsSelect'||e.target.id==='projectSelect')setTimeout(render,150)});
- addEventListener('tc:r1-ready',()=>setTimeout(render,180));setTimeout(render,1200);
- window.tcRenderSignatureTrial=render;
+'use strict';
+const PROJECT='3beb7e43-ba37-4fb0-859e-12d874f7e705';
+const base='https://swabdflpuvhsrqktvbaa.supabase.co/functions/v1/tc-playground-signing';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+const token=()=>localStorage.getItem('tc_access_token')||'';
+const req=async(body)=>{const r=await fetch(base,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token()},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Error(data.error||'Signing service error');return data};
+const active=()=>window.tcPlaygroundMode===true&&typeof currentProject==='function'&&currentProject()?.id===PROJECT;
+let latest=null,poll=null;
+function render(){
+ const host=document.getElementById('payapps');if(!host)return;
+ let box=document.getElementById('tcSignatureTrial');if(!active()){box?.remove();if(poll)clearInterval(poll);return}
+ if(!box){box=document.createElement('section');box.id='tcSignatureTrial';box.className='card section';host.prepend(box)}
+ box.innerHTML='<h3>Playground — QR Signing Acceptance Test</h3><p><strong>TEST ONLY — $0.00</strong> · No payment or legal effect.</p><p>This exercises server-generated QR requests, document integrity, expiration and the audit trail. <strong>Identity is not biometrically verified; do not use for live pay applications.</strong></p><div class="actions"><button class="btn bronze" id="tcStartSignatureTrial">Generate Test QR</button><button class="btn" id="tcResetSignatureTrial">Reset View</button></div><div id="tcSigDetails" role="status"></div>';
+ box.querySelector('#tcStartSignatureTrial').onclick=async()=>{
+  const detail=box.querySelector('#tcSigDetails');
+  const name=prompt('Test recipient name (must type this exact name on phone):','Executive Test Recipient');if(!name)return;
+  detail.textContent='Creating five-minute signing request…';
+  try{
+   latest=await req({action:'create',project_id:PROJECT,method:'qr',recipient_name:name,recipient_phone:'+1 (512) 736-1394'});
+   const url=new URL('/sign-test.html',location.origin);url.searchParams.set('token',latest.token);
+   const qr='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(url.toString());
+   detail.innerHTML='<p><strong>Scan with your phone</strong> — expires '+esc(new Date(latest.expires_at).toLocaleTimeString())+'</p><img alt="Five-minute test signing QR" width="240" height="240" referrerpolicy="no-referrer" src="'+esc(qr)+'"><p><a href="'+esc(url.toString())+'" target="_blank" rel="noopener noreferrer">Open test signing page</a></p><p id="tcSigStatus">Awaiting explicit signature on phone…</p><button class="btn" id="tcRevokeSig">Revoke request</button>';
+   detail.querySelector('#tcRevokeSig').onclick=async()=>{try{await req({action:'revoke',id:latest.id});detail.querySelector('#tcSigStatus').textContent='Revoked';clearInterval(poll)}catch(e){detail.querySelector('#tcSigStatus').textContent=e.message}};
+   if(poll)clearInterval(poll);
+   poll=setInterval(async()=>{try{const d=await req({action:'status',id:latest.id});const el=document.getElementById('tcSigStatus');if(el)el.textContent=d.status==='signed'?'TEST SIGNED — server audit recorded':d.status==='pending'?'Awaiting explicit signature on phone…':d.status;if(d.status!=='pending'){clearInterval(poll);poll=null}}catch(e){const el=document.getElementById('tcSigStatus');if(el)el.textContent='Status check: '+e.message}},3000);
+  }catch(e){detail.textContent='Could not create test QR: '+e.message}
+ };
+ box.querySelector('#tcResetSignatureTrial').onclick=()=>{if(poll)clearInterval(poll);poll=null;latest=null;render()};
+}
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="payapps"],[data-jump="payapps"]'))setTimeout(render,250)},true);
+document.addEventListener('change',e=>{if(['projectSelect','tcViewAsSelect'].includes(e.target.id))setTimeout(render,200)});
+addEventListener('tc:r1-ready',()=>setTimeout(render,200));setTimeout(render,1500);
+window.tcRenderSignatureTrial=render;
 })();
