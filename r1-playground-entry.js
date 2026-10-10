@@ -4,7 +4,7 @@
   window.tcPlaygroundMode=false;
   function update(){
     const select=document.getElementById('projectSelect');
-    if(!select||!window.currentUser||!Array.isArray(window.currentUser.permissions)||!window.currentUser.permissions.includes('all'))return;
+    if(!select||typeof currentUser==='undefined'||!currentUser||!Array.isArray(currentUser.permissions)||!currentUser.permissions.includes('all'))return;
     if(document.getElementById('tcPlaygroundToggle'))return;
     const btn=document.createElement('button');
     btn.id='tcPlaygroundToggle';btn.type='button';
