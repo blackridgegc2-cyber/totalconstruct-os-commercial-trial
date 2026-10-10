@@ -8,6 +8,7 @@
  const active=()=>window.tcPlaygroundMode===true&&project()?.id===TEST_ID;
  const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}};
  const save=d=>localStorage.setItem(key,JSON.stringify(d));
+ const recipients=[{name:'Executive Test Recipient',role:'Executive / Administrator',phone:'+1 (512) 736-1394',email:''}];
  const role=()=>window.tcRoleTest?.isActive?.()?document.getElementById('tcViewAsSelect')?.value||'Actual Login':'Actual Login';
  function render(){
   const host=document.getElementById('payapps');if(!host)return;
@@ -16,7 +17,23 @@
   if(!box){box=document.createElement('section');box.id='tcSignatureTrial';box.className='card section';host.prepend(box)}
   const d=read(),r=role();
   box.innerHTML='<h3>Signature Acceptance Test — Playground Only</h3><p><strong>'+title+'</strong></p><p>$0.00 · No legal or payment effect · Training only</p><p>Current test role: <strong>'+esc(r)+'</strong></p><p>Test status: <strong>'+esc(d.status||'Not started')+'</strong></p><div class="actions"><button class="btn bronze" id="tcStartSignatureTrial">Request Test Signature</button><button class="btn" id="tcSignSignatureTrial">Try Device Authentication</button><button class="btn" id="tcResetSignatureTrial">Reset Test</button></div><p id="tcSignatureTrialMessage" role="status"></p><small>This is a browser/device capability test only. It does not send an SMS, create a server-verified signature, approve a pay application, or certify a legally binding document.</small>';
-  box.querySelector('#tcStartSignatureTrial').onclick=()=>{save({status:'Awaiting device-authentication test',requestedAt:new Date().toISOString()});render()};
+  box.querySelector('#tcStartSignatureTrial').onclick=()=>{
+   const prior=document.getElementById('tcSignatureRecipientPanel');if(prior){prior.remove();return}
+   const panel=document.createElement('div');panel.id='tcSignatureRecipientPanel';panel.className='card section';
+   panel.innerHTML='<h4>Send Pay Application for Signature — Recipient</h4><p>Choose a project recipient or enter a test destination. Delivery is not enabled yet.</p><label>Recipient <select id="tcSigRecipient"><option value="executive">Executive Test Recipient — +1 (512) 736-1394</option><option value="owner">Owner (enter contact details)</option><option value="lender">Lender (enter contact details)</option><option value="architect">Architect (enter contact details)</option><option value="other">Other authorized recipient</option></select></label><label>Recipient name <input id="tcSigName" value="Executive Test Recipient"></label><label>Mobile number <input id="tcSigPhone" type="tel" value="+1 (512) 736-1394"></label><label>Email address <input id="tcSigEmail" type="email" placeholder="Optional email destination"></label><label>Delivery method <select id="tcSigMethod"><option value="sms">SMS signing link</option><option value="email">Email signing link</option></select></label><div class="actions"><button class="btn bronze" id="tcSigQueue">Save Test Request (Not Sent)</button><button class="btn" id="tcSigCancel">Cancel</button></div><p id="tcSigRecipientStatus" role="status"></p>';
+   box.querySelector('.actions').after(panel);
+   panel.querySelector('#tcSigRecipient').onchange=e=>{
+    const v=e.target.value,p=recipients[0];
+    panel.querySelector('#tcSigName').value=v==='executive'?p.name:'';
+    panel.querySelector('#tcSigPhone').value=v==='executive'?p.phone:'';
+   };
+   panel.querySelector('#tcSigCancel').onclick=()=>panel.remove();
+   panel.querySelector('#tcSigQueue').onclick=()=>{
+    const name=panel.querySelector('#tcSigName').value.trim(),phone=panel.querySelector('#tcSigPhone').value.trim(),email=panel.querySelector('#tcSigEmail').value.trim(),method=panel.querySelector('#tcSigMethod').value;
+    if(!name||(method==='sms'&&!/^\\+?[0-9() .-]{7,22}$/.test(phone))||(method==='email'&&!email.includes('@'))){panel.querySelector('#tcSigRecipientStatus').textContent='Enter recipient name and a valid '+(method==='sms'?'mobile number':'email address')+'.';return}
+    save({status:'Recipient selected — NOT SENT',recipient:{name,phone,email,method,role:panel.querySelector('#tcSigRecipient').value},requestedAt:new Date().toISOString()});render();
+   };
+  };
   box.querySelector('#tcResetSignatureTrial').onclick=()=>{localStorage.removeItem(key);render()};
   box.querySelector('#tcSignSignatureTrial').onclick=async()=>{
     const msg=document.getElementById('tcSignatureTrialMessage');
