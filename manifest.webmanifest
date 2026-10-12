@@ -1,0 +1,18 @@
+{
+  "name": "Total Connect — Project Workspace",
+  "short_name": "Total Connect",
+  "description": "Secure project collaboration and approvals",
+  "start_url": "/?source=home-screen",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#131b22",
+  "theme_color": "#131b22",
+  "icons": [
+    {
+      "src": "/total-connect-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
