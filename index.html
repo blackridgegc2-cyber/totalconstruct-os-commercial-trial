@@ -74,8 +74,8 @@ table{font-size:13px} th{font-size:12px;padding:11px 10px} td{padding:11px 10px}
 @media(max-width:1200px){.topmenus{display:none}.draw-layout{grid-template-columns:1fr}.draw-sidebar{max-height:320px}}
 </style>
 
-</head>
-<body>
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" type="image/svg+xml" href="/total-connect-icon.svg"><meta name="theme-color" content="#131b22"></head>
+<body><div id="tcInstallBanner" style="display:none;position:fixed;bottom:14px;right:14px;z-index:9999;background:#17212b;color:white;padding:14px;border-radius:12px;box-shadow:0 6px 30px #0005;max-width:350px"><strong>Total Connect Quick Access</strong><p style="font-size:13px">Add a shortcut to your home screen or desktop to open your project workspace directly.</p><button id="tcInstallButton" type="button" style="padding:8px 12px">Install Total Connect</button> <button id="tcInstallDismiss" type="button">Later</button></div>
 <div id="login" class="login">
   <div class="login-card">
     <div class="mark">TC</div>
@@ -648,5 +648,14 @@ $('#loginBtn').onclick=()=>{currentUser=state.users.find(u=>u.id===$('#demoUser'
 $('#globalSearch').oninput=e=>{let q=e.target.value.toLowerCase();if(q.length<2)return;e.target.title=`Search is modeled in this functional front end. Production backend will query permitted documents and records for "${q}".`}
 
 </script>
-</body></html>
+<script>
+(function(){
+ let installPrompt;
+ const banner=document.getElementById('tcInstallBanner');
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;banner.style.display='block';});
+ document.getElementById('tcInstallButton').addEventListener('click',async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;banner.style.display='none';}else{alert('Use your browser menu and select Add to Home Screen, Install App, or Create Shortcut. On iPhone use Share → Add to Home Screen.');}});
+ document.getElementById('tcInstallDismiss').addEventListener('click',()=>{banner.style.display='none';});
+ window.addEventListener('appinstalled',()=>{banner.style.display='none';});
+})();
+</script></body></html>
 <!-- Trigger Vercel R0.6 deployment -->
