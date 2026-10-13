@@ -6,7 +6,7 @@ const csvParse=text=>{const rows=[],row=[];let field='',quoted=false;for(let i=0
 const format=v=>numeric(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 function launch(){
 const project=typeof currentProject==='function'?currentProject():null;
-const state=window.state,records=(state?.ownerPayAppHistory||[]).filter(x=>x.projectId===project?.id||x.project===project?.name);
+const appState=typeof state!=='undefined'?state:window.state,records=(appState?.ownerPayAppHistory||[]).filter(x=>x.projectId===project?.id||x.project===project?.name);
 const draft=[...records].reverse().find(x=>String(x.status||'Draft').toLowerCase()==='draft');
 if(!draft){alert('Create or select a draft Pay Application first. Approved applications cannot be changed.');return}
 let rows=Array.isArray(draft.rows)?draft.rows.map((r,i)=>({item:String(r.item||r.itemNo||i+1),description:String(r.description||r.name||''),scheduledValue:numeric(r.scheduledValue??r.scheduled??r.value),previous:numeric(r.previous??r.priorCompleted),thisPeriod:numeric(r.thisPeriod??r.currentWork),stored:numeric(r.stored),retainage:numeric(r.retainage)})):[];
