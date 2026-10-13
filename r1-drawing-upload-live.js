@@ -37,13 +37,13 @@
  function parseRevision(name=''){const s=String(name);return s.match(/(?:\brev(?:ision)?[\s._-]*|[_-]r)([A-Z0-9]{1,6})(?=[_. -]|$)/i)?.[1]||''}
  function sourceRef(rec){return {id:rec.id,versionId:rec.versionId||rec.id,name:rec.fileName||rec.name,revision:rec.revision||'',issueDate:rec.issueDate||rec.createdAt||'',sheet:rec.sheet||'',sourceType:'Drawing',storagePath:rec.storagePath||'',sourceImmutable:true}}
  async function intakeChoice(file){const gov=window.tcAiDocumentGovernance;if(!gov?.askAiRead)return {read:true,purpose:'Populate / Update Project Data',overwritePolicy:'confirm'};return await gov.askAiRead({fileName:file.name,purpose:'Populate / Update Project Data'})||{read:false,purpose:'Reference / File Only'} }
- async function handle(files,pArg){
+ async function handle(files,pArg,options={}){
   ensure();const p=pArg||prj();if(!p)return;
   for(const file of files){
-   const choice=await intakeChoice(file);if(choice===false)continue;
+   const choice=file.size>25*1024*1024?{read:false,purpose:'Reference / File Only (large file; manual indexing available)'}:await intakeChoice(file);if(choice===false)continue;
    const id='DRW-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),createdAt=now();
    const localUrl=URL.createObjectURL(file);
-   const rec={id,versionId:id,project:p.name,projectId:p.id,name:file.name,fileName:file.name,title:file.name.replace(/\.[^.]+$/,''),sheet:'',revision:parseRevision(file.name),issueDate:'',discipline:classify(file.name),status:'Uploading to project cloud…',type:file.type,url:localUrl,markup:[],sourceImmutable:true,createdAt,aiReadRequested:choice.read!==false,aiReadPurpose:choice.purpose||'',overwritePolicy:'Confirm before replacing existing values'};
+   const rec={id,versionId:id,project:p.name,projectId:p.id,folder:options.folder||'',name:file.name,fileName:file.name,title:file.name.replace(/\.[^.]+$/,''),sheet:'',revision:parseRevision(file.name),issueDate:'',discipline:classify(file.name),status:'Uploading to project cloud…',type:file.type,url:localUrl,markup:[],sourceImmutable:true,createdAt,aiReadRequested:choice.read!==false,aiReadPurpose:choice.purpose||'',overwritePolicy:'Confirm before replacing existing values'};
    state.drawingFiles.push(rec);
    try{if(typeof renderDrawings==='function')renderDrawings()}catch(e){}
    try{
