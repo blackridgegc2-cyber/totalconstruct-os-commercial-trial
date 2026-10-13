@@ -34,5 +34,5 @@
  document.addEventListener('click',e=>{const el=e.target.closest?.('[data-page="payapps"],[data-jump="payapps"]');if(el)setTimeout(install,80)},true);
  document.addEventListener('change',e=>{if(e.target?.matches?.('.project-select,#projectSelect'))setTimeout(install,100)});
  addEventListener('DOMContentLoaded',()=>setTimeout(install,200));addEventListener('tc:r1-ready',()=>setTimeout(install,60));setTimeout(install,700);
- window.tcOwnerPayApps={add,preview,render,defaultTemplate};
+ window.tcOwnerPayApps={add,preview,render,defaultTemplate,getCurrentProject:prj,getProjectDrafts:()=>{const p=prj();return p?(state.ownerPayAppHistory||[]).filter(x=>x.projectId===p.id||x.project===p.name):[]}};
 })();
