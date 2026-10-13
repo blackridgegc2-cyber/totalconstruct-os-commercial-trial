@@ -441,23 +441,38 @@ function renderFinancials(){
 }
 function renderPayapps(){let p=currentProject(),pa=state.payapps[p.name];if(!pa){$('#payapps').innerHTML=head('Pay Applications',p.name)+'<div class="card">No pay app structure initialized for this pursuit/project.</div>';return}let cur=pa.rows.reduce((a,x)=>a+x.current+x.stored,0),cum=pa.prior+cur,ret=cum*pa.retainage/100;$('#payapps').innerHTML=head(`Pay Application #${pa.number}`,`${p.name} · G702/G703-style workflow · prior periods locked`, `<button class="btn bronze" id="finalPA">Finalize / Roll Forward</button>`)+`<div class="grid">${kpi('Previous Applications',money(pa.prior),'Locked carry-forward')}${kpi('Current Work + Stored',money(cur),'Current period')}${kpi('Retainage',money(ret),pa.retainage+'%')}${kpi('Current Payment Due',money(cur-ret),'G702-style summary')}</div><div class="card section">${table(['SOV','Scheduled Value','Previous Applications','This Period','Stored Materials','Total Completed & Stored','Balance'],pa.rows.map((x,i)=>`<tr><td>${x.sov}</td><td>${money(x.value)}</td><td>${money(x.prev)}</td><td><input class="pa-current" data-i="${i}" type="number" value="${x.current}" style="width:90px"></td><td><input class="pa-stored" data-i="${i}" type="number" value="${x.stored}" style="width:90px"></td><td>${money(x.prev+x.current+x.stored)}</td><td>${money(x.value-x.prev-x.current-x.stored)}</td></tr>`))}</div><div class="callout section">Internal invoice-supported and manually-entered billing can remain separate in the production ledger while the owner/lender-facing continuation sheet presents the combined contractual billing value.</div>`;$$('.pa-current').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].current=+e.value;save('Updated pay app current billing',p.name)});$$('.pa-stored').forEach(e=>e.onchange=()=>{pa.rows[+e.dataset.i].stored=+e.value;save('Updated stored materials',p.name)});$('#finalPA').onclick=()=>finalizePA(p,pa)}
 function renderContracts(){
- let p=currentProject(),subs=state.contracts.filter(x=>x.project===p.name),ins=state.insurance.filter(x=>x.project===p.name);
- let ownerContact=p.id==='training'?'Jordan Miles · Owner PM · (555) 555-1001 · jordan@sampleclient.test':(p.id==='orchard'?'The Academic Orchard · Owner Contact on File':'Kingsland LAG, LLC · Owner Contact on File');
- $('#contracts').innerHTML=head('Prime Contract / Contracts',`${p.name} · owner and contract mechanism remain visible to all authorized internal users`)+
- `<div class="card">
-   <div class="grid">
-    ${kpi('Owner / Client',p.client,'Primary contractual counterparty')}
-    ${kpi('Contract Method',p.contractType,help('Delivery/contract mechanism used for this project.'))}
-    ${kpi('Current Contract',money(p.contract),'Original + approved owner changes')}
-    ${kpi('Current Completion',p.end,'Current contractual/project completion')}
-   </div>
-   <div class="section"><div class="metric-row"><span><b>Owner Contact</b></span><span>${ownerContact}</span></div>
-   <div class="metric-row"><span><b>Original Contract</b></span><span>${money(p.originalContract)}</span></div>
-   <div class="metric-row"><span><b>Approved Owner COs</b></span><span>${money(p.contract-p.originalContract)}</span></div>
-   <div class="metric-row"><span><b>Contract Form</b></span><span>${p.id==='orchard'?'Modified AIA A133 / project agreement':'Company / Owner Agreement on File'}</span></div></div>
- </div>
- <div class="two section"><div class="card"><h3>Subcontract / COI Tracking</h3>${table(['Company','Trade','Contract','COI Expires','CGL','Auto','WC','Umbrella','Compliance'],subs.map(x=>`<tr><td>${x.company}</td><td>${x.trade}</td><td>${money(x.value)}</td><td>${x.expires}</td><td>${x.cgl}</td><td>${x.auto}</td><td>${x.wc}</td><td>${x.umbrella}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div>
- <div class="card"><h3>GC / Project Insurance</h3>${table(['Party','Coverage','Carrier','Effective','Expires','Limit','Status'],ins.map(x=>`<tr><td>${x.party}</td><td>${x.type}</td><td>${x.carrier}</td><td>${x.effective}</td><td>${x.expires}</td><td>${x.limit}</td><td><span class="status ${statusClass(x.status)}">${x.status}</span></td></tr>`))}</div></div>`
+ const p=currentProject(),name=String(p.name||''),pid=String(p.id||'');
+ const sameProject=x=>String(x.projectId||x.project_id||'')===pid||(!x.projectId&&!x.project_id&&String(x.project||'')===name);
+ const subs=(state.contracts||[]).filter(sameProject).filter(x=>x&&String(x.company||'').trim()&&String(x.company)!=='undefined');
+ const ins=(state.insurance||[]).filter(sameProject).filter(x=>x&&String(x.party||'').trim());
+ const clean=v=>String(v??'').replace(/<[^>]*>/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').trim();
+ const field=v=>v===undefined||v===null||String(v).trim()===''||String(v)==='undefined'?'—':clean(v);
+ const orchard=/orchard/i.test(name),training=pid==='training'||/training/i.test(name);
+ const rawClient=String(p.client||'').trim();
+ const malformed=/\(name, legal status|other information|address, and|\bCR\s*282\b/i.test(rawClient)||rawClient.length>100;
+ const client=orchard&&malformed?'The Academic Orchard':malformed?'Review owner legal name':rawClient||'Owner not yet confirmed';
+ const ownerContact=training?'Training owner contact':orchard?'The Academic Orchard · Verify contact details':field(p.ownerContact||p.owner_contact||'Owner contact not yet confirmed');
+ const contractMethod=field(p.contractType||p.contract_method||(orchard?'Construction Manager as Constructor · Modified AIA A133':''));
+ const contractForm=orchard?'Modified AIA A133 / project agreement':field(p.contractForm||'Contract form not yet verified');
+ const subRows=subs.map(x=>'<tr><td>'+field(x.company)+'</td><td>'+field(x.trade)+'</td><td>'+money(Number(x.value)||0)+'</td><td>'+field(x.expires)+'</td><td>'+field(x.cgl)+'</td><td>'+field(x.auto)+'</td><td>'+field(x.wc)+'</td><td>'+field(x.umbrella)+'</td><td>'+field(x.status||'Needs review')+'</td></tr>');
+ const insRows=ins.map(x=>'<tr><td>'+field(x.party)+'</td><td>'+field(x.type)+'</td><td>'+field(x.carrier)+'</td><td>'+field(x.effective)+'</td><td>'+field(x.expires)+'</td><td>'+field(x.limit)+'</td><td>'+field(x.status)+'</td></tr>');
+ const original=Number(p.originalContract)||0,current=Number(p.contract)||0;
+ $('#contracts').innerHTML=head('Prime Contract / Contracts',clean(name)+' · Project-specific contract summary')+
+ '<div class="card"><div class="grid">'+
+ kpi('Owner / Client',clean(client),'Contractual counterparty · confirm against executed agreement')+
+ kpi('Contract Method',clean(contractMethod),'Delivery method')+
+ kpi('Current Contract',money(current),'Original + recorded approved changes')+
+ kpi('Current Completion',field(p.end),'Project completion date')+
+ '</div><div class="section">'+
+ '<div class="metric-row"><span><b>Owner Contact</b></span><span>'+ownerContact+'</span></div>'+
+ '<div class="metric-row"><span><b>Original Contract</b></span><span>'+money(original)+'</span></div>'+
+ '<div class="metric-row"><span><b>Recorded Owner COs</b></span><span>'+money(current-original)+'</span></div>'+
+ '<div class="metric-row"><span><b>Contract Form</b></span><span>'+contractForm+'</span></div>'+
+ (malformed?'<p class="muted small">Owner/client extraction needs review. Original imported value is preserved in project data pending verification.</p>':'')+
+ '</div></div><div class="two section"><div class="card"><h3>Subcontract / COI Tracking</h3>'+
+ (subRows.length?table(['Company','Trade','Contract','COI Expires','CGL','Auto','WC','Umbrella','Compliance'],subRows):'<p class="muted">No verified subcontract records for this project.</p>')+
+ '</div><div class="card"><h3>GC / Project Insurance</h3>'+
+ (insRows.length?table(['Party','Coverage','Carrier','Effective','Expires','Limit','Status'],insRows):'<p class="muted">No project insurance records available.</p>')+'</div></div>';
 }
 function renderSubcontractors(){
  let p=currentProject(),rows=(state.subcontractorProfiles||[]).filter(x=>x.project===p.name);
