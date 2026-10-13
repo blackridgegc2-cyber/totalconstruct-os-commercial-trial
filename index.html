@@ -525,10 +525,10 @@ function renderSchedule(){let p=currentProject(),acts=state.schedule.activities.
 function renderDrawings(){
  let p=currentProject();
  let files=(state.drawingFiles||[]).filter(f=>f.project===p.name);
- let groups={}; files.forEach(f=>{(groups[f.discipline]||(groups[f.discipline]=[])).push(f)});
- let sidebar=Object.keys(groups).sort().map(g=>`<div class="discipline"><h4>${g}</h4>${groups[g].map(f=>`<div class="file-row" data-drawid="${f.id}"><b>${f.sheet||f.name}</b><span>${f.title||f.name}</span><br><span class="tag">${f.discipline}</span><span class="tag">${f.status||'Current'}</span></div>`).join('')}</div>`).join('');
+ let folders=(state.drawingFolders||[]).filter(f=>f.project===p.name);let groups={}; files.forEach(f=>{(groups[f.folder||f.discipline||'Other / Review']||(groups[f.folder||f.discipline||'Other / Review']=[])).push(f)});folders.forEach(f=>{groups[f.name]=groups[f.name]||[]});
+ let sidebar=Object.keys(groups).sort().map(g=>`<div class="discipline"><h4>📁 ${g}</h4>${groups[g].map(f=>`<div class="file-row" data-drawid="${f.id}"><b>${f.sheet||f.name}</b><span>${f.title||f.name}</span><br><span class="tag">${f.discipline}</span><span class="tag">${f.status||'Current'}</span></div>`).join('')}</div>`).join('');
  $('#drawings').innerHTML=head('Drawings / AI Sort / Markup',`${p.name} · upload plan sets, auto-classify by discipline, markup and save views`,
- `<button class="btn" id="uploadDrawingsBtn">+ Upload Drawings</button><button class="btn primary" id="newDrawingSet">+ New Drawing Set</button>`)+
+ `<button class="btn" id="newDrawingFolder">+ New Folder</button><button class="btn" id="aiOrganizeDrawings">Auto-Categorize</button><button class="btn" id="uploadDrawingsBtn">+ Upload Drawings</button><button class="btn primary" id="newDrawingSet">+ New Drawing Set</button>`)+
  `<div class="draw-layout">
    <div class="draw-sidebar">
     <div class="dropzone" id="drawDrop">Drop PDF/image drawings here<br><span class="muted small">or click to browse</span></div>
@@ -544,10 +544,10 @@ function renderDrawings(){
     <div class="viewer" id="drawingViewer"><div class="viewer-empty">Select or upload a drawing to begin.</div><canvas id="markupCanvas"></canvas></div>
    </div>
  </div>`;
- $('#uploadDrawingsBtn').onclick=()=>$('#drawInput').click(); $('#drawDrop').onclick=()=>$('#drawInput').click();
+ $('#newDrawingFolder').onclick=()=>{const name=prompt('New drawing folder name (e.g. Civil, Architectural, Addenda, As-Builts):')?.trim();if(!name)return;if(name.length>90)return alert('Folder name must be 90 characters or fewer');state.drawingFolders=state.drawingFolders||[];if(state.drawingFolders.some(f=>f.project===p.name&&f.name.toLowerCase()===name.toLowerCase()))return alert('This folder already exists');state.drawingFolders.push({id:'DF-'+Date.now(),project:p.name,name});save('Created drawing folder',name);renderDrawings()};$('#aiOrganizeDrawings').onclick=()=>{if(!confirm('Categorize drawings by filename/sheet designation? Existing custom folder assignments will be preserved. Review classifications before publishing.'))return;files.forEach(f=>{if(!f.folder)f.folder=classifyDrawing(f.sheet||f.name)});save('Auto-categorized drawings',p.name);renderDrawings()};$('#uploadDrawingsBtn').onclick=()=>$('#drawInput').click(); $('#drawDrop').onclick=()=>$('#drawInput').click();
  $('#drawInput').onchange=e=>handleDrawingFiles([...e.target.files],p);
  let dz=$('#drawDrop'); dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag')}; dz.ondragleave=()=>dz.classList.remove('drag'); dz.ondrop=e=>{e.preventDefault();dz.classList.remove('drag');handleDrawingFiles([...e.dataTransfer.files],p)};
- $$('.file-row').forEach(r=>r.onclick=()=>openDrawing(r.dataset.drawid)); setupMarkupTools();
+ $('.file-row').forEach(r=>{r.onclick=()=>openDrawing(r.dataset.drawid);const file=files.find(f=>f.id===r.dataset.drawid);if(!file)return;const move=document.createElement('button');move.className='btn';move.style.cssText='margin:4px;font-size:11px';move.textContent='Move to folder';move.onclick=e=>{e.stopPropagation();const names=[...new Set([...folders.map(f=>f.name),'Architectural','Structural','Civil','Mechanical','Plumbing','Electrical','Fire Protection','Landscape','General','Other / Review'])];const target=prompt('Move drawing to folder:\\n'+names.join(' | '),file.folder||file.discipline);if(!target?.trim())return;const name=target.trim();if(!names.some(n=>n.toLowerCase()===name.toLowerCase()))return alert('Create the named folder first.');file.folder=names.find(n=>n.toLowerCase()===name.toLowerCase());save('Moved drawing to folder',file.name);renderDrawings()};r.append(move)}); setupMarkupTools();
 }
 function classifyDrawing(name){
  let n=name.toUpperCase();
