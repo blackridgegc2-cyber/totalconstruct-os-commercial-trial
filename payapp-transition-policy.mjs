@@ -21,10 +21,9 @@ export function authorizePayAppTransition({action,payapp,actor,validation,signat
   if(!Number.isSafeInteger(expectedVersion)||expectedVersion<0||payapp?.version!==expectedVersion)fail("STALE_VERSION");
   if(typeof requestId!=="string"||!/^[-_a-zA-Z0-9]{12,128}$/.test(requestId))fail("IDEMPOTENCY_KEY_REQUIRED");
   if(!validation||validation.valid!==true||!Array.isArray(validation.issues)||validation.issues.length)fail("FINANCIAL_RECONCILIATION_REQUIRED");
-  const gate=evaluatePayAppRelease({payapp,actor,validation,signatures,auditEvents});
   // For post-submission statuses, temporarily check the last signed document state;
   // this is only a policy decision, not an authenticated server-side transaction.
-  const signedStatus=action==="submit_to_lender"?"owner_approved":"contractor_signed";
+  const signedStatus=["submit_to_lender","approve_lender","reject_lender"].includes(action)?"owner_approved":"contractor_signed";
   const verified=evaluatePayAppRelease({payapp:{...payapp,status:signedStatus},actor,validation,signatures,auditEvents});
   if(!verified.ready)for(const b of verified.blockers)fail(b.code);
   if(["approve_owner","approve_lender"].includes(action)){
