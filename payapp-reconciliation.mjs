@@ -5,7 +5,7 @@ export function validatePayApplication(data, tolerance=0.01) {
   if(!Number.isFinite(tolerance)||tolerance<0||tolerance>1)return {valid:false,issues:[{field:"tolerance",code:"INVALID_TOLERANCE"}],computed:{}};
   if(!data||typeof data!=="object"||Array.isArray(data))return {valid:false,issues:[{field:"data",code:"INVALID_PAYAPP"}],computed:{}};
   const money=(v,k)=>{const n=Number(v);if(v===null||v===undefined||v===""||!Number.isFinite(n)){issues.push({field:k,code:"MISSING_OR_INVALID",message:k+" must be a valid amount"});return NaN;}return Math.round((n+Number.EPSILON)*100)/100};
-  const close=(actual,expected,field)=>{if(Number.isFinite(actual)&&Number.isFinite(expected)&&Math.abs(actual-expected)>tolerance)issues.push({field,code:"RECONCILIATION_MISMATCH",actual,expected:Math.round(expected*100)/100})};
+  const close=(actual,expected,field)=>{if(!Number.isFinite(expected)){issues.push({field,code:"UNCOMPUTABLE_RECONCILIATION"});return;}if(Number.isFinite(actual)&&Math.abs(actual-expected)>tolerance)issues.push({field,code:"RECONCILIATION_MISMATCH",actual,expected:Math.round(expected*100)/100})};
   const original=money(data.originalContract,"originalContract");
   const changes=money(data.approvedChanges,"approvedChanges");
   const current=money(data.currentContract,"currentContract");
@@ -24,9 +24,10 @@ export function validatePayApplication(data, tolerance=0.01) {
   if(changes < -original)issues.push({field:"approvedChanges",code:"CHANGES_EXCEED_CONTRACT"});
   if(retainage<0||retainage>earned)issues.push({field:"retainageWithheld",code:"INVALID_RETAINAGE"});
   if(prior<0||prior>net)issues.push({field:"priorPayments",code:"INVALID_PRIOR_PAYMENTS"});
-  if(data.priorPaymentsFundingSource==="owner_funds"&&data.lenderAdvancesToDate>0&&data.priorPayments===data.lenderAdvancesToDate)issues.push({field:"priorPaymentsFundingSource",code:"VERIFY_FUNDING_SOURCE",message:"Owner-paid amounts must not be misrepresented as lender advances"});
+  if(data.priorPaymentsFundingSource==="owner_funds"&&Number(data.lenderAdvancesToDate)>0&&Number(data.priorPayments)===Number(data.lenderAdvancesToDate))issues.push({field:"priorPaymentsFundingSource",code:"VERIFY_FUNDING_SOURCE",message:"Owner-paid amounts must not be misrepresented as lender advances"});
   if(Array.isArray(data.sovRows)&&data.sovRows.length){
     for(const [i,row] of data.sovRows.entries()){
+      if(!row||typeof row!=="object"||Array.isArray(row)){issues.push({field:`sovRows[${i}]`,code:"INVALID_SOV_ROW"});continue;}
       for(const field of ["scheduledValue","completedToDate","retainage"]){
         const value=row?.[field];
         if(value===undefined||value===null||value===""||!Number.isFinite(Number(value))||Number(value)<0)issues.push({field:`sovRows[${i}].${field}`,code:"INVALID_SOV_AMOUNT"});
