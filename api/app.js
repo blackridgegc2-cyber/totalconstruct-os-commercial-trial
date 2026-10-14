@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const {createErrorMiddleware}=require('./_error-middleware');
-const trackError=createErrorMiddleware({version:process.env.VERCEL_GIT_COMMIT_SHA||'unknown',sink:(incident)=>{console.error('TC_SERVER_INCIDENT',JSON.stringify(incident));}});
+const trackError=createErrorMiddleware({version:process.env.VERCEL_GIT_COMMIT_SHA||'unknown',sink:async(incident)=>{console.error('TC_SERVER_INCIDENT',JSON.stringify(incident));const url=process.env.SUPABASE_URL||process.env.NEXT_PUBLIC_SUPABASE_URL;const key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return;try{const response=await fetch(url.replace(/\/$/,'')+'/rest/v1/tc_error_incidents',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({incident_id:incident.incident_id,fingerprint:require('crypto').createHash('sha256').update(incident.message+'|'+incident.component).digest('hex'),source:'backend',message:incident.message,stack:incident.stack,component:incident.component,route:incident.route,environment:incident.environment,state_snapshot:incident.state}),signal:AbortSignal.timeout(2500)});if(!response.ok)console.error('TC_INCIDENT_SINK_STATUS',response.status)}catch(e){console.error('TC_INCIDENT_SINK_FAILURE',e?.name||'error')}}});
 
 module.exports = function handler(req,res){
   try{
