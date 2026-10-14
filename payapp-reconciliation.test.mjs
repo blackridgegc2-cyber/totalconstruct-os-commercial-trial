@@ -22,4 +22,7 @@ assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_f
 assert.equal(validatePayApplication({...base,originalContract:"   "}).issues.some(x=>x.field==="originalContract"&&x.code==="MISSING_OR_INVALID"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{lineId:"001",scheduledValue:400000,completedToDate:20000,retainage:200},{lineId:"001",scheduledValue:385814,completedToDate:25480,retainage:300}]}).issues.some(x=>x.code==="DUPLICATE_SOV_LINE"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{lineId:"001",scheduledValue:400000,completedToDate:20000,retainage:200},{lineId:"002",scheduledValue:385814,completedToDate:25480,retainage:300}]}).valid,true);
+assert.equal(validatePayApplication({...base,currentPaymentDue:false}).issues.some(x=>x.field==="currentPaymentDue"&&x.code==="MISSING_OR_INVALID"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:"   ",retainage:500}]}).issues.some(x=>x.code==="INVALID_SOV_AMOUNT"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:false}]}).issues.some(x=>x.code==="INVALID_SOV_AMOUNT"),true);
 console.log("Payapp reconciliation checks passed");
