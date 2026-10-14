@@ -11,4 +11,9 @@ assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,com
 assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:500},{scheduledValue:0,completedToDate:1,retainage:0}]}).issues.some(x=>x.code==="SOV_OVERBILLING"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:500},{scheduledValue:0,completedToDate:0,retainage:1}]}).issues.some(x=>x.code==="SOV_RETAINAGE_EXCEEDS_EARNED"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:500},{scheduledValue:0,completedToDate:"bad",retainage:0}]}).issues.some(x=>x.code==="INVALID_SOV_AMOUNT"),true);
+assert.equal(validatePayApplication(base,-1).issues[0].code,"INVALID_TOLERANCE");
+assert.equal(validatePayApplication(base,2).issues[0].code,"INVALID_TOLERANCE");
+assert.equal(validatePayApplication({...base,approvedChanges:-900000}).issues.some(x=>x.code==="CHANGES_EXCEED_CONTRACT"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:null}]}).valid,false);
+assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_funds",lenderAdvancesToDate:-10}).issues.some(x=>x.code==="INVALID_LENDER_ADVANCES"),true);
 console.log("Payapp reconciliation checks passed");
