@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const {createErrorMiddleware}=require('./_error-middleware');
+const trackError=createErrorMiddleware({version:process.env.VERCEL_GIT_COMMIT_SHA||'unknown',sink:(incident)=>{console.error('TC_SERVER_INCIDENT',JSON.stringify(incident));}});
 
 module.exports = function handler(req,res){
   try{
@@ -29,6 +31,6 @@ module.exports = function handler(req,res){
     res.setHeader('Cache-Control','no-store, max-age=0');
     res.status(200).send(html);
   }catch(err){
-    res.status(500).send('TotalConstruct bootstrap error: '+err.message);
+    trackError(err,req,res);
   }
 };
