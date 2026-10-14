@@ -11,9 +11,11 @@
   controllercpa:['accounting'],capitalplanning:['all'],workspace:['all'],storagevault:['all'],legalreview:['all'],access:['all'],audit:['all'],employees:['employees_cost'],accountinghub:['accounting']
  };
  const managementOnly=new Set(['capitalplanning','workspace','storagevault','legalreview','access','audit']);
+ const financialOnly=new Set(['controllercpa','accountinghub','integrations','wip','financials']);
+ const financeGrants=new Set(['all','accounting','financial_project','wip']);
  function perms(){const base=(typeof currentUser!=='undefined'&&currentUser?.permissions)||[];const p=typeof currentProject==='function'?currentProject():null;const key=String(p?.id||'');const scoped=key&&window.tcProjectGrants?.projectId===key?window.tcProjectGrants.permissions:[];return [...new Set([...base,...scoped])]}
  function hasAny(list){const p=perms();return p.includes('all')||list.some(x=>p.includes(x))}
- function allowed(id){const need=pagePermissions[id];if(!need)return true;if(managementOnly.has(id))return perms().includes('all');return hasAny(need)}
+ function allowed(id){const need=pagePermissions[id];if(!need)return true;if(managementOnly.has(id))return perms().includes('all');if(financialOnly.has(id)){const p=perms();if(!p.some(g=>financeGrants.has(g)))return false;}return hasAny(need)}
  function restrictPage(page){
   let mask=page.querySelector(':scope > .tcRestrictedMask');
   if(!mask){mask=document.createElement('div');mask.className='tcRestrictedMask card';mask.style.cssText='position:relative;z-index:3;margin:18px;padding:22px';mask.innerHTML='<div class="head"><div><h1>Restricted</h1><div class="sub">Your role does not have access to this function.</div></div></div><div>Access is controlled by your assigned TotalConstruct role and project permissions. Contact a company Administrator if this access is required.</div>';page.prepend(mask)}
