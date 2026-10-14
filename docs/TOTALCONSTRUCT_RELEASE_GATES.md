@@ -66,3 +66,8 @@ Last reviewed: 2026-10-14. This is a reconciliation of prior requests, not a cla
 - 2026-10-14: professional billing, GC mapping, unified allocation ledger and frontend modules exist; direct G703 population and role tests not complete.
 - 2026-10-14: confirmed company_users and tc_owner_payapp_records schema columns exist, including payapp status/locked_at.
 - Prior GitHub financial CI failed on 2026-10-14; re-run and diagnose before launch.
+
+## October 14 additional implementation
+- Added bounded sessionStorage retry queue for sanitized browser incidents (same-tab persistence only; not durable offline infrastructure).
+- Database trigger rejects design invoices exceeding contract value when submitted or approved; verified trigger exists. This does not replace change-order or invoice approval testing.
+- Blackridge-only private rollout; existing GoDaddy-managed domain can host a subdomain without moving website/email; independent backup and deployment required before reliance for daily operations.
