@@ -2,7 +2,7 @@
 'use strict';
 const original=window.tcG702G703;
 if(!original)return;
-const fmt=n=>Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt=n=>Number.isFinite(Number(n))?Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cfg=()=>window.__TC_SUPABASE__||{};
 const root=()=>String(cfg().url||'').replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,'');
