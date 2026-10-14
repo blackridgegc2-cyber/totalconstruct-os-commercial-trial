@@ -16,4 +16,7 @@ assert.equal(validatePayApplication(base,2).issues[0].code,"INVALID_TOLERANCE");
 assert.equal(validatePayApplication({...base,approvedChanges:-900000}).issues.some(x=>x.code==="CHANGES_EXCEED_CONTRACT"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:null}]}).valid,false);
 assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_funds",lenderAdvancesToDate:-10}).issues.some(x=>x.code==="INVALID_LENDER_ADVANCES"),true);
+assert.equal(validatePayApplication({...base,sovRows:[null]}).issues.some(x=>x.code==="INVALID_SOV_ROW"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:"NaN"}]}).issues.some(x=>x.code==="UNCOMPUTABLE_RECONCILIATION"),true);
+assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_funds",lenderAdvancesToDate:"20680"}).issues.some(x=>x.code==="VERIFY_FUNDING_SOURCE"),true);
 console.log("Payapp reconciliation checks passed");
