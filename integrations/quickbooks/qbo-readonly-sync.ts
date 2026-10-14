@@ -31,8 +31,10 @@ export async function queryQbo(creds: QboCredentials, query: string, fetcher: ty
 export async function syncQboEntity(creds: QboCredentials, entity: QboEntity, sink: SyncSink, checkpoint?: SyncCheckpoint, fetcher: typeof fetch = fetch): Promise<number> {
   if (!allowed.has(entity)) throw new Error("Unsupported entity");
   // Replay a two-minute overlap to avoid missing edits on timestamp boundaries.
-  const since = checkpoint?.lastUpdated ? new Date(Date.parse(checkpoint.lastUpdated) - 120000).toISOString() : undefined;
-  if (since && Number.isNaN(Date.parse(since))) throw new Error("Invalid checkpoint");
+  const parsed = checkpoint?.lastUpdated ? Date.parse(checkpoint.lastUpdated) : undefined;
+  if (parsed !== undefined && !Number.isFinite(parsed)) throw new Error("Invalid checkpoint");
+  const since = parsed === undefined ? undefined : new Date(parsed - 120000).toISOString();
+  const syncStartedAt = new Date().toISOString();
   let start = 1, count = 0;
   const max = 500;
   while (true) {
@@ -51,6 +53,8 @@ export async function syncQboEntity(creds: QboCredentials, entity: QboEntity, si
     start += records.length;
     if (start > 1000000) throw new Error("QBO pagination safety limit");
   }
-  await sink.checkpoint({ entity, lastUpdated: new Date().toISOString() });
+  // Advance only to the start of the run so records updated during pagination
+  // remain eligible for the next overlapping sync.
+  await sink.checkpoint({ entity, lastUpdated: syncStartedAt });
   return count;
 }
