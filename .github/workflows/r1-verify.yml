@@ -21,9 +21,11 @@ jobs:
         shell: bash
         run: |
           set -e
-          for f in live.js r1-*.js api/*.js scripts/*.js; do
+          for f in live.js r1-*.js tc-*.js api/*.js scripts/*.js; do
             [ -f "$f" ] && node --check "$f"
           done
+      - name: Native pay application PDF checks
+        run: node --test tests/native-payapp-pdf.test.cjs
       - name: R1 static release gate
         run: node scripts/r1-static-check.js
       - name: Training Center isolation gate
