@@ -1,0 +1,27 @@
+name: Integrated Financial Regression
+on:
+  push:
+    branches: [integrated-build-loader-recovery, main]
+    paths:
+      - 'payapp-reconciliation.mjs'
+      - 'payapp-reconciliation.test.mjs'
+      - '.github/workflows/financial-regression.yml'
+  pull_request:
+    paths:
+      - 'payapp-reconciliation.mjs'
+      - 'payapp-reconciliation.test.mjs'
+      - '.github/workflows/financial-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  financial-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate payment application reconciliation
+        run: node --test payapp-reconciliation.test.mjs
