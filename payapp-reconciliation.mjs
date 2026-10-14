@@ -5,7 +5,7 @@ export function validatePayApplication(data, tolerance=0.01) {
   const hasOwn=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
   if(!Number.isFinite(tolerance)||tolerance<0||tolerance>1)return {valid:false,issues:[{field:"tolerance",code:"INVALID_TOLERANCE"}],computed:{}};
   if(!data||typeof data!=="object"||Array.isArray(data))return {valid:false,issues:[{field:"data",code:"INVALID_PAYAPP"}],computed:{}};
-  const money=(v,k)=>{const n=typeof v==="string"&&v.trim()===""?NaN:Number(v);if(v===null||v===undefined||v===""||!Number.isFinite(n)){issues.push({field:k,code:"MISSING_OR_INVALID",message:k+" must be a valid amount"});return NaN;}return Math.round((n+Number.EPSILON)*100)/100};
+  const money=(v,k)=>{const n=typeof v==="boolean"||typeof v==="string"&&v.trim()===""?NaN:Number(v);if(v===null||v===undefined||v===""||!Number.isFinite(n)){issues.push({field:k,code:"MISSING_OR_INVALID",message:k+" must be a valid amount"});return NaN;}return Math.round((n+Number.EPSILON)*100)/100};
   const close=(actual,expected,field)=>{if(!Number.isFinite(expected)){issues.push({field,code:"UNCOMPUTABLE_RECONCILIATION"});return;}if(Number.isFinite(actual)&&Math.abs(actual-expected)>tolerance)issues.push({field,code:"RECONCILIATION_MISMATCH",actual,expected:Math.round(expected*100)/100})};
   const original=money(data.originalContract,"originalContract");
   const changes=money(data.approvedChanges,"approvedChanges");
@@ -37,7 +37,7 @@ export function validatePayApplication(data, tolerance=0.01) {
       }
       for(const field of ["scheduledValue","completedToDate","retainage"]){
         const value=row?.[field];
-        if(value===undefined||value===null||value===""||!Number.isFinite(Number(value))||Number(value)<0)issues.push({field:`sovRows[${i}].${field}`,code:"INVALID_SOV_AMOUNT"});
+        if(value===undefined||value===null||typeof value==="boolean"||typeof value==="string"&&value.trim()===""||!Number.isFinite(Number(value))||Number(value)<0)issues.push({field:`sovRows[${i}].${field}`,code:"INVALID_SOV_AMOUNT"});
       }
       if(Number(row?.completedToDate)>Number(row?.scheduledValue)+tolerance)issues.push({field:`sovRows[${i}].completedToDate`,code:"SOV_OVERBILLING"});
       if(Number(row?.retainage)>Number(row?.completedToDate)+tolerance)issues.push({field:`sovRows[${i}].retainage`,code:"SOV_RETAINAGE_EXCEEDS_EARNED"});
