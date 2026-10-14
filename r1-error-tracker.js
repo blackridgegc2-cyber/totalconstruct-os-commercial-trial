@@ -2,11 +2,11 @@
 const endpoint='https://swabdflpuvhsrqktvbaa.supabase.co/functions/v1/tc-error-incidents';
 const scrub=(x)=>String(x??'').slice(0,1800).replace(/Bearer\s+\S+/gi,'[redacted]').replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[redacted-email]');
 const env=()=>({userAgent:navigator.userAgent.slice(0,350),version:window.__TC_SUPABASE__?.buildSha||'unknown',language:navigator.language});
-const pending=[];let active=false;const seen=new Map();
+const storageKey='tc_error_pending_v1';const pending=[];try{const cached=JSON.parse(sessionStorage.getItem(storageKey)||'[]');if(Array.isArray(cached))pending.push(...cached.slice(-25))}catch(_){}let active=false;const seen=new Map();const persist=()=>{try{sessionStorage.setItem(storageKey,JSON.stringify(pending.slice(-25)))}catch(_){}};
 function jwt(){return localStorage.getItem('tc_access_token')}
 async function request(body){const token=jwt();if(!token)throw Error('Sign in required');const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Error(data.error||'Incident API failed');return data}
-function report(error,context={}){try{const msg=scrub(error?.message||error||'Unknown error'),key=msg+'|'+location.pathname+'|'+(context.component||'');if(Date.now()-(seen.get(key)||0)<60000)return;seen.set(key,Date.now());pending.push({message:msg,stack:scrub(error?.stack||''),route:location.pathname,component:scrub(context.component||''),source:'frontend',environment:env(),state:{page:location.pathname,visibility:document.visibilityState,feature:context.feature||'unknown'}});if(pending.length>50)pending.shift();flush()}catch(_e){}}
-async function flush(){if(active||!jwt())return;active=true;try{while(pending.length){await request({action:'report',incident:pending[0]});pending.shift()}}catch(_e){}finally{active=false}}
+function report(error,context={}){try{const msg=scrub(error?.message||error||'Unknown error'),key=msg+'|'+location.pathname+'|'+(context.component||'');if(Date.now()-(seen.get(key)||0)<60000)return;seen.set(key,Date.now());pending.push({message:msg,stack:scrub(error?.stack||''),route:location.pathname,component:scrub(context.component||''),source:'frontend',environment:env(),state:{page:location.pathname,visibility:document.visibilityState,feature:context.feature||'unknown'}});if(pending.length>25)pending.shift();persist();flush()}catch(_e){}}
+async function flush(){if(active||!jwt())return;active=true;try{while(pending.length){await request({action:'report',incident:pending[0]});pending.shift();persist()}}catch(_e){}finally{active=false}}
 window.addEventListener('error',e=>report(e.error||e.message,{component:e.filename||'window'}));
 window.addEventListener('unhandledrejection',e=>report(e.reason,{component:'unhandled-promise'}));
 const nativeFetch=window.fetch.bind(window);
