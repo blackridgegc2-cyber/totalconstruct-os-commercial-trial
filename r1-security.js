@@ -11,7 +11,7 @@
   controllercpa:['accounting'],capitalplanning:['all'],workspace:['all'],storagevault:['all'],legalreview:['all'],access:['all'],audit:['all'],employees:['employees_cost'],accountinghub:['accounting']
  };
  const managementOnly=new Set(['capitalplanning','workspace','storagevault','legalreview','access','audit']);
- function perms(){return (typeof currentUser!=='undefined'&&currentUser?.permissions)||[]}
+ function perms(){const base=(typeof currentUser!=='undefined'&&currentUser?.permissions)||[];const p=typeof currentProject==='function'?currentProject():null;const key=String(p?.id||'');const scoped=key&&window.tcProjectGrants?.projectId===key?window.tcProjectGrants.permissions:[];return [...new Set([...base,...scoped])]}
  function hasAny(list){const p=perms();return p.includes('all')||list.some(x=>p.includes(x))}
  function allowed(id){const need=pagePermissions[id];if(!need)return true;if(managementOnly.has(id))return perms().includes('all');return hasAny(need)}
  function restrictPage(page){
@@ -32,7 +32,7 @@
   const gc=$('#globalCreate');if(gc){const p=perms();const canCreate=p.includes('all')||['rfi','submittal','meetings','daily','field','tasks','tm','quality','safety','procurement','schedule','contracts','accounting','equipment','closeout','internal','external','financial_project'].some(x=>p.includes(x));gc.style.display=canCreate?'':'none';gc.setAttribute('aria-hidden',canCreate?'false':'true')}
  }
  document.addEventListener('click',e=>{const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation();const page=document.getElementById(id);if(page)restrictPage(page);return false}},true);
- window.tcSecurity={allowed,guard,pagePermissions};
+ window.tcSecurity={allowed,guard,pagePermissions,permissions:perms};
  document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation()}},true);
  const style=document.createElement('style');style.textContent='.tc-nav-denied{opacity:.38!important;filter:grayscale(1);cursor:not-allowed!important;pointer-events:auto!important}.tc-nav-denied:hover{background:transparent!important}';document.head.appendChild(style);
  new MutationObserver(()=>{try{guard()}catch(e){console.warn('R1 security guard',e)}}).observe(document.documentElement,{subtree:true,childList:true});
