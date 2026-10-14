@@ -19,4 +19,7 @@ assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_f
 assert.equal(validatePayApplication({...base,sovRows:[null]}).issues.some(x=>x.code==="INVALID_SOV_ROW"),true);
 assert.equal(validatePayApplication({...base,sovRows:[{scheduledValue:785814,completedToDate:45480,retainage:"NaN"}]}).issues.some(x=>x.code==="UNCOMPUTABLE_RECONCILIATION"),true);
 assert.equal(validatePayApplication({...base,priorPaymentsFundingSource:"owner_funds",lenderAdvancesToDate:"20680"}).issues.some(x=>x.code==="VERIFY_FUNDING_SOURCE"),true);
+assert.equal(validatePayApplication({...base,originalContract:"   "}).issues.some(x=>x.field==="originalContract"&&x.code==="MISSING_OR_INVALID"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{lineId:"001",scheduledValue:400000,completedToDate:20000,retainage:200},{lineId:"001",scheduledValue:385814,completedToDate:25480,retainage:300}]}).issues.some(x=>x.code==="DUPLICATE_SOV_LINE"),true);
+assert.equal(validatePayApplication({...base,sovRows:[{lineId:"001",scheduledValue:400000,completedToDate:20000,retainage:200},{lineId:"002",scheduledValue:385814,completedToDate:25480,retainage:300}]}).valid,true);
 console.log("Payapp reconciliation checks passed");
