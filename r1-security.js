@@ -33,6 +33,7 @@
  }
  document.addEventListener('click',e=>{const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation();const page=document.getElementById(id);if(page)restrictPage(page);return false}},true);
  window.tcSecurity={allowed,guard,pagePermissions};
+ document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation()}},true);
  const style=document.createElement('style');style.textContent='.tc-nav-denied{opacity:.38!important;filter:grayscale(1);cursor:not-allowed!important;pointer-events:auto!important}.tc-nav-denied:hover{background:transparent!important}';document.head.appendChild(style);
  new MutationObserver(()=>{try{guard()}catch(e){console.warn('R1 security guard',e)}}).observe(document.documentElement,{subtree:true,childList:true});
  addEventListener('DOMContentLoaded',()=>setTimeout(guard,600));setInterval(guard,3000);
