@@ -12,4 +12,26 @@ async function add(){try{const id=await rpc('tc_bank_reconciliation_add_line',{p
 async function load(){try{const s=await rpc('tc_bank_reconciliation_summary',{p_statement_id:value('tcReconStatementId')});const h=host().querySelector('#tcReconSummary');h.innerHTML='<h4>Statement '+esc(s.status)+'</h4><p>Opening: '+esc(s.opening_balance)+' | Closing: '+esc(s.closing_balance)+' | Calculated: '+esc(s.calculated_closing)+' | Difference: '+esc(s.difference)+'</p><p>Matched: '+esc(s.matched_count)+' / '+esc(s.line_count)+' · Unmatched: '+esc(s.unmatched_count)+'</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Matched charge</th></tr></thead><tbody>'+s.lines.map(l=>'<tr><td>'+esc(l.date)+'</td><td>'+esc(l.description)+'</td><td>'+esc(l.amount)+'</td><td>'+esc(l.charge_id||'Unmatched')+'</td></tr>').join('')+'</tbody></table></div>';status('Statement summary loaded.')}catch(e){status(e.message)}}
 async function close(){if(!confirm('Close this bank statement? Closing requires every statement line matched and a zero balance difference.'))return;try{const s=await rpc('tc_bank_reconciliation_close',{p_statement_id:value('tcReconStatementId')});status('Statement reconciled: '+s.statement_id);await load()}catch(e){status(e.message)}}
 let pending=false;function schedule(){if(pending)return;pending=true;setTimeout(()=>{pending=false;mount()},600)}document.addEventListener('DOMContentLoaded',schedule);window.addEventListener('tc:r1-ready',schedule);document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="accountinghub"]'))setTimeout(mount,300)});schedule();
+
+// Supplementary assisted matching. Suggestions never auto-approve a match.
+async function tcAssistReconciliation(){
+ const h=document.getElementById('tcBankRecon');if(!h)return;
+ const id=h.querySelector('#tcReconStatementId')?.value?.trim();
+ const target=h.querySelector('#tcReconAssisted');if(!id||!target)return;
+ target.textContent='Loading statement lines and matching candidates…';
+ try{
+ const s=await rpc('tc_bank_reconciliation_summary',{p_statement_id:id});
+ const lines=s.lines.filter(x=>!x.charge_id);
+ target.innerHTML=lines.length?'<h4>Unmatched statement lines</h4>'+lines.map(l=>'<div class="card"><strong>'+esc(l.date)+' · '+esc(l.description||'Statement entry')+' · '+esc(l.amount)+'</strong><div class="actions"><button class="btn" data-tc-candidates="'+esc(l.id)+'">Find candidate charges</button></div><div id="tcCandidate-'+esc(l.id)+'"></div></div>').join(''):'<p>No unmatched statement lines.</p>';
+ }catch(e){target.textContent=e.message}
+}
+async function tcCandidates(id){
+ const h=document.getElementById('tcBankRecon'),statement=h?.querySelector('#tcReconStatementId')?.value?.trim(),out=document.getElementById('tcCandidate-'+id);if(!statement||!out)return;
+ out.textContent='Finding candidates…';
+ try{const a=await rpc('tc_bank_reconciliation_match_candidates',{p_statement_id:statement,p_line_id:id,p_limit:25});out.innerHTML=a.length?a.map(c=>'<div class="actions"><span>'+esc(c.transaction_date)+' · '+esc(c.merchant||c.description)+' · '+esc(c.amount)+' · '+esc(c.day_gap)+' days apart</span><button class="btn" data-tc-match="'+esc(c.id)+'" data-tc-line="'+esc(id)+'">Match</button></div>').join(''):'<p>No candidate charge with matching account, amount and nearby date.</p>'}catch(e){out.textContent=e.message}
+}
+async function tcMatch(line,charge){const h=document.getElementById('tcBankRecon'),statement=h?.querySelector('#tcReconStatementId')?.value?.trim();if(!statement||!confirm('Match this imported charge to the statement line?'))return;try{await rpc('tc_bank_reconciliation_match_line',{p_statement_id:statement,p_line_id:line,p_charge_id:charge});await tcAssistReconciliation();h.querySelector('#tcReconLoad')?.click()}catch(e){status(e.message)}}
+document.addEventListener('click',e=>{const b=e.target.closest?.('button');if(!b)return;if(b.dataset.tcCandidates)tcCandidates(b.dataset.tcCandidates);if(b.dataset.tcMatch)tcMatch(b.dataset.tcLine,b.dataset.tcMatch);if(b.id==='tcReconAssist')tcAssistReconciliation()});
+function tcAttachReconAssist(){const h=document.getElementById('tcBankRecon');if(!h||document.getElementById('tcReconAssisted'))return;const p=document.createElement('div');p.innerHTML='<div class="actions"><button class="btn" id="tcReconAssist">Find unmatched statement lines</button></div><div id="tcReconAssisted"></div>';h.appendChild(p)}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(tcAttachReconAssist,1000));window.addEventListener('tc:r1-ready',()=>setTimeout(tcAttachReconAssist,1000));document.addEventListener('click',e=>{if(e.target.closest?.('[data-page="accountinghub"]'))setTimeout(tcAttachReconAssist,900)});
 })();
