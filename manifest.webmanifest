@@ -1,7 +1,7 @@
 {
-  "name": "Total Connect — Project Workspace",
-  "short_name": "Total Connect",
-  "description": "Secure project collaboration and approvals",
+  "name": "TotalConstruct OS — Blackridge",
+  "short_name": "TotalConstruct",
+  "description": "Private Blackridge Construction project management workspace",
   "start_url": "/?source=home-screen",
   "scope": "/",
   "display": "standalone",
