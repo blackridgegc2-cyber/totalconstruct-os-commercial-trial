@@ -71,3 +71,12 @@ Last reviewed: 2026-10-14. This is a reconciliation of prior requests, not a cla
 - Added bounded sessionStorage retry queue for sanitized browser incidents (same-tab persistence only; not durable offline infrastructure).
 - Database trigger rejects design invoices exceeding contract value when submitted or approved; verified trigger exists. This does not replace change-order or invoice approval testing.
 - Blackridge-only private rollout; existing GoDaddy-managed domain can host a subdomain without moving website/email; independent backup and deployment required before reliance for daily operations.
+
+## Blackridge-only release sequencing (2026-10-14)
+- **Gate 0 — build integrity:** passing CI, deploy preview, secrets/security review, backup and restore evidence.
+- **Gate 1 — identity and tenancy:** GC, accounting, subcontractor, architect, engineer, owner, lender, and unauthorized user role matrix; no cross-project or cross-company disclosure.
+- **Gate 2 — project operations:** project setup, budget/cost codes, commitments, RFI, submittals, photos, daily logs, document control, notifications.
+- **Gate 3 — finance:** approved chart of accounts; charge import, project/CSI splits, exceptions, balanced journal, independent approval/posting, reversal, bank reconciliation, WIP/Controller reports and traceable audit.
+- **Gate 4 — Academic Orchard PA1:** reconcile G702/G703 figures and source contract, map architect/MEP/civil/precon, subcontractor/design billing, owner/lender visibility, immutable full PDF and signed routing through lender-approved invoice.
+- **Gate 5 — operational signoff:** Blackridge administrator executes browser/mobile tests, recovery drill and explicit go/no-go decision. External multi-tenant rollout remains separate.
+- **No completion percentages without a measured test inventory.** A successful migration or Vercel READY does not pass any of the above gates by itself.
