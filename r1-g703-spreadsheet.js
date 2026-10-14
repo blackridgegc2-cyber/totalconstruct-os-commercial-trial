@@ -14,7 +14,7 @@ async function open(app){
  if(app.certification_status==='Certified')throw Error('Certified applications are locked. Create an authorized revision to change billing.');const id=encodeURIComponent,base='?project_id=eq.'+id(app.project_id)+'&subcontractor_id=eq.'+id(app.subcontractor_id)+'&contract_key=eq.'+id(app.contract_key);
  const [lines,existing,priorApps]=await Promise.all([read('subcontractor_sov_lines',base+'&active=eq.true&select=*&order=line_no.asc'),read('subcontractor_payapp_line_items','?submission_id=eq.'+id(app.id)+'&select=*'),read('subcontractor_portal_submissions',base+'&submission_type=eq.Pay%20Application&certification_status=eq.Certified&created_at=lt.'+id(app.created_at)+'&select=id&order=created_at.desc&limit=1')]);
  if(!lines.length)throw Error('No Schedule of Values lines are available.');
- const prior=priorApps[0]?await read('subcontractor_payapp_line_items','?submission_id=eq.'+id(priorApps[0].id)+'&select=*'):[];
+ if(!localStorage.getItem('tc_access_token'))throw Error('Your session has expired. Sign in again to edit billing.');const prior=priorApps[0]?await read('subcontractor_payapp_line_items','?submission_id=eq.'+id(priorApps[0].id)+'&select=*'):[];
  const byId=new Map(existing.map(x=>[x.sov_line_id,x])),previous=new Map(prior.map(x=>[x.sov_line_id,x]));
  document.getElementById('tcG703Fullscreen')?.remove();
  const overlay=document.createElement('div');overlay.id='tcG703Fullscreen';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','G703 continuation sheet');overlay.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#f5f7fa;color:#182434;display:flex;flex-direction:column;font:13px Arial,sans-serif';
