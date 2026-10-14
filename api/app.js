@@ -20,7 +20,7 @@ module.exports = function handler(req,res){
       drawings:['r1-drawing-upload-live.js'],
       contracts:['r1-document-import.js','r1-contract-intelligence-live.js'],
       financials:['r1-finance.js','r1-document-import.js'],
-      accountinghub:['r1-controller-posted-journal.js','r1-journal-approval-workqueue.js','r1-journal-composer.js'],
+      accountinghub:['r1-controller-posted-journal.js','r1-journal-approval-workqueue.js','r1-journal-composer.js','r1-charge-split-review.js'],
       estimating:['r1-document-import.js'],
       payapps:['r1-owner-payapp-live.js','r1-design-professional-billing.js','r1-sov-payapp.js','r1-g702-g703.js','r1-g703-spreadsheet.js','r1-training-signature-trial.js'],
       preconstruction:[]
