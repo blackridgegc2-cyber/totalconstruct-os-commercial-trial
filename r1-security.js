@@ -11,7 +11,7 @@
   controllercpa:['accounting'],capitalplanning:['all'],workspace:['all'],storagevault:['all'],legalreview:['all'],access:['all'],audit:['all'],employees:['employees_cost'],accountinghub:['accounting']
  };
  const managementOnly=new Set(['capitalplanning','workspace','storagevault','legalreview','access','audit']);
- function perms(){return currentUser?.permissions||[]}
+ function perms(){return (typeof currentUser!=='undefined'&&currentUser?.permissions)||[]}
  function hasAny(list){const p=perms();return p.includes('all')||list.some(x=>p.includes(x))}
  function allowed(id){const need=pagePermissions[id];if(!need)return true;if(managementOnly.has(id))return perms().includes('all');return hasAny(need)}
  function restrictPage(page){
@@ -23,16 +23,17 @@
  function guard(){
   $$('.nav[data-page], [data-jump]').forEach(n=>{
    const id=n.dataset.page||n.dataset.jump;if(!id)return;
-   const ok=allowed(id);n.style.display=ok?'':'none';n.setAttribute('aria-hidden',ok?'false':'true');
+   const ok=allowed(id);n.style.display='';n.classList.toggle('tc-nav-denied',!ok);n.setAttribute('aria-disabled',ok?'false':'true');n.setAttribute('aria-hidden','false');n.setAttribute('tabindex',ok?'0':'-1');n.title=ok?(n.dataset.tcOriginalTitle||n.title||''):'Access not granted for your role or project';
   });
   $$('.page').forEach(page=>{
-   if(!page.id)return;const ok=allowed(page.id);if(!ok&&page.classList.contains('active'))restrictPage(page);else if(ok)unrestrictPage(page)
+   if(!page.id)return;const ok=allowed(page.id);if(!ok)restrictPage(page);else unrestrictPage(page)
   });
   $$('[data-sensitive-action]').forEach(b=>{const need=(b.dataset.sensitiveAction||'all').split(',');const ok=hasAny(need);b.disabled=!ok;b.title=ok?'':'Insufficient permission';});
   const gc=$('#globalCreate');if(gc){const p=perms();const canCreate=p.includes('all')||['rfi','submittal','meetings','daily','field','tasks','tm','quality','safety','procurement','schedule','contracts','accounting','equipment','closeout','internal','external','financial_project'].some(x=>p.includes(x));gc.style.display=canCreate?'':'none';gc.setAttribute('aria-hidden',canCreate?'false':'true')}
  }
  document.addEventListener('click',e=>{const n=e.target.closest?.('.nav[data-page], [data-jump]');if(!n)return;const id=n.dataset.page||n.dataset.jump;if(id&&!allowed(id)){e.preventDefault();e.stopImmediatePropagation();const page=document.getElementById(id);if(page)restrictPage(page);return false}},true);
  window.tcSecurity={allowed,guard,pagePermissions};
+ const style=document.createElement('style');style.textContent='.tc-nav-denied{opacity:.38!important;filter:grayscale(1);cursor:not-allowed!important;pointer-events:auto!important}.tc-nav-denied:hover{background:transparent!important}';document.head.appendChild(style);
  new MutationObserver(()=>{try{guard()}catch(e){console.warn('R1 security guard',e)}}).observe(document.documentElement,{subtree:true,childList:true});
  addEventListener('DOMContentLoaded',()=>setTimeout(guard,600));setInterval(guard,3000);
 })();
