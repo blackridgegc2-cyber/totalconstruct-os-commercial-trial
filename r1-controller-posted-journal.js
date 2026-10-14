@@ -35,7 +35,7 @@ async function load(){
  }catch(e){if(n!==seq)return;host.innerHTML='<div class="callout">'+esc(e.message||'Unable to retrieve accounting data')+'</div>';}
 }
 function mount(){
- const page=document.getElementById('accountinghub');if(!page||page.dataset.tcJournalMounted)return;
+ const page=document.getElementById('accountinghub');if(!page)return;if(page.dataset.tcJournalMounted&&el())return;
  page.dataset.tcJournalMounted='1';
  const section=document.createElement('div');section.className='card section';section.innerHTML='<h3>Controller · Posted General Ledger</h3><div class="sub">Verified posted journal entries only. Forecasts and unposted charges are excluded.</div><div class="actions section"><label>From <input type="date" id="tcJournalFrom"></label><label>Through <input type="date" id="tcJournalTo"></label><button class="btn" id="tcJournalRefresh">Refresh posted journals</button></div><div id="tcControllerPostedJournal"></div>';
  page.appendChild(section);
