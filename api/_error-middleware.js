@@ -1,0 +1,5 @@
+'use strict';
+const crypto=require('crypto');
+function sanitize(value){return String(value??'').slice(0,1800).replace(/Bearer\s+\S+/gi,'[redacted]').replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[redacted-email]')}
+function createErrorMiddleware({sink,version='unknown'}={}){return function trackApiError(error,req,res,next){const id='TC-'+crypto.randomUUID();const incident={incident_id:id,source:'backend',message:sanitize(error?.message||'Unhandled server error'),stack:sanitize(error?.stack||''),component:sanitize(req?.url?.split('?')[0]||'api'),route:sanitize(req?.url?.split('?')[0]||''),environment:{version,runtime:'node'},state:{method:req?.method,status:500}};try{Promise.resolve(sink?.(incident)).catch(()=>{})}catch(_){}if(res.headersSent){if(next)return next(error);return}res.setHeader('X-TC-Incident-ID',id);res.status(500).json({error:'Internal server error',incident_id:id})}}
+module.exports={createErrorMiddleware};
