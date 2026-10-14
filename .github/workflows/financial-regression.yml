@@ -9,6 +9,8 @@ on:
       - 'payapp-release-gates.test.mjs'
       - 'payapp-transition-policy.mjs'
       - 'payapp-transition-policy.test.mjs'
+      - 'payapp-server-adapter.mjs'
+      - 'payapp-server-adapter.test.mjs'
       - '.github/workflows/financial-regression.yml'
   pull_request:
     paths:
@@ -18,6 +20,8 @@ on:
       - 'payapp-release-gates.test.mjs'
       - 'payapp-transition-policy.mjs'
       - 'payapp-transition-policy.test.mjs'
+      - 'payapp-server-adapter.mjs'
+      - 'payapp-server-adapter.test.mjs'
       - '.github/workflows/financial-regression.yml'
   workflow_dispatch:
 permissions:
@@ -32,4 +36,4 @@ jobs:
         with:
           node-version: '22'
       - name: Validate payment application reconciliation
-        run: node --test payapp-reconciliation.test.mjs payapp-release-gates.test.mjs payapp-transition-policy.test.mjs
+        run: node --test payapp-reconciliation.test.mjs payapp-release-gates.test.mjs payapp-transition-policy.test.mjs payapp-server-adapter.test.mjs
