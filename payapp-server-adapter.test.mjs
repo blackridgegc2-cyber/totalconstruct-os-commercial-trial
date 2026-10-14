@@ -1,0 +1,16 @@
+import assert from "node:assert/strict";
+import {evaluateServerPayAppTransition as check} from "./payapp-server-adapter.mjs";
+const id="pa1",project="project1",digest="a".repeat(64),document={id:"doc1",sha256:digest};
+const payapp={id,project_id:project,status:"contractor_signed",revision:1};
+const authenticatedUser={id:"user1",authorizedProjectId:project};
+const signatureRecords=[{payapp_id:id,project_id:project,document_id:"doc1",document_sha256:digest,signer_role:"contractor",status:"verified",signed_at:"2026-10-13T00:00:00Z"}];
+const auditRecords=[{action:"document_locked",evidence:{payapp_id:id,project_id:project,document_sha256:digest}}];
+const base={action:"submit_to_owner",payapp,authenticatedUser,projectRole:"contractor",document,signatureRecords,auditRecords,financialValidation:{valid:true,issues:[]},expectedRevision:1,requestId:"request-123456"};
+assert.equal(check(base).allowed,true);
+assert.equal(check({...base,authenticatedUser:{id:"user1",authorizedProjectId:"other"}}).allowed,false);
+assert.equal(check({...base,signatureRecords:[{...signatureRecords[0],status:"pending"}]}).allowed,false);
+assert.equal(check({...base,document:{...document,sha256:"b".repeat(64)}}).allowed,false);
+assert.equal(check({...base,auditRecords:[]}).allowed,false);
+assert.equal(check({...base,expectedRevision:0}).allowed,false);
+assert.equal(check({...base,projectRole:"lender"}).allowed,false);
+console.log("Server adapter policy tests passed");
