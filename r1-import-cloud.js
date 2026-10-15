@@ -43,7 +43,7 @@ function merge(p,rows){
  state.costLines=state.costLines.filter(r=>!matches(r,p)||!r.cloudManaged);
  if(budget){
   const lines=budget.payload.proposedLines||[];
-  state.costLines=state.costLines.filter(r=>!matches(r,p)).concat(lines.map((r,i)=>({...r,code:r.costCode,item:r.description,cls:'Imported',budget:r.originalBudget,forecast:r.forecastCost,project:p.name,projectId:p.id,id:'BUD-'+String(i+1).padStart(4,'0'),sourceFile:budget.file_name,sourcePath:budget.source_path,cloudManaged:true,cloudImportId:budget.id,cloudRevision:budget.revision,cloudLineIndex:i})));
+  state.costLines=state.costLines.filter(r=>!matches(r,p)||r.budgetLineId).concat(lines.map((r,i)=>({...r,code:r.costCode,item:r.description,cls:r.costType||r.cost_type||'Imported',budget:r.originalBudget,forecast:r.forecastCost,project:p.name,projectId:p.id,id:'BUD-'+String(i+1).padStart(4,'0'),sourceFile:budget.file_name,sourcePath:budget.source_path,cloudManaged:true,cloudImportId:budget.id,cloudRevision:budget.revision,cloudLineIndex:i})));
   p.estimatedCost=budget.payload.totalOriginal;p.forecastCost=budget.payload.totalForecast;
  }
  // Canonical project columns are loaded from projects; only additional reviewed
