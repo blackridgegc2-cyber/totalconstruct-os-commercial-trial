@@ -20,11 +20,12 @@
    window.tcOpenRecordForm({recordType:'AI Data Change Review',title:'Confirm Existing Data Changes',subtitle:'AI found values that differ from data already stored in TotalConstruct. Nothing below will be replaced unless you explicitly approve that field.',submitLabel:'Apply Approved Changes',fields,onSave:d=>{const approved=new Set(meta.requireReview?[]:(changes||[]).filter(x=>!meaningful(x.current)||same(x.current,x.proposed)).map(x=>x.field));conflicts.forEach((x,i)=>{if(d[`decision_${i}`]==='Replace with AI Value')approved.add(x.field)});resolve({approved:true,approvedFields:approved})}})
   })
  }
- async function reviewAndApply({target,proposed={},labels={},sources={},fileName='',onApply,requireReview=false,validateTarget}={}){
+ async function reviewAndApply({target,proposed={},labels={},sources={},fileName='',onApply,requireReview=false,validateTarget,persistChanges}={}){
   if(!target||!proposed)return {applied:[],skipped:[]};
   const changes=Object.keys(proposed).filter(k=>meaningful(proposed[k])).map(field=>({field,label:labels[field]||field,current:target[field],proposed:proposed[field],source:sources[field]||fileName}));
   const decision=await confirmOverwrite(changes,{fileName,requireReview});if(!decision.approved)return {applied:[],skipped:changes.map(x=>x.field)};
   if(typeof validateTarget==='function')validateTarget();
+  if(typeof persistChanges==='function'){await persistChanges(Object.fromEntries(changes.filter(c=>decision.approvedFields.has(c.field)).map(c=>[c.field,c.proposed])));if(typeof validateTarget==='function')validateTarget()}
   const applied=[],skipped=[];for(const c of changes){if(decision.approvedFields.has(c.field)){target[c.field]=c.proposed;applied.push(c.field)}else skipped.push(c.field)}
   if(typeof onApply==='function')await onApply({applied,skipped,changes});
   return {applied,skipped};
