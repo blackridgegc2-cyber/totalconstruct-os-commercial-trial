@@ -8,6 +8,7 @@ Budget imports and contract source/review metadata now persist in canonical proj
 - Contract fields apply only after cloud approval succeeds. Approved terms and original sources reopen in the Contracts screen. Existing original contract value is preserved when current contract terms change.
 - Budget and contract source files require the same project/role permission as their private import records. Ordinary project source replacement and deletion are blocked through existing client policies to preserve uploaded originals. Other source reads/uploads remain available to active project members and scoped company management.
 - Additional project grants stay within their permission and project. Revocation and inactive profiles are checked by the database on each operation. Privileged implementations live in a private schema; public RPC wrappers use invoker security.
+- Normalize the configured database URL to the service origin at bootstrap. The configured /rest/v1/ suffix previously caused duplicate API paths in modules that appended their own REST path.
 - The live project loader now retains company IDs needed by accounting panels. An account with no authorized projects cannot fall back to a prior local project list.
 - Message and project-event requests discard responses after project/login changes; stale forms cannot submit to the previously selected project.
 - Import records from the previous session are removed on logout/session change. Canonical imports take precedence over matching browser-local import copies.
@@ -21,7 +22,7 @@ Budget imports and contract source/review metadata now persist in canonical proj
 These migrations were applied through the connected database migration service. The local Supabase CLI was unavailable. No user credentials or provider secrets were requested or retrieved.
 
 ## Verification
-- 33 Node regression tests, pay-app reconciliation, static/module checks, and Training Center isolation pass.
+- 34 Node regression tests, pay-app reconciliation, static/module checks, and Training Center isolation pass.
 - 19 database acceptance checks passed using independent temporary identities and actual authenticated-role RLS. These cover reopen, authorization, source visibility, scoped grants/revocation, inactive users, revision conflicts, approval idempotence, atomic zero forecasts, forecast edits, source immutability and audit evidence. All test users, companies, projects, imports and storage metadata rolled back.
 - DOM-emulation QA passed: import observer settles; late message/event responses cannot replace the newly selected project's content; help input is escaped; labelled help-library fallback works. This is not a browser login acceptance result.
 - Database advisor reported no findings for the new import objects and functions. Existing unrelated findings were not changed by this release.

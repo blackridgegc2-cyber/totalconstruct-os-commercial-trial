@@ -8,7 +8,7 @@ module.exports = function handler(req,res){
     const htmlPath=path.join(process.cwd(),'index.html');
     let html=fs.readFileSync(htmlPath,'utf8');
     const config={
-      url:process.env.NEXT_PUBLIC_SUPABASE_URL||'',
+      url:String(process.env.NEXT_PUBLIC_SUPABASE_URL||'').trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/i,''),
       key:process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||'',
       buildSha:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GIT_COMMIT_SHA||'local'
     };
