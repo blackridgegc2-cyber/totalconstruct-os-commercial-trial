@@ -3,7 +3,7 @@
  function form(o){if(!window.tcOpenRecordForm)throw new Error('Form engine unavailable.');window.tcOpenRecordForm(o)}
  function wire(){
   const b=$('#tcInviteEmployee');if(!b||b.dataset.secureInvite==='1')return;
-  b.dataset.secureInvite='1';
+  b.dataset.secureInvite='1';if(window.tcUserAccess){b.onclick=()=>window.tcUserAccess.invite();return;}
   b.onclick=()=>form({
    title:'Invite Employee',
    subtitle:'Creates the secured TotalConstruct account invitation. Legal/audit reviewers are granted separately from Legal / Audit Review.',

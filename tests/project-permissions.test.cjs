@@ -38,3 +38,12 @@ test('logout during an in-flight request does not block subsequent login',async(
  h.reply(1,[{enabled:true,permission:'rfi'}]);await q;
  h.reply(0,[{enabled:true,permission:'all'}]);await p;assert.deepEqual(grants(h.api),['rfi']);
 });
+test('complete scoped permissions replace global role defaults and preserve explicit denial',async()=>{
+ const h=harness(),p=h.api.refresh();h.reply(0,[{permission:'__scoped__',enabled:true},{permission:'project',enabled:true},{permission:'rfi',enabled:false},{permission:'drawings',enabled:true}]);await p;
+ assert.deepEqual(Array.from(h.api.effective(['project','rfi','financial_project'])),['project','drawings']);assert.equal(grants(h.api).includes('__scoped__'),false);
+ h.state.project='p2';assert.deepEqual(Array.from(h.api.effective(['project','rfi'])),[]);
+});
+test('legacy additive replies can also remove a base permission explicitly',async()=>{
+ const h=harness(),p=h.api.refresh();h.reply(0,[{permission:'rfi',enabled:false},{permission:'drawings',enabled:true}]);await p;
+ assert.deepEqual(Array.from(h.api.effective(['project','rfi'])),['project','drawings']);
+});
