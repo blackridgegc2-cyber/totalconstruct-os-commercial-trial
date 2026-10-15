@@ -23,15 +23,16 @@ async function refresh(force=false){
   if(!r.ok)throw Error('Project permission request failed ('+r.status+')');
   const rows=await r.json();
   if(!Array.isArray(rows))throw Error('Invalid project permission response');
-  const grants=rows.filter(x=>x?.enabled===true&&typeof x.permission==='string').map(x=>x.permission);
+  const grants=rows.filter(x=>x?.enabled===true&&typeof x.permission==='string'&&x.permission!=='__scoped__').map(x=>x.permission);const denied=rows.filter(x=>x?.enabled===false&&typeof x.permission==='string').map(x=>x.permission);const scoped=rows.some(x=>x.permission==='__scoped__'&&x.enabled===true);
   if(request===revision&&same(now,scope())){
-   loaded={...now,at:Date.now(),permissions:grants};
+   loaded={...now,at:Date.now(),permissions:grants,denied,scoped};
    window.tcProjectGrants={projectId:now.projectId,permissions:grants.slice()};
   }
  }catch(e){if(request===revision)clear();console.warn('Scoped permissions unavailable',e)}
  finally{if(request===revision){pending=null;window.tcSecurity?.guard?.();if(!same(now,scope()))queueMicrotask(()=>refresh())}}
 }
-window.tcProjectPermissions={permissions,refresh:()=>refresh(true),grant:async(userId,permission,enabled)=>{
+function effective(base=[]){const grants=permissions();if(!loaded||!same(loaded,scope())||Date.now()-loaded.at>=maxAge)return [];if(loaded.scoped)return base.includes('all')&&grants.includes('project')?['all',...grants]:grants;return [...new Set([...base,...grants])].filter(p=>!loaded.denied?.includes(p));}
+window.tcProjectPermissions={permissions,effective,refresh:()=>refresh(true),grant:async(userId,permission,enabled)=>{
  const now=scope();if(!now.projectId||!now.token)throw Error('Select a project and sign in');
  const r=await fetch(cfg.url.replace(/\/$/,'')+'/rest/v1/rpc/tc_set_project_permission',{method:'POST',headers:{apikey:cfg.key,Authorization:'Bearer '+now.token,'Content-Type':'application/json'},body:JSON.stringify({p_project:now.projectId,p_user:userId,p_permission:permission,p_enabled:!!enabled})});
  if(!r.ok)throw Error('Permission update rejected ('+r.status+')');

@@ -13,7 +13,7 @@
  const managementOnly=new Set(['capitalplanning','workspace','storagevault','legalreview','access','audit']);
  const financialOnly=new Set(['controllercpa','accountinghub','integrations','wip','financials']);
  const financeGrants=new Set(['all','accounting','financial_project','wip']);
- function perms(){const base=(typeof currentUser!=='undefined'&&currentUser?.permissions)||[];const scoped=window.tcProjectPermissions?.permissions?.()||[];return [...new Set([...base,...scoped])]}
+ function perms(){const base=(typeof currentUser!=='undefined'&&currentUser?.permissions)||[];if(window.tcProjectPermissions?.effective)return window.tcProjectPermissions.effective(base);const scoped=window.tcProjectPermissions?.permissions?.()||[];return [...new Set([...base,...scoped])]}
  function hasAny(list){const p=perms();return p.includes('all')||list.some(x=>p.includes(x))}
  function allowed(id){const need=pagePermissions[id];if(!need)return true;if(managementOnly.has(id))return perms().includes('all');if(financialOnly.has(id)){const p=perms();if(!p.some(g=>financeGrants.has(g)))return false;}return hasAny(need)}
  function restrictPage(page){
