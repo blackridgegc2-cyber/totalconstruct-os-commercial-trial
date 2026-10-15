@@ -24,8 +24,10 @@ jobs:
           for f in live.js r1-*.js tc-*.js api/*.js scripts/*.js; do
             [ -f "$f" ] && node --check "$f"
           done
-      - name: Native pay application PDF checks
-        run: node --test tests/native-payapp-pdf.test.cjs
+      - name: Financial reconciliation and regression checks
+        run: |
+          node payapp-reconciliation.test.mjs
+          node --test tests/*.cjs tests/*.test.js
       - name: R1 static release gate
         run: node scripts/r1-static-check.js
       - name: Training Center isolation gate
