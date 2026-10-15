@@ -20,6 +20,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control','no-store, max-age=0');
   res.status(coreReady ? 200 : 503).json({
     ok: coreReady,
+    aiConfigured: Boolean(process.env.OPENAI_API_KEY),
     timestamp: new Date().toISOString(),
     supabaseUrlConfigured: Boolean(root),
     publishableKeyConfigured: Boolean(key),

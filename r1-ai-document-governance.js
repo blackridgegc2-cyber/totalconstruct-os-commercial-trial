@@ -11,19 +11,20 @@
   })
  }
  function confirmOverwrite(changes=[],meta={}){
-  const conflicts=(changes||[]).filter(x=>meaningful(x.current)&&meaningful(x.proposed)&&!same(x.current,x.proposed));
+  const conflicts=meta.requireReview?(changes||[]):(changes||[]).filter(x=>meaningful(x.current)&&meaningful(x.proposed)&&!same(x.current,x.proposed));
   if(!conflicts.length)return Promise.resolve({approved:true,approvedFields:new Set((changes||[]).map(x=>x.field))});
   return new Promise(resolve=>{
    if(!window.tcOpenRecordForm){resolve({approved:false,approvedFields:new Set()});return}
    const fields=[];
    conflicts.forEach((x,i)=>{fields.push({section:`${x.label||x.field}`,name:`current_${i}`,label:'Current Value',value:String(x.current??''),readonly:true},{section:`${x.label||x.field}`,name:`proposed_${i}`,label:'AI Proposed Value',value:String(x.proposed??''),readonly:true},{section:`${x.label||x.field}`,name:`decision_${i}`,label:'Decision',type:'select',value:'Keep Current',options:['Keep Current','Replace with AI Value'],required:true},{section:`${x.label||x.field}`,name:`source_${i}`,label:'Source',value:x.source||meta.fileName||'Uploaded document',readonly:true})});
-   window.tcOpenRecordForm({recordType:'AI Data Change Review',title:'Confirm Existing Data Changes',subtitle:'AI found values that differ from data already stored in TotalConstruct. Nothing below will be replaced unless you explicitly approve that field.',submitLabel:'Apply Approved Changes',fields,onSave:d=>{const approved=new Set((changes||[]).filter(x=>!meaningful(x.current)||same(x.current,x.proposed)).map(x=>x.field));conflicts.forEach((x,i)=>{if(d[`decision_${i}`]==='Replace with AI Value')approved.add(x.field)});resolve({approved:true,approvedFields:approved})}})
+   window.tcOpenRecordForm({recordType:'AI Data Change Review',title:'Confirm Existing Data Changes',subtitle:'AI found values that differ from data already stored in TotalConstruct. Nothing below will be replaced unless you explicitly approve that field.',submitLabel:'Apply Approved Changes',fields,onSave:d=>{const approved=new Set(meta.requireReview?[]:(changes||[]).filter(x=>!meaningful(x.current)||same(x.current,x.proposed)).map(x=>x.field));conflicts.forEach((x,i)=>{if(d[`decision_${i}`]==='Replace with AI Value')approved.add(x.field)});resolve({approved:true,approvedFields:approved})}})
   })
  }
- async function reviewAndApply({target,proposed={},labels={},sources={},fileName='',onApply}={}){
+ async function reviewAndApply({target,proposed={},labels={},sources={},fileName='',onApply,requireReview=false,validateTarget}={}){
   if(!target||!proposed)return {applied:[],skipped:[]};
   const changes=Object.keys(proposed).filter(k=>meaningful(proposed[k])).map(field=>({field,label:labels[field]||field,current:target[field],proposed:proposed[field],source:sources[field]||fileName}));
-  const decision=await confirmOverwrite(changes,{fileName});if(!decision.approved)return {applied:[],skipped:changes.map(x=>x.field)};
+  const decision=await confirmOverwrite(changes,{fileName,requireReview});if(!decision.approved)return {applied:[],skipped:changes.map(x=>x.field)};
+  if(typeof validateTarget==='function')validateTarget();
   const applied=[],skipped=[];for(const c of changes){if(decision.approvedFields.has(c.field)){target[c.field]=c.proposed;applied.push(c.field)}else skipped.push(c.field)}
   if(typeof onApply==='function')await onApply({applied,skipped,changes});
   return {applied,skipped};
