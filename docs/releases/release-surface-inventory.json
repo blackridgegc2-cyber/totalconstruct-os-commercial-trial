@@ -922,6 +922,10 @@
       "acceptance": "unverified"
     },
     {
+      "path": "tc-resumable-upload.js",
+      "acceptance": "unverified"
+    },
+    {
       "path": "tc-sov-editor.js",
       "acceptance": "unverified"
     }
