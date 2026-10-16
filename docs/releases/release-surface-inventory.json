@@ -1,0 +1,3751 @@
+{
+  "baseline": "5c9b0f7441cfe37fc8745fe4825983ef014fcd49",
+  "discovery": "Static candidate inventory; dynamic controls and runtime permissions require authenticated discovery. Unverified is not implemented or accepted.",
+  "routes": [
+    {
+      "name": "access",
+      "sources": [
+        "r1-user-profile-editor.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "accountinghub",
+      "sources": [
+        "r1-bank-reconciliation.js",
+        "r1-bank-statement-csv-import.js",
+        "r1-charge-journal-prepare.js",
+        "r1-charge-split-review.js",
+        "r1-controller-posted-journal.js",
+        "r1-controller-statements.js",
+        "r1-finance-release-diagnostics.js",
+        "r1-financial-feed-status.js",
+        "r1-journal-approval-workqueue.js",
+        "r1-journal-composer.js",
+        "r1-payapp-release-diagnostics.js",
+        "r1-posted-job-cost-report.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "admin",
+      "sources": [
+        "r1-error-tracker.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "closeout",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "compliance",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "contracts",
+      "sources": [
+        "index.html",
+        "r1-contract-intelligence-live.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "daily",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "drawings",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "equipment",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "fees",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "financials",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "home",
+      "sources": [
+        "index.html",
+        "r1-company-branding-safe.js",
+        "r1-final-readiness-safe.js",
+        "r1-new-project-intake-safe.js",
+        "r1-project-lifecycle.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "integrations",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "meetings",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "oh",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "payapps",
+      "sources": [
+        "index.html",
+        "r1-design-professional-billing.js",
+        "r1-owner-payapp-live.js",
+        "r1-training-signature-trial.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "preconstruction",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "procurement",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "projectboard",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "projects",
+      "sources": [
+        "r1-new-project-intake-safe.js"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "quality",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "reports",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "rfis",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "safety",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "schedule",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "statusreport",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "subcontractors",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "submittals",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "tm",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "warranty",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "wip",
+      "sources": [
+        "index.html"
+      ],
+      "acceptance": "unverified"
+    },
+    {
+      "name": "workspace",
+      "sources": [
+        "r1-company-branding-safe.js"
+      ],
+      "acceptance": "unverified"
+    }
+  ],
+  "modules": [
+    {
+      "path": "enterprise-forms-v2.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v3.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v4.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v5.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v6.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v7.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v8.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms-v9.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "enterprise-forms.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "index.html",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-acceptance.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-accounting.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-action-guard.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-actions.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-admin.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-ai-document-governance.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-ai-help-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-ai-intake-review.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-archive-lock-freeze.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-asbuilt-evidence.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-asbuilt-layer-review.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-asbuilt-multilayer.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-asbuilt-overlay.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-asbuilt-verification.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-bank-reconciliation.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-bank-statement-csv-import.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-batch-bid-noi.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-bid-revision-control.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-branding.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-bulk-project-documents.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-change-controls.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-charge-journal-prepare.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-charge-split-review.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-closeout-package.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-closeout-readiness.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-cloud-document-inventory.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-cloud.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-company-branding-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-contract-intelligence-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-controller-posted-journal.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-controller-statements.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-coordination-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-cost-codes-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-daily-meeting-forms-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-delta-intelligence.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-design-professional-billing.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-document-import.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-document-indexer.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-document-intelligence.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-drawing-upload-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-drawing-workspace.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-entry-ux.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-error-tracker.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-executive-kpi-drilldown.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-feedback-attachments.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-feedback-center.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-feedback-cloud.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-field-evidence-documents.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-field-record-attachments.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-field.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-final-readiness-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-finance-release-diagnostics.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-finance.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-financial-feed-status.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-form-renderers.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-g702-g703.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-g703-spreadsheet.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-globalcreate.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-hardening.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-import-cloud.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-install-shortcut.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-invite-secure.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-invite-status.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-issued-document-integrity-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-journal-approval-workqueue.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-journal-composer.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-legacy-action-guard.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-legacy-surface.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-markup-canvas.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-module-forms.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-new-project-intake-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-noi-negotiation.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-notice-closeout-forms-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-notifications.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-operational2.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-owner-payapp-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-owner-portal-access.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-owner-portal-session.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-owner-warranty-portal.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-package-controls.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-payapp-release-diagnostics.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-persistence.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-playground-entry.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-post-execution-controls.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-posted-job-cost-report.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-preissue-contract-check.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-print-bridge.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-procurement-forms-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-doc-compat-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-doc-launcher-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-doc-log-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-document-workflow-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-forms.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-professional-issue-capture-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-archive.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-create-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-drilldown.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-entry-bridge-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-events.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-intake-ai-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-lifecycle.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-messaging.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-project-permission-overrides.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-quality-inspections.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-quality-punch-forms-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-readiness-detail.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-record-drawing-closeout.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-record-evidence-provenance.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-record-lifecycle.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-record-set-output.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-release-gate.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-role-test.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-role-workspace-links.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-safety-forms-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-scope-generation.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-secure-subcontractor-portal.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-security.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-sov-payapp.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-sub-payapp-controls.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-sub-payapp-hardening.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontract-assembly.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontract-execution-lifecycle.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontract-issue-package.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontract-readiness-detail.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontract-workflow.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontractor-invite.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontractor-portal-financials.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontractor-portal-lifecycle.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-subcontractor-portal-submissions.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-submission-review-queue.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-suite-integration.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-template-library.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-training-company-sandbox.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-training-finance-gate.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-training-isolation.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-training-learning-center-safe.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-training-signature-trial.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-ui.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-user-access-live.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-user-profile-editor.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-verify.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-assets.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-correspondence.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-dashboard.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-milestones.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-notices.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-warranty-permissions.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-workflow-gates.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-workflows.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-access-role-bases.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-cost-code-matcher.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-help-guides.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-import-data.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-native-payapp-pdf.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-native-payapp-review.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-payapp-pdf-layout.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "tc-sov-editor.js",
+      "acceptance": "unverified"
+    }
+  ],
+  "controls": [
+    {
+      "source": "enterprise-forms-v2.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v2.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v2.js",
+      "id": null,
+      "label": "${esc(draft)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v2.js",
+      "id": null,
+      "label": "${esc(submit)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "${esc(draft)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "${esc(submit)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Upload & Index",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "newContractRecord",
+      "label": "+ Contract / CO",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "uploadContractDoc",
+      "label": "Upload Document",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "payAppSetup",
+      "label": "Pay App Setup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "addSovLine",
+      "label": "+ SOV Line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "uploadDailyDoc",
+      "label": "Upload / Photos",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v3.js",
+      "id": "uploadCloseout",
+      "label": "+ Upload Closeout Document",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "${esc(submit)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "Upload & Index",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": null,
+      "label": "${esc(c[0])}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": "tcAddAct",
+      "label": "+ Activity",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": "tcBid",
+      "label": "+ Bid Package / ITB",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": "tcCloseItem",
+      "label": "+ Closeout Item",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v4.js",
+      "id": "tcPrintPay",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": null,
+      "label": "${esc(submit)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": "tcEditProject",
+      "label": "Edit Current Project",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": null,
+      "label": "Open",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": "tcQualityPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v5.js",
+      "id": "tcClosePrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v6.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v6.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v6.js",
+      "id": null,
+      "label": "${esc(submit)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v7.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v7.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v7.js",
+      "id": null,
+      "label": "${esc(button)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v8.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v8.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v8.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v8.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Upload & Start Conversion Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcUploadTemplate",
+      "label": "+ Upload Form / Template",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcUploadTemplate",
+      "label": "+ Upload Form / Template",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Accept Field",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Reject",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Edit",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcAddConvertedField",
+      "label": "+ Add / Correct Field",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcRegenerate",
+      "label": "Regenerate / Match Original More Closely",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcApproveData",
+      "label": "Approve Data Form",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcRejectData",
+      "label": "Reject Data Form",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcOpenPrint",
+      "label": "Open Print/PDF Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcApprovePrint",
+      "label": "Approve Print/PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcRejectPrint",
+      "label": "Reject Print/PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcRejectGlobal",
+      "label": "Reject Entire Template",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": "tcApproveGlobal",
+      "label": "Approve Both / Activate",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms-v9.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms.js",
+      "id": null,
+      "label": "${esc(draftLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "enterprise-forms.js",
+      "id": null,
+      "label": "${esc(submitLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "tcInstallButton",
+      "label": "Install Total Connect",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "tcInstallDismiss",
+      "label": "Later",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "loginBtn",
+      "label": "Sign in",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Project ▾",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Financials ▾",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Field ▾",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "globalCreate",
+      "label": "＋ Create",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "askAI",
+      "label": "✦ Ask AI",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "bannerImageBtn",
+      "label": "Set Project Image",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "closeAI",
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "sendAI",
+      "label": "Send",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Reset Trial Data",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "savePayappRoute",
+      "label": "Save Project Workflow",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "View Pay Applications",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Open Dashboard",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addProject",
+      "label": "+ Opportunity / Project",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "csvWip",
+      "label": "Export CSV",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addEmp",
+      "label": "+ Employee",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addTime",
+      "label": "+ Time Entry",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addCostLine",
+      "label": "+ Cost Line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "importBudget",
+      "label": "Import Budget",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "finalPA",
+      "label": "Finalize / Roll Forward",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addSubcontractor",
+      "label": "+ Add Subcontractor",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "messageSub",
+      "label": "Message Subcontractor",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "broadcastSubs",
+      "label": "Broadcast to Project Subs",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Warranty / Asset",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Design Issue",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ VE Item",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Owner Decision",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addCompliance",
+      "label": "+ Requirement",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Upload Requirements Document",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "previewStatus",
+      "label": "Print / Distribution Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "publishStatus",
+      "label": "Publish Snapshot",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "Import P6 / MSP",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "publishSchedule",
+      "label": "Publish Update",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "newDrawingFolder",
+      "label": "+ New Folder",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "aiOrganizeDrawings",
+      "label": "Auto-Categorize",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "uploadDrawingsBtn",
+      "label": "+ Upload Drawings",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "newDrawingSet",
+      "label": "+ New Drawing Set",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "toolPointer",
+      "label": "Pointer",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "toolHighlight",
+      "label": "Highlight",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "toolRect",
+      "label": "Rectangle",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "toolFree",
+      "label": "Freehand",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "toolText",
+      "label": "Text",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "clearMarkup",
+      "label": "Clear Markups",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "saveMarkup",
+      "label": "Save Markup Layer",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Meeting",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "addTask",
+      "label": "+ Task",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "newInternal",
+      "label": "New Internal Message",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": "newExternal",
+      "label": "Compose External Message",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Daily Report",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ T&M Ticket",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Action Plan",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "OSHA Reports",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Incident / Near Miss",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "index.html",
+      "id": null,
+      "label": "+ Equipment",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "live.js",
+      "id": "tcRecordClose",
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "live.js",
+      "id": "tcRecordCancel",
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "live.js",
+      "id": null,
+      "label": "${esc(opts.submitLabel||'Save Record')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "live.js",
+      "id": "tcLoginBtn",
+      "label": "Sign in",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-acceptance.js",
+      "id": "tcAcceptanceRun",
+      "label": "Run Safe Acceptance Test",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-accounting.js",
+      "id": "tcTxn",
+      "label": "+ Purchase / Receipt",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-accounting.js",
+      "id": "tcAsset",
+      "label": "+ Fixed Asset",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-accounting.js",
+      "id": "tc401k",
+      "label": "+ 401(k) Entry",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcInviteEmployee",
+      "label": "+ Invite Employee",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcSaveApprovalPolicy",
+      "label": "Save Financial Policy",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcArchiveProject",
+      "label": "Archive Current Project",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcBackupDest",
+      "label": "Customer Backup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcLegalHold",
+      "label": "+ Legal Hold",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-admin.js",
+      "id": "tcReviewAccess",
+      "label": "Grant Review Access",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-ai-intake-review.js",
+      "id": "${esc(r.id)}",
+      "label": "Review Info",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": "tcABEvidClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": "tcABEvidClear",
+      "label": "Clear Selection",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": "tcABEvidApply",
+      "label": "Attach Selected Evidence",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": null,
+      "label": "Open Source Record",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-evidence.js",
+      "id": null,
+      "label": "Open Stored Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-layer-review.js",
+      "id": null,
+      "label": "Review / Verify",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-layer-review.js",
+      "id": null,
+      "label": "Base Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-layer-review.js",
+      "id": null,
+      "label": "Change Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-multilayer.js",
+      "id": "tcABMultiPrint",
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-multilayer.js",
+      "id": "tcABMultiClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-multilayer.js",
+      "id": "${esc(a.id)}",
+      "label": "Save Layer",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-multilayer.js",
+      "id": "${esc(a.id)}",
+      "label": "Provenance",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-multilayer.js",
+      "id": "${esc(x.s.id)}",
+      "label": "Open Working As-Built",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-overlay.js",
+      "id": "tcABSaveAlign",
+      "label": "Save Alignment",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-overlay.js",
+      "id": "tcABClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-overlay.js",
+      "id": "tcABReset",
+      "label": "Reset",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-verification.js",
+      "id": "tcFieldRedline",
+      "label": "Add Field Redline",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-verification.js",
+      "id": "${esc(a.id)}",
+      "label": "Base Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-verification.js",
+      "id": "${esc(a.id)}",
+      "label": "Variation Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-asbuilt-verification.js",
+      "id": null,
+      "label": "Review / Verify",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": "tcReconCreate",
+      "label": "Create statement period",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": "tcReconLoad",
+      "label": "Load summary",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": "tcReconAdd",
+      "label": "Add matched line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": "tcReconClose",
+      "label": "Close balanced statement",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": null,
+      "label": "Unmatch",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": null,
+      "label": "Find candidate charges",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": null,
+      "label": "Match",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-reconciliation.js",
+      "id": "tcReconAssist",
+      "label": "Find unmatched statement lines",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bank-statement-csv-import.js",
+      "id": "tcCsvImportSubmit",
+      "label": "Import previewed lines",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-batch-bid-noi.js",
+      "id": null,
+      "label": "Review / Route",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bid-revision-control.js",
+      "id": "${esc(c.id)}",
+      "label": "${c.finalSourceDocumentId?'Change Final Basis':'Select Final Basis'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-branding.js",
+      "id": "tcSaveBranding",
+      "label": "Save Branding",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-branding.js",
+      "id": "tcRemoveLogo",
+      "label": "Remove Logo",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bulk-project-documents.js",
+      "id": "tcBulkStart",
+      "label": "Upload Files",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-bulk-project-documents.js",
+      "id": "tcBulkClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-change-controls.js",
+      "id": "tcAddChange",
+      "label": "+ Change Order / COP",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-change-controls.js",
+      "id": null,
+      "label": "${next}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-charge-journal-prepare.js",
+      "id": "tcPrepareCharge",
+      "label": "Prepare journal draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-charge-split-review.js",
+      "id": null,
+      "label": "Remove",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-charge-split-review.js",
+      "id": "tcSplitAdd",
+      "label": "Add allocation",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-charge-split-review.js",
+      "id": "tcSplitSave",
+      "label": "Validate & Save Split",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-package.js",
+      "id": "tcCompileCloseout",
+      "label": "Compile New Revision",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-package.js",
+      "id": "${x.id}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-package.js",
+      "id": "${x.id}",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-package.js",
+      "id": "${x.id}",
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-readiness.js",
+      "id": "tcCloseoutDetail",
+      "label": "Readiness Detail",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-readiness.js",
+      "id": "tcCloseoutAdd",
+      "label": "+ Add New",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-closeout-readiness.js",
+      "id": "${esc(x.id)}",
+      "label": "Review / Update",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-controller-posted-journal.js",
+      "id": "tcJournalRefresh",
+      "label": "Refresh posted journals",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-controller-statements.js",
+      "id": "tcStatementsRun",
+      "label": "Run Controller reports",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-daily-meeting-forms-safe.js",
+      "id": "tcfdClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-daily-meeting-forms-safe.js",
+      "id": "tcfdDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-daily-meeting-forms-safe.js",
+      "id": "tcfdPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-daily-meeting-forms-safe.js",
+      "id": "tcfdPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-daily-meeting-forms-safe.js",
+      "id": "tcfdIssue",
+      "label": "${type==='Daily Report'?'Complete & File':'Issue Minutes'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-delta-intelligence.js",
+      "id": "tcAnalyzeDeltas",
+      "label": "Analyze Extracted Revisions",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-delta-intelligence.js",
+      "id": "${esc(x.id)}",
+      "label": "Original vs Revised",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": "tcDesignClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": null,
+      "label": "Submit Invoice",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": null,
+      "label": "Add to GC Pay App",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": null,
+      "label": "Approve (GC)",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": null,
+      "label": "Return",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-design-professional-billing.js",
+      "id": null,
+      "label": "Reject",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-document-indexer.js",
+      "id": "tcProcessDocs",
+      "label": "Process ${pending||'Pending'} Uploads",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-document-indexer.js",
+      "id": "tcReindexDocs",
+      "label": "Re-index Current Project",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-document-intelligence.js",
+      "id": "${esc(x.id)}",
+      "label": "Open Source & Detail",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-document-intelligence.js",
+      "id": "${esc(x.id)}",
+      "label": "Open Overlay Record",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-drawing-workspace.js",
+      "id": "${esc(s.id)}",
+      "label": "Open / Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-drawing-workspace.js",
+      "id": "${esc(s.id)}",
+      "label": "Revisions",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-drawing-workspace.js",
+      "id": "${esc(s.id)}",
+      "label": "Capture / Markup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-entry-ux.js",
+      "id": "tcEntryClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-entry-ux.js",
+      "id": "tcEntryCancel",
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-entry-ux.js",
+      "id": null,
+      "label": "${esc(opts.submitLabel||'Save Record')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-error-tracker.js",
+      "id": "tcIncidentClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-error-tracker.js",
+      "id": "tcIncidentSelectAll",
+      "label": "Select All",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-error-tracker.js",
+      "id": "tcIncidentBatchExport",
+      "label": "Copy Selected AI Repair Briefs",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-error-tracker.js",
+      "id": null,
+      "label": "Forward Webhook",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-error-tracker.js",
+      "id": null,
+      "label": "Copy ChatGPT Patch Brief",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-executive-kpi-drilldown.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-executive-kpi-drilldown.js",
+      "id": null,
+      "label": "${esc(def.sourceLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-executive-kpi-drilldown.js",
+      "id": "tcKpiOpenSource",
+      "label": "${esc(def.sourceLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-executive-kpi-drilldown.js",
+      "id": "tcKpiOpenSource",
+      "label": "${esc(def.sourceLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-executive-kpi-drilldown.js",
+      "id": "tcKpiOpenSource",
+      "label": "${esc(def.sourceLabel)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-feedback-center.js",
+      "id": "tcFeedbackNew",
+      "label": "+ Submit Feedback",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-feedback-center.js",
+      "id": "tcQuarterlyReview",
+      "label": "Quarterly AI Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-feedback-center.js",
+      "id": "tcFeedbackClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-field-evidence-documents.js",
+      "id": "tcUploadFieldEvidence",
+      "label": "Upload Evidence Document",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-field.js",
+      "id": "tcTakePhoto",
+      "label": "📷 Take / Add Photos",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-field.js",
+      "id": "tcFieldReport",
+      "label": "+ Field Report",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-field.js",
+      "id": "tcAEObs",
+      "label": "+ A/E Observation",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-field.js",
+      "id": "tcAEPdf",
+      "label": "Upload A/E PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-final-readiness-safe.js",
+      "id": "tcFRUpload",
+      "label": "Upload + AI Read",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-final-readiness-safe.js",
+      "id": "tcFRTemplates",
+      "label": "Template Coverage",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-final-readiness-safe.js",
+      "id": "tcFRIntegrations",
+      "label": "Integration Center",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-final-readiness-safe.js",
+      "id": "tcFRPrint",
+      "label": "Print Current Page",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance-release-diagnostics.js",
+      "id": "tcFinanceCheckRun",
+      "label": "Run integrity checks",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance.js",
+      "id": "saveHealth",
+      "label": "Recalculate",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance.js",
+      "id": "saveTax",
+      "label": "Recalculate Tax Forecast",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance.js",
+      "id": "taxCSV",
+      "label": "Export CSV",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance.js",
+      "id": null,
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-finance.js",
+      "id": "saveCapital",
+      "label": "Recalculate Scenario",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-financial-feed-status.js",
+      "id": "tcFeedsRefresh",
+      "label": "Refresh connection status",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g702-g703.js",
+      "id": "${esc(a.id)}",
+      "label": "G703 Worksheet",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g702-g703.js",
+      "id": "${esc(a.id)}",
+      "label": "G702 Summary",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g702-g703.js",
+      "id": "${esc(a.id)}",
+      "label": "Certify Billing",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g703-spreadsheet.js",
+      "id": "tcG703Save",
+      "label": "Save Worksheet",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g703-spreadsheet.js",
+      "id": "tcG703Print",
+      "label": "Print G703",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g703-spreadsheet.js",
+      "id": "tcG703Export",
+      "label": "Export CSV",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-g703-spreadsheet.js",
+      "id": "tcG703Close",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-issued-document-integrity-safe.js",
+      "id": null,
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-approval-workqueue.js",
+      "id": null,
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-approval-workqueue.js",
+      "id": null,
+      "label": "Approve",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-approval-workqueue.js",
+      "id": null,
+      "label": "Post",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-approval-workqueue.js",
+      "id": "tcQueueRefresh",
+      "label": "Refresh workqueue",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": "tcChartToggle",
+      "label": "Chart of accounts",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": "tcJournalReload",
+      "label": "Reload company data",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": "tcSaveAccount",
+      "label": "Save account",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": "tcAddJournalLine",
+      "label": "Add line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-journal-composer.js",
+      "id": "tcCreateJournal",
+      "label": "Save balanced draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": null,
+      "label": "${x[1]}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupUndo",
+      "label": "Undo",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupClear",
+      "label": "Clear Markups",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupPrint",
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupSave",
+      "label": "Save Exhibit",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupPrev",
+      "label": "◀ Page",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupNext",
+      "label": "Page ▶",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupZoomOut",
+      "label": "−",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupZoomIn",
+      "label": "+",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-markup-canvas.js",
+      "id": "tcMarkupFit",
+      "label": "Fit",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-module-forms.js",
+      "id": null,
+      "label": "+ Add New",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-module-forms.js",
+      "id": null,
+      "label": "Customize Forms",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-module-forms.js",
+      "id": null,
+      "label": "Upload + AI Read",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-module-forms.js",
+      "id": null,
+      "label": "Select Standard",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-module-forms.js",
+      "id": null,
+      "label": "Preview / Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpBack",
+      "label": "Back",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpConfirm",
+      "label": "Confirm Review & Create Project",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpAi",
+      "label": "Upload & AI Project Setup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpManual",
+      "label": "Manual Project Setup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpAnalyze",
+      "label": "Scan with AI & Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpReview",
+      "label": "Review Project Setup",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-new-project-intake-safe.js",
+      "id": "tcNpClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-noi-negotiation.js",
+      "id": "tcNoiPrepare",
+      "label": "${versions.length?'Create Next NOI Revision':'Prepare NOI from Approved Scope'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-noi-negotiation.js",
+      "id": "tcNoiEdit",
+      "label": "Edit Current NOI",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-noi-negotiation.js",
+      "id": "tcNoiExecute",
+      "label": "Mark NOI Executed",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notice-closeout-forms-safe.js",
+      "id": "tcNcClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notice-closeout-forms-safe.js",
+      "id": "tcNcDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notice-closeout-forms-safe.js",
+      "id": "tcNcPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notice-closeout-forms-safe.js",
+      "id": "tcNcPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notice-closeout-forms-safe.js",
+      "id": "tcNcIssue",
+      "label": "Issue",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notifications.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notifications.js",
+      "id": null,
+      "label": "${esc(opts.cancelLabel||'Cancel')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-notifications.js",
+      "id": null,
+      "label": "${esc(opts.confirmLabel||'Continue')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": "tcDocsClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": "tcDocsUpload",
+      "label": "Add Document to PA #'+Number(record.number)+'",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": null,
+      "label": "Open",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": "tcClosePayAppView",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": "tcAddOwnerPayApp",
+      "label": "+ Add Pay Application",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": "tcPayAppTemplate",
+      "label": "View / Select Template",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-payapp-live.js",
+      "id": null,
+      "label": "Application #'+Number(x.number||0)+' · '+String(x.periodThrough||'No period')+' · '+money(x.currentPaymentDue)+' · '+String(x.status||'Draft')+' — View",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-portal-access.js",
+      "id": "tcOwnerPortalInvite",
+      "label": "+ Invite Owner",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-portal-access.js",
+      "id": "${a.id}",
+      "label": "Review Access",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-warranty-portal.js",
+      "id": "tcOwnerWarrantySubmit",
+      "label": "+ Submit Request",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-warranty-portal.js",
+      "id": "${r.id}",
+      "label": "Confirm Complete",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-warranty-portal.js",
+      "id": "tcOwnerWarrantyRefresh",
+      "label": "Refresh Owner Intake",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-warranty-portal.js",
+      "id": "${r.id}",
+      "label": "Review / Update",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-owner-warranty-portal.js",
+      "id": "${r.id}",
+      "label": "Import to Warranty",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-package-controls.js",
+      "id": "${r.id}",
+      "label": "Upload + AI Read",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-payapp-release-diagnostics.js",
+      "id": "tcSignatureCheckRun",
+      "label": "Run signature checks",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-persistence.js",
+      "id": "tcCloudTestBtn",
+      "label": "Test Cloud Save + Reopen",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-post-execution-controls.js",
+      "id": "${esc(c.id)}",
+      "label": "Sync Commitment",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-post-execution-controls.js",
+      "id": "${esc(c.id)}",
+      "label": "Controls",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-post-execution-controls.js",
+      "id": "${esc(c.id)}",
+      "label": "Controlled Correction",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-posted-job-cost-report.js",
+      "id": "tcJobCostRun",
+      "label": "Run job-cost report",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-posted-job-cost-report.js",
+      "id": "tcJobCostExport",
+      "label": "Export CSV",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-preissue-contract-check.js",
+      "id": "tcPICRun",
+      "label": "Run / Refresh Pre-Issue Check",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-preissue-contract-check.js",
+      "id": null,
+      "label": "${esc(r.label)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-procurement-forms-safe.js",
+      "id": "tcProcClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-procurement-forms-safe.js",
+      "id": "tcProcDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-procurement-forms-safe.js",
+      "id": "tcProcPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-procurement-forms-safe.js",
+      "id": "tcProcPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-procurement-forms-safe.js",
+      "id": "tcProcIssue",
+      "label": "Issue",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-launcher-safe.js",
+      "id": null,
+      "label": "Document Log",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-launcher-safe.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Cancel",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Record Progression",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Issued Record",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Track",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Open Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "History",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-doc-log-safe.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-document-workflow-safe.js",
+      "id": "tcDocClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-document-workflow-safe.js",
+      "id": "tcDocDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-document-workflow-safe.js",
+      "id": "tcDocPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-document-workflow-safe.js",
+      "id": "tcDocPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-professional-document-workflow-safe.js",
+      "id": "tcDocIssue",
+      "label": "${type==='Change Order'?'Issue for Approval':type==='RFI'?'Issue RFI':type==='Submittal'?'Submit for Review':'Issue / Send'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-archive.js",
+      "id": "tcCompileArchive",
+      "label": "Compile Archive Revision",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-archive.js",
+      "id": "${a.id}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-archive.js",
+      "id": "${a.id}",
+      "label": "Print Register",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-archive.js",
+      "id": "${a.id}",
+      "label": "Generate / Download ZIP",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-events.js",
+      "id": null,
+      "label": "Publish to Project Team",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-project-messaging.js",
+      "id": null,
+      "label": "Send to Project Team",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-inspections.js",
+      "id": "tcAddQualityInspection",
+      "label": "+ Add Inspection",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-inspections.js",
+      "id": "${x.id}",
+      "label": "Review / Reinspect",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-inspections.js",
+      "id": "${x.id}",
+      "label": "Create Punch Item",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-punch-forms-safe.js",
+      "id": "tcQpClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-punch-forms-safe.js",
+      "id": "tcQpDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-punch-forms-safe.js",
+      "id": "tcQpPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-punch-forms-safe.js",
+      "id": "tcQpPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-quality-punch-forms-safe.js",
+      "id": "tcQpIssue",
+      "label": "Issue / File",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-readiness-detail.js",
+      "id": null,
+      "label": "Open Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-readiness-detail.js",
+      "id": null,
+      "label": "Review Gap",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-readiness-detail.js",
+      "id": null,
+      "label": "Edit Scope",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-readiness-detail.js",
+      "id": null,
+      "label": "Resolve Conflict",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-readiness-detail.js",
+      "id": null,
+      "label": "Edit / Complete",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-drawing-closeout.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-drawing-closeout.js",
+      "id": "tcRDReadiness",
+      "label": "Readiness Detail",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-drawing-closeout.js",
+      "id": "tcRDCompile",
+      "label": "${compileLabel(sets)}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-drawing-closeout.js",
+      "id": "${esc(s.id)}",
+      "label": "Evidence (${evidenceCount(s)})",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-drawing-closeout.js",
+      "id": "${esc(s.id)}",
+      "label": "${issued(s)?'Open Issued Set':'Open Record Set'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-lifecycle.js",
+      "id": null,
+      "label": "Advance to ${next}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-set-output.js",
+      "id": "${esc(s.id)}",
+      "label": "Preview Package",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-set-output.js",
+      "id": "${esc(s.id)}",
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-record-set-output.js",
+      "id": "${esc(s.id)}",
+      "label": "Generate Merged Drawing PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-role-test.js",
+      "id": "tcExitViewAs",
+      "label": "Return to Actual Login",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-safety-forms-safe.js",
+      "id": "tcSafetyClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-safety-forms-safe.js",
+      "id": "tcSafetyDraft",
+      "label": "Save Draft",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-safety-forms-safe.js",
+      "id": "tcSafetyPreview",
+      "label": "Preview",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-safety-forms-safe.js",
+      "id": "tcSafetyPrint",
+      "label": "Print / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-safety-forms-safe.js",
+      "id": "tcSafetyIssue",
+      "label": "File Record",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": "tcRunScope",
+      "label": "Generate / Refresh Scope Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": "tcEditFullScope",
+      "label": "Edit Full Scope",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": null,
+      "label": "${esc(g.sourceRef||'Open Evidence')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": null,
+      "label": "Add to Scope",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": null,
+      "label": "Modify & Add",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-scope-generation.js",
+      "id": null,
+      "label": "Deny / Do Not Add",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-secure-subcontractor-portal.js",
+      "id": "tcPublishPortalSafe",
+      "label": "Publish Portal-Safe Data",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sov-payapp.js",
+      "id": "${esc(c.id)}",
+      "label": "Add SOV Line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-controls.js",
+      "id": null,
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-controls.js",
+      "id": null,
+      "label": "Lien Waiver",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-controls.js",
+      "id": null,
+      "label": "Authorize Payment",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-controls.js",
+      "id": null,
+      "label": "Record Paid",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-hardening.js",
+      "id": null,
+      "label": "Final / Retainage",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-sub-payapp-hardening.js",
+      "id": null,
+      "label": "Close Payment Cycle",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-assembly.js",
+      "id": "tcAssembleSub",
+      "label": "${a?'Refresh Assembly':'Assemble Subcontract'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-assembly.js",
+      "id": "tcReviewAssembly",
+      "label": "PM Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-assembly.js",
+      "id": "tcPreviewAssembly",
+      "label": "Preview / Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-assembly.js",
+      "id": null,
+      "label": "Open Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-execution-lifecycle.js",
+      "id": "${esc(c.id)}",
+      "label": "${esc(c.portalStatus||profile(c)?.portalStatus||profile(c)?.inviteStatus||'Inactive')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-execution-lifecycle.js",
+      "id": "${esc(c.id)}",
+      "label": "Record Sub Executed",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-execution-lifecycle.js",
+      "id": "${esc(c.id)}",
+      "label": "Mark Fully Executed",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-execution-lifecycle.js",
+      "id": "${esc(c.id)}",
+      "label": "History",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-issue-package.js",
+      "id": "tcAssemble",
+      "label": "Assemble Subcontract",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-issue-package.js",
+      "id": "tcAsmReview",
+      "label": "PM Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-issue-package.js",
+      "id": "tcAsmPreview",
+      "label": "Preview / Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-issue-package.js",
+      "id": null,
+      "label": "Open Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-readiness-detail.js",
+      "id": null,
+      "label": "Open Source",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-readiness-detail.js",
+      "id": null,
+      "label": "Review / Resolve",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-workflow.js",
+      "id": "${esc(c.id||",
+      "label": "Edit Scope",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-workflow.js",
+      "id": "${esc(c.id||",
+      "label": "Gaps",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-workflow.js",
+      "id": "${esc(c.id||",
+      "label": "Readiness",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontract-workflow.js",
+      "id": "${esc(c.id||",
+      "label": "NOI Executed",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-invite.js",
+      "id": "${esc(s.id)}",
+      "label": "${/Invite Pending|Invite Accepted|Active/i.test(String(s.portalStatus||s.portal_status||''))?'Reinvite / Manage':'Invite Subcontractor'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-financials.js",
+      "id": "${esc(c.id)}",
+      "label": "Open Portal View",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-lifecycle.js",
+      "id": "${esc(r.id)}",
+      "label": "Deactivate",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-lifecycle.js",
+      "id": "${esc(r.id)}",
+      "label": "Reactivate",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-lifecycle.js",
+      "id": null,
+      "label": "Refresh Status",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-submissions.js",
+      "id": null,
+      "label": "Submit Pay Application",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-submissions.js",
+      "id": null,
+      "label": "Upload Lien Waiver",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-submissions.js",
+      "id": null,
+      "label": "Upload Compliance",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-subcontractor-portal-submissions.js",
+      "id": null,
+      "label": "Submit Deliverable",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-submission-review-queue.js",
+      "id": "${esc(x.id)}",
+      "label": "${esc(x.source_document_name||'Source')}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-submission-review-queue.js",
+      "id": "${esc(x.id)}",
+      "label": "Approve Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-submission-review-queue.js",
+      "id": "${esc(x.id)}",
+      "label": "Return",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-submission-review-queue.js",
+      "id": "${esc(x.id)}",
+      "label": "Reject",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-template-library.js",
+      "id": null,
+      "label": "Print / Save PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-template-library.js",
+      "id": "tcAddTemplate",
+      "label": "Customize / Upload Company Form",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-template-library.js",
+      "id": "tcAiDoc",
+      "label": "Upload Project Document + AI Read",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-template-library.js",
+      "id": "${esc(t.id)}",
+      "label": "Preview / Print",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-learning-center-safe.js",
+      "id": null,
+      "label": "Practice in Training",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-learning-center-safe.js",
+      "id": null,
+      "label": "${done?'Mark incomplete':'Mark lesson complete'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-learning-center-safe.js",
+      "id": null,
+      "label": "${i===LESSONS.length-1?'Finish':'Next lesson'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-learning-center-safe.js",
+      "id": null,
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-signature-trial.js",
+      "id": "tcStartSignatureTrial",
+      "label": "Generate Test QR",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-signature-trial.js",
+      "id": "tcResetSignatureTrial",
+      "label": "Reset View",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-signature-trial.js",
+      "id": "tcRevokeSig",
+      "label": "Revoke request",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-signature-trial.js",
+      "id": "tcNextTestStep",
+      "label": "Review Pay Applications",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-training-signature-trial.js",
+      "id": "tcNewTestRequest",
+      "label": "Start Another Test",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-user-profile-editor.js",
+      "id": "tcProfileRefresh",
+      "label": "Refresh",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-user-profile-editor.js",
+      "id": null,
+      "label": "Save Profile",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-verify.js",
+      "id": "tcVerifyBtn",
+      "label": "R1 Check: ${r.pass?'PASS':r.findings.length+' issue(s)'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "tcWarrantySync",
+      "label": "Link Accepted Closeout",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "tcWarrantyReport",
+      "label": "Owner Register / PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "tcWarrantyClaim",
+      "label": "+ Service Request",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "tcWarrantyAdd",
+      "label": "+ Add New",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "${esc(a.id)}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "${esc(a.id)}",
+      "label": "Service",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-assets.js",
+      "id": "${esc(c.id)}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-correspondence.js",
+      "id": "tcWarrantyCorrReport",
+      "label": "Print / Save Register",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-correspondence.js",
+      "id": "${esc(n.id)}",
+      "label": "${c?'Review Delivery':'Prepare Correspondence'}",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-dashboard.js",
+      "id": "tcWarrantyPortfolioPrint",
+      "label": "Print / Save Portfolio Report",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-milestones.js",
+      "id": "tcWarrantyMilestoneRefresh",
+      "label": "Generate / Refresh Milestones",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-milestones.js",
+      "id": "tcWarrantyMilestoneReport",
+      "label": "Print / Save Calendar",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-milestones.js",
+      "id": "tcWarrantyMilestoneAdd",
+      "label": "+ Add New",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-milestones.js",
+      "id": "${m.id}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-notices.js",
+      "id": "tcWarrantyNoticeGenerate",
+      "label": "Generate / Refresh Drafts",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-notices.js",
+      "id": "tcWarrantyNoticeReport",
+      "label": "Print / Save Register",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-notices.js",
+      "id": "tcWarrantyNoticeAdd",
+      "label": "+ Add New",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-warranty-notices.js",
+      "id": "${n.id}",
+      "label": "Review",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-workflow-gates.js",
+      "id": "tcIssueSelectedContract",
+      "label": "Issue Selected Contract / Work Order",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-workflow-gates.js",
+      "id": null,
+      "label": "Approve Pay App",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-workflow-gates.js",
+      "id": null,
+      "label": "Release Payment",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-workflow-gates.js",
+      "id": null,
+      "label": "Issue Notice / NOI",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "r1-workflow-gates.js",
+      "id": null,
+      "label": "Distribute Meeting Record",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-native-payapp-review.js",
+      "id": "tcNativeClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-native-payapp-review.js",
+      "id": "tcNativePrint",
+      "label": "Print / Save Draft PDF",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-sov-editor.js",
+      "id": "sovAdd",
+      "label": "+ Add Line",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-sov-editor.js",
+      "id": "sovSave",
+      "label": "Save Schedule",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-sov-editor.js",
+      "id": "sovClose",
+      "label": "Close",
+      "acceptance": "unverified"
+    },
+    {
+      "source": "tc-sov-editor.js",
+      "id": null,
+      "label": "×",
+      "acceptance": "unverified"
+    }
+  ]
+}

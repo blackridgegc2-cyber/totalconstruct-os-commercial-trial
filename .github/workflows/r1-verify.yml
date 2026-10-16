@@ -2,7 +2,7 @@ name: R1 Verification
 
 on:
   push:
-    branches: [full-build-r1]
+    branches: [main, full-build-r1]
   pull_request:
     branches: [main]
 
@@ -45,4 +45,4 @@ jobs:
       - name: Verify protected production branch remains separate
         shell: bash
         run: |
-          test "$GITHUB_REF_NAME" != "main" || echo 'Main verification run only; no automatic production deployment configured.'
+          test "$GITHUB_REF_NAME" != "main" || echo 'Main verification run; deployment readiness is tracked separately from CI.'
