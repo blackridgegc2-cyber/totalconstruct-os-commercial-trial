@@ -98,6 +98,7 @@
         "r1-company-branding-safe.js",
         "r1-final-readiness-safe.js",
         "r1-new-project-intake-safe.js",
+        "r1-payapp-workflow.js",
         "r1-project-lifecycle.js"
       ],
       "acceptance": "unverified"
@@ -129,6 +130,7 @@
         "index.html",
         "r1-design-professional-billing.js",
         "r1-owner-payapp-live.js",
+        "r1-payapp-workflow.js",
         "r1-training-signature-trial.js"
       ],
       "acceptance": "unverified"
@@ -613,6 +615,10 @@
     },
     {
       "path": "r1-payapp-release-diagnostics.js",
+      "acceptance": "unverified"
+    },
+    {
+      "path": "r1-payapp-workflow.js",
       "acceptance": "unverified"
     },
     {

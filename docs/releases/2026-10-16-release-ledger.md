@@ -14,7 +14,7 @@ Read the supplied October 16 handoff, repository `TOTALCONSTRUCT_FULL_SCOPE.md`,
 
 **Inaccessible/incomplete sources:** no exhaustive original-chat archive, stable outside-project thread links, full message/attachment contents or proof every related thread was searched. Older CPA/payroll/storage/legal requirement details were not recovered by chat retrieval; retain the repository full-scope specification and the older Full Build Check automation as baselines, pending original-source reconciliation. The attached CSI/budget originals were not supplied to this task. Production browser opened at secure sign-in; no authenticated session or distinct-role test credentials are available in that browser. Do not infer that missing sources contain no further requirements.
 
-## Current evidence
+## Initial evidence (before native approval milestone)
 
 - 63 Node tests pass, including 15 added session/pay-app/form regressions; financial reconciliation check passes.
 - Static, Training isolation and modern module gates pass. These are source checks, not live financial or role acceptance.
@@ -74,3 +74,20 @@ Each row requires implementation review plus acceptance on a recorded environmen
 3. Enforce PM dispute holds and financial reconciliation at the same server finalization boundary; test concurrency and duplicates.
 4. Obtain/configure authorized AI and QBO/bank provider access; do not purchase services or send invitations without authorization.
 5. Execute all route/action and full-scope acceptance with persistence/reopen, restore, mobile and signed artifact evidence. Update per-row evidence and implementation/deployment/verification separately. Release remains HOLD until required checks pass.
+
+
+## Native approval milestone — October 16, 2026
+
+Implementation: `tc-payapp-workflow` v1 deployed; `tc-owner-payapp-drafts` v19 replaces pilot-email access with current company/project permissions and blocks the obsolete signing/submission path. Migration `native_payapp_approval_pipeline` applied. Existing PA, signature, invoice and recipient records were not modified or routed. New workflow count verified zero after deployment.
+
+The new path locks the reconciled billing revision; contractor signs and separately sends to owner; owner signs and separately sends to lender; lender approves and atomically creates exactly one invoice. Every signature adds an attached PDF certificate containing verified account identity, explicit consent, UTC time and source/review hashes. This is an authenticated-session electronic signature, **not** biometric authentication or a certificate-based digital seal. Existing cryptographic seals are rejected instead of silently invalidated. The original PDF remains in private storage.
+
+Server controls enforce active role/permission and session validity, project boundaries, assigned signer/order, optimistic versioning, idempotent retries, source hashes and stored artifacts. Independent SOV reconciliation includes preconstruction, changes, previous/current work, materials, retainage and prior owner payments. PM billing holds block signing/routing/final approval, including unresolved holds from earlier revisions. Accounting may flag a hold; only a PM or company admin/executive may clear it with a recorded decision. Returns preserve locked billing and require a correction reason; the existing revision API creates a new revision.
+
+Client implementation: a role/stage-driven signature queue and separate sign/send/approve controls, current-PDF viewer and history. Legacy sign buttons open this workflow. Uploaded workbooks remain contractor-only; external users cannot read unrouted applications. Carryforward recognizes approved as well as submitted prior applications.
+
+Verification: 63 existing Node tests and 14 integration tests pass. The integration suite runs actual PostgreSQL via PGlite using current access-helper source and realistic legacy schemas. It exercises successful and rejected state transitions, role revocation, wrong project/signer, stale competing requests, missing consent, changed hashes, PM holds, immutable billing, returns, duplicate approval/invoice, queue visibility, database grants and legacy HTTP-handler access. Real pdf-lib tests reopen generated PDF certificates and reject existing digital seals; rendered certificate inspected. Deno typecheck passes for the new Edge Function. Live SQL confirms four new tables have RLS, privileged RPCs are executable only by postgres/service_role, independent financial validation returns the expected value, and the new HTTP gateway rejects no-auth requests with 401.
+
+**Deployment vs acceptance:** backend deployment is verified. The frontend is a PR candidate, not a production promotion. These fixture/handler/PDF tests are not a real authenticated multi-party browser acceptance run. A live roster query found **zero active owner/lender members** in Orchard Academy, Kingsland Commons and Training. No recipient invitation has been sent. Actual cross-device authentication, distinct signed-in role workflows, notifications in user dashboards, signature field expectations and final accounting propagation still require acceptance. Production AI configuration, QBO/bank provider setup, restore evidence and other matrix rows remain open.
+
+Security advisor comparison: no new anonymous or authenticated security-definer API warnings from this milestone; one pre-existing mutable-search-path warning removed by the rewritten guard. Four new RLS/no-policy informational findings are intentional service-only tables with browser privileges revoked. Four pre-existing anonymous finance/membership RPC grants were revoked in companion migration `restrict_legacy_finance_rpc_execution`; a live privilege query confirmed anon=false and authenticated=true for each. other legacy privilege and auth configuration findings remain under review.

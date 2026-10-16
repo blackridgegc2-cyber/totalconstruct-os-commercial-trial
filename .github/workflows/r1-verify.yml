@@ -17,6 +17,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm ci --ignore-scripts
+      - name: Native approval service typecheck
+        run: npx --yes deno@2.5.4 check --node-modules-dir=manual --no-lock supabase/functions/tc-payapp-workflow/index.ts
+      - name: Transactional pay-app workflow verification
+        run: npm run test:db
       - name: JavaScript syntax checks
         shell: bash
         run: |
