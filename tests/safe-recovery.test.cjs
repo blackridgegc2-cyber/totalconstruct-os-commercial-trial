@@ -10,7 +10,7 @@ function harness(statuses){
  const storage={getItem:()=>null,setItem(){}};
  const document={addEventListener(){},visibilityState:'visible'};
  const location={href:'https://app.example.com/operations',origin:'https://app.example.com',pathname:'/operations'};
- const sandbox={window,location,document,navigator:{userAgent:'test',language:'en'},sessionStorage:storage,localStorage:storage,URL,setInterval(){},setTimeout(){},addEventListener(){}};
+ const sandbox={window,location,document,navigator:{userAgent:'test',language:'en'},sessionStorage:storage,localStorage:storage,URL,setInterval(){},setTimeout(fn){fn()},addEventListener(){}};
  vm.runInNewContext(source,sandbox,{filename:'r1-error-tracker.js'});
  return {fetch:window.fetch,calls};
 }
