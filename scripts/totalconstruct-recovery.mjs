@@ -18,7 +18,7 @@ const issueView = n => JSON.parse(gh(['issue','view',String(n),'--repo',repo,'--
 const labels = issue => new Set(issue.labels.map(l=>l.name));
 function comment(n, body){ gh(['issue','comment',String(n),'--repo',repo,'--body',body]); }
 function replaceStatus(n, previous, next) {
-  for(const s of previous) gh(['issue','edit',String(n),'--repo',repo,'--remove-label',s]);
+  for(const s of previous) { try { gh(['issue','edit',String(n),'--repo',repo,'--remove-label',s]); } catch { /* status label may not be present */ } }
   gh(['issue','edit',String(n),'--repo',repo,'--add-label',next]);
 }
 function meta(issue){
@@ -37,7 +37,7 @@ async function main(){
   const issue=pending[0], config=meta(issue),attempts=(config?.attempts ?? 0);
   if(!config || !config.acceptance || !config.scope){console.log('Unstructured issue; skipped',issue.number);return;}
   if(config.requiresApproval){console.log('Human approval required for',issue.number);return;}
-  if(attempts>=maxAttempts){console.log('Retry ceiling reached',issue.number);return;}
+  if(!Number.isInteger(attempts)||attempts<0||attempts>=maxAttempts){console.log('Retry ceiling reached',issue.number);return;}
   if(!Number.isFinite(budget)||budget<=0){console.log('Budget disabled');return;}
   if(!endpoint||!token){console.log('Agent worker is NOT connected. No task dispatched. Set TC_AGENT_ENDPOINT and TC_AGENT_TOKEN secrets.');return;}
   if(!endpoint.startsWith('https://'))throw Error('TC_AGENT_ENDPOINT must use HTTPS');
