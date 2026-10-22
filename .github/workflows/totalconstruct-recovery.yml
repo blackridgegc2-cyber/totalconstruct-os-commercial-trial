@@ -24,7 +24,10 @@ jobs:
       GITHUB_REPOSITORY: ${{ github.repository }}
       TC_AGENT_ENDPOINT: ${{ secrets.TC_AGENT_ENDPOINT }}
       TC_AGENT_TOKEN: ${{ secrets.TC_AGENT_TOKEN }}
-      TC_MONTHLY_BUDGET_USD: ${{ vars.TC_MONTHLY_BUDGET_USD || '200' }}
+      TC_TOTAL_BUDGET_USD: ${{ vars.TC_TOTAL_BUDGET_USD || '0' }}
+      TC_ACTIVATED_AT: ${{ vars.TC_ACTIVATED_AT }}
+      TC_HARD_STOP_AT: ${{ vars.TC_HARD_STOP_AT }}
+      TC_VERIFIED_SPEND_USD: ${{ vars.TC_VERIFIED_SPEND_USD }}
       TC_MAX_ATTEMPTS: '4'
       TC_DRY_RUN: ${{ inputs.dry_run || 'false' }}
     steps:
