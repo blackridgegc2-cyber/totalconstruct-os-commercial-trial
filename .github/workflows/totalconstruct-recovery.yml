@@ -1,0 +1,39 @@
+name: Total Construct Recovery Controller
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Validate queue only, do not dispatch work'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  issues: write
+  actions: read
+concurrency:
+  group: totalconstruct-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      TC_AGENT_ENDPOINT: ${{ secrets.TC_AGENT_ENDPOINT }}
+      TC_AGENT_TOKEN: ${{ secrets.TC_AGENT_TOKEN }}
+      TC_TOTAL_BUDGET_USD: ${{ vars.TC_TOTAL_BUDGET_USD || '0' }}
+      TC_ACTIVATED_AT: ${{ vars.TC_ACTIVATED_AT }}
+      TC_HARD_STOP_AT: ${{ vars.TC_HARD_STOP_AT }}
+      TC_VERIFIED_SPEND_USD: ${{ vars.TC_VERIFIED_SPEND_USD }}
+      TC_MAX_ATTEMPTS: '4'
+      TC_DRY_RUN: ${{ inputs.dry_run || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Controller preflight and dispatch
+        run: node scripts/totalconstruct-recovery.mjs
