@@ -1,0 +1,27 @@
+name: Total Construct Progress Dashboard
+on:
+  schedule:
+    - cron: '41 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Produce development status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/totalconstruct-progress.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: totalconstruct-progress
+          path: artifacts/totalconstruct-progress.*
+          retention-days: 30
