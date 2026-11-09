@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Total Connect | 3D Site Design Studio</title>
+<style>
+:root{font:14px/1.45 Inter,Segoe UI,Arial,sans-serif;color:#eef4fa;background:#0d1420}*{box-sizing:border-box}
+body{margin:0}header{height:62px;background:#111e2b;border-bottom:1px solid #2c3c4c;display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:12px}header strong{font-size:17px}header span{color:#9dafc1;font-size:12px}
+main{display:grid;grid-template-columns:310px minmax(0,1fr);height:calc(100vh - 62px);min-height:570px}
+aside{background:#162331;overflow:auto;padding:18px;border-right:1px solid #344557}
+section{padding:12px 0;border-bottom:1px solid #304153}h2{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9db2c6;margin:4px 0 14px}
+label{display:block;font-size:12px;margin:11px 0 5px;color:#c3d1df}input[type=range]{width:100%;accent-color:#58aef7}
+input[type=number],select,input[type=file]{width:100%;padding:9px;color:#f2f6fb;background:#0c1825;border:1px solid #3d566b;border-radius:7px}input[type=checkbox]{accent-color:#58aef7}
+button{padding:9px 12px;color:#f5f9ff;background:#263f56;border:1px solid #456884;border-radius:8px;cursor:pointer}button:hover{background:#34556e}.primary{background:#1979bd;border-color:#309fe9}
+button:focus,input:focus{outline:2px solid #6ebeff;outline-offset:2px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.pill{font-size:11px;padding:4px 7px;border:1px solid #58718b;border-radius:30px;color:#cbdce9}
+.note{color:#a5b7c8;font-size:12px;line-height:1.55}.value{color:#fff;font-weight:700}
+#scene{position:relative;overflow:hidden;background:linear-gradient(#829ab0,#d8ddd6);min-width:0}canvas{display:block}
+.toolbar{position:absolute;top:16px;left:16px;display:flex;gap:8px;flex-wrap:wrap;max-width:calc(100% - 32px);pointer-events:none}.toolbar>*{pointer-events:auto}
+.info{position:absolute;bottom:18px;left:18px;right:18px;max-width:570px;background:#101d29e8;border:1px solid #507086;border-radius:10px;padding:11px 13px;backdrop-filter:blur(8px)}
+#status{color:#ffda91}#loading{position:absolute;inset:0;display:grid;place-items:center;background:#101c2b;color:#fff;z-index:5}
+a{color:#8bc9ff}@media(max-width:850px){main{display:flex;flex-direction:column-reverse;height:auto}aside{overflow:visible}#scene{height:65vh;min-height:400px}header{height:auto;min-height:62px;flex-wrap:wrap}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+</head><body>
+<header><div><strong>Total Connect · 3D Site Design Studio</strong><div><span>Interactive prototype · Plan 75178 · dimensional concept only</span></div></div><span class="pill">PRELIMINARY · NOT SURVEY-ACCURATE</span></header>
+<main>
+<aside>
+<section><h2>1 · Building geometry</h2><div class="twocol"><div><label>Width (feet)</label><input id="width" type="number" min="10" max="300" value="70" step="1"></div><div><label>Depth (feet)</label><input id="depth" type="number" min="10" max="300" value="30" step="1"></div></div>
+<label>Number of floors</label><select id="floors"><option value="2">2 — hillside walkout</option><option value="1">1 — single level</option></select>
+<div class="note">Geometry is an approximate massing model reconstructed from supplied elevations—not the licensed architectural CAD model.</div></section>
+<section><h2>2 · Placement controls</h2>
+<label>Rotate building <span class="value" id="headingVal">0°</span></label><input type="range" id="heading" min="-180" max="180" value="0" step="1">
+<label>Move east / west <span class="value" id="xVal">0 ft</span></label><input type="range" id="x" min="-200" max="200" value="0" step="1">
+<label>Move north / south <span class="value" id="zVal">0 ft</span></label><input type="range" id="z" min="-200" max="200" value="0" step="1">
+<label>Raise / lower finished-floor elevation <span class="value" id="yVal">0 ft</span></label><input type="range" id="y" min="-30" max="40" value="0" step=".5"></section>
+<section><h2>3 · Site & clearing</h2><label>Clearing around footprint <span class="value" id="bufferVal">20 ft</span></label><input type="range" id="buffer" min="0" max="60" value="20" step="1">
+<label><input id="siteImg" type="file" accept="image/*"> Site photograph / aerial (optional)</label>
+<div class="note">Uploaded aerial becomes a <b>visual reference plane</b>. This is not georeferencing or correct 3D terrain reconstruction. A measured terrain DEM/survey and camera calibration are necessary for site-accurate presentation.</div>
+<label><input type="checkbox" id="shop" checked> Show 40′ × 40′ scale shop</label>
+<label><input type="checkbox" id="wire" checked> Show dimensioned footprint & clearing</label></section>
+<section><h2>4 · Presentation</h2><div class="twocol"><button id="aerial">Aerial camera</button><button id="front">Front elevation</button><button id="plan">Top-down</button><button id="reset">Reset controls</button></div>
+<label>Viewing mode</label><select id="mode"><option value="solid">3D materials</option><option value="wire">3D wireframe</option></select>
+<div class="row" style="margin:15px 0"><button class="primary" id="export">Save PNG view</button><button id="save">Export scene settings</button></div>
+<div class="note">Orbit: left-drag · Pan: right-drag · Zoom: mouse wheel. Exported PNG shows concept geometry only. No imaginary pools, landscaping or roads.</div></section>
+</aside>
+<div id="scene"><div id="loading">Loading 3D viewer…</div>
+<div class="toolbar"><span class="pill" style="background:#0f2235cc">REAL 3D · ORBIT / ZOOM / ROTATE</span><span class="pill" style="background:#0f2235cc">70′ × 30′ INITIAL FOOTPRINT</span></div>
+<div class="info"><div class="row"><strong>Plan 75178 — hillside massing</strong><span id="dims">2,100 SF footprint</span></div>
+<div class="note" id="status">Model is dimensioned, but site alignment and terrain are not verified. Existing hillside remains unchanged until a properly calibrated site model is supplied.</div></div></div>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const sceneEl=document.getElementById('scene'), $=id=>document.getElementById(id), scene=new THREE.Scene();scene.background=new THREE.Color(0xa7b8c2);
+const camera=new THREE.PerspectiveCamera(52,1,.1,3000);camera.position.set(110,90,125);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;sceneEl.appendChild(renderer.domElement);
+const control=new OrbitControls(camera,renderer.domElement);control.target.set(0,6,0);control.enableDamping=true;control.maxPolarAngle=Math.PI/2-.03;control.update();
+scene.add(new THREE.HemisphereLight(0xeef5ff,0x7e7769,2.2));const sun=new THREE.DirectionalLight(0xffefd7,3.2);sun.position.set(-60,130,95);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-200;sun.shadow.camera.right=200;sun.shadow.camera.top=200;sun.shadow.camera.bottom=-200;scene.add(sun);
+const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
+const wood=mat(0x875b48),stone=mat(0x88847b),roof=mat(0x293441),glass=new THREE.MeshStandardMaterial({color:0x719bad,metalness:.35,roughness:.1,transparent:true,opacity:.72}),dark=mat(0x30343a),timber=mat(0xab8d65),rail=mat(0x343c43);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(900,900),mat(0x717f67));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(400,40,0xb0b6b5,0x9aa7a4);grid.position.y=.035;scene.add(grid);
+const houseGroup=new THREE.Group();scene.add(houseGroup),siteGroup=new THREE.Group();scene.add(siteGroup);
+function meshBox(parent,w,h,d,x,y,z,material){const a=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);a.position.set(x,y,z);a.castShadow=true;a.receiveShadow=true;parent.add(a);return a;}
+function clear(g){while(g.children.length){let a=g.children[0];g.remove(a);if(a.geometry)a.geometry.dispose();}}
+let outline,refImg;
+function rebuild(){
+clear(houseGroup);clear(siteGroup);
+const w=Number($('width').value)||70,d=Number($('depth').value)||30,f=Number($('floors').value),height=f===2?20:11;
+const stem=height-1,sideRoof=roof;
+meshBox(houseGroup,w,stem,d,0,stem/2,0,wood);
+meshBox(houseGroup,w,Math.min(9,stem),1,0,stem/2,d/2+.15,stone);
+meshBox(houseGroup,w+7,1.2,d+10,0,height+1,-2.2,sideRoof);
+const balconyD=9;
+meshBox(houseGroup,w,1.1,balconyD,0,f===2?10:2,d/2+balconyD/2,timber);
+for(let i=0;i<=5;i++){const bx=-w/2+i*w/5;meshBox(houseGroup,1.7,height+1,1.7,bx,(height+1)/2,d/2+balconyD,stone);meshBox(houseGroup,.65,6, .65,bx,height-2,d/2+balconyD,timber);}
+for(let i=0;i<7;i++){const bx=-w/2+6+i*(w-12)/6;meshBox(houseGroup,3.1,6.5,.22,bx,f===2?14:5.8,d/2+.65,glass);if(f===2)meshBox(houseGroup,3.1,6.4,.22,bx,5,d/2+.65,glass);}
+meshBox(houseGroup,w-3,.18,.25,0,f===2?13:5,d/2+balconyD+.15,rail);
+const clearance=Number($('buffer').value)||0;const shape=new THREE.Shape();const a=w/2+clearance,b=d/2+clearance;shape.moveTo(-a,-b);shape.lineTo(a,-b);shape.lineTo(a,b);shape.lineTo(-a,b);shape.closePath();const cg=new THREE.BufferGeometry().setFromPoints(shape.getPoints().map(p=>new THREE.Vector3(p.x,.15,p.y)));outline=new THREE.LineLoop(cg,new THREE.LineBasicMaterial({color:0xffc55b}));houseGroup.add(outline);
+const fpGeo=new THREE.BufferGeometry().setFromPoints([[-w/2,-d/2],[w/2,-d/2],[w/2,d/2],[-w/2,d/2],[-w/2,-d/2]].map(p=>new THREE.Vector3(p[0],.17,p[1])));houseGroup.add(new THREE.Line(fpGeo,new THREE.LineBasicMaterial({color:0x44e0fa})));
+const shopGroup=new THREE.Group();shopGroup.position.set(-95,0,15);
+meshBox(shopGroup,40,14,40,0,7,0,stone);meshBox(shopGroup,42,1,42,0,14,0,roof);
+shopGroup.visible=$('shop').checked;siteGroup.add(shopGroup);
+grid.visible=$('wire').checked;outline.visible=$('wire').checked;
+if(refImg) {refImg.position.set(0,.05,0);siteGroup.add(refImg);}
+applyPose();updateWire();
+$('dims').textContent=(w*d).toLocaleString()+' SF footprint';
+}
+function updateWire(){grid.visible=$('wire').checked;if(outline)outline.visible=$('wire').checked}
+function applyPose(){
+houseGroup.position.set(+$('x').value,+$('y').value,+$('z').value);houseGroup.rotation.y=+$('heading').value*Math.PI/180;
+for (const id of ['heading','x','z','y','buffer']){$(id+'Val').textContent=$(id).value+(id==='heading'?'°':' ft');}
+}
+function resize(){const w=sceneEl.clientWidth,h=sceneEl.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}
+const observer=new ResizeObserver(resize);observer.observe(sceneEl);
+function setCamera(which){if(which==='aerial')camera.position.set(115,95,115);if(which==='front')camera.position.set(0,22,125);if(which==='plan')camera.position.set(0,190,.01);control.target.set(0,7,0);control.update();}
+function allWire(mode){houseGroup.traverse(o=>{if(o.isMesh){o.material.wireframe=mode==='wire';}})}
+for(const id of ['width','depth','floors','buffer'])$(id).addEventListener('input',rebuild);
+for(const id of ['x','y','z','heading'])$(id).addEventListener('input',applyPose);
+$('shop').addEventListener('change',rebuild);$('wire').addEventListener('change',updateWire);
+$('mode').addEventListener('change',()=>allWire($('mode').value));
+for(const id of ['aerial','front','plan'])$(id).onclick=()=>setCamera(id);
+$('reset').onclick=()=>{for(const [k,v] of Object.entries({width:70,depth:30,floors:2,heading:0,x:0,z:0,y:0,buffer:20}))$(k).value=v;rebuild();setCamera('aerial')};
+$('siteImg').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const url=URL.createObjectURL(f);new THREE.TextureLoader().load(url,texture=>{texture.colorSpace=THREE.SRGBColorSpace;if(refImg){siteGroup.remove(refImg);refImg.geometry.dispose();refImg.material.dispose()}refImg=new THREE.Mesh(new THREE.PlaneGeometry(300,300*(texture.image.height/texture.image.width)),new THREE.MeshBasicMaterial({map:texture,depthWrite:false,side:THREE.DoubleSide}));refImg.rotation.x=-Math.PI/2;refImg.position.y=.065;siteGroup.add(refImg);grid.position.y=.12;$('status').textContent='Aerial texture loaded as a visual reference only. Geographic coordinates, camera perspective and elevation are NOT calibrated.';URL.revokeObjectURL(url)},undefined,()=>{alert('Unable to load image')})};
+$('export').onclick=()=>{renderer.render(scene,camera);const a=document.createElement('a');a.download='totalconnect-3d-site-concept.png';a.href=renderer.domElement.toDataURL('image/png');a.click()};
+$('save').onclick=()=>{const settings={project:'Plan 75178',status:'CONCEPT_NOT_SURVEY_VERIFIED',controls:Object.fromEntries(['width','depth','floors','heading','x','y','z','buffer'].map(k=>[k,Number($(k).value)]))};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(settings,null,2)],{type:'application/json'}));a.download='totalconnect-site-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
+rebuild();resize();$('loading').remove();
+(function loop(){requestAnimationFrame(loop);control.update();renderer.render(scene,camera)})();
+</script></body></html>
