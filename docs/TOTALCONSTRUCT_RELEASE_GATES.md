@@ -80,3 +80,17 @@ Last reviewed: 2026-10-14. This is a reconciliation of prior requests, not a cla
 - **Gate 4 — Academic Orchard PA1:** reconcile G702/G703 figures and source contract, map architect/MEP/civil/precon, subcontractor/design billing, owner/lender visibility, immutable full PDF and signed routing through lender-approved invoice.
 - **Gate 5 — operational signoff:** Blackridge administrator executes browser/mobile tests, recovery drill and explicit go/no-go decision. External multi-tenant rollout remains separate.
 - **No completion percentages without a measured test inventory.** A successful migration or Vercel READY does not pass any of the above gates by itself.
+
+## G. 3D Site Design Studio — preview-first addition to launch implementation ledger [NOT ACCEPTED]
+- [ ] Produce a standalone, browser-accessible 3D prototype for Blackridge review BEFORE integrating into Total Connect navigation, permissions, or production builds.
+- [ ] Simple, professional UI: Site / Building / Presentation controls; click to place, drag to move, numerical width/depth, easy rotate and grade adjustments, orbit/zoom, reset, before/after, undo and redo.
+- [ ] Actual interactive 3D geometry and terrain, not an unconstrained AI-generated 2D picture. Render from same dimensionally controlled scene.
+- [ ] Accept image, rough sketch, generic floor-plan PDF, website screenshots and detailed plans; identify unknown dimensions. No CAD required to start.
+- [ ] Support licensed aerial mapping and independent survey/DEM/LiDAR terrain; georeferenced placement, vertical datum, control points and perspective-correct scale.
+- [ ] Preserve existing property context exactly except the approved change mask; no additions of pools, drives, landscaping, garage or altered elevations without user instruction.
+- [ ] Prototype acceptance: Plan 75178 approximately 70 ft by 30 ft at the requested hillside location, calibrated against the existing 40 ft by 40 ft shop and existing 50 ft by 90 ft house; show requested elevations, 20-ft clearing ring and scale confidence.
+- [ ] Presentation-quality output: sharp exterior renderings from front and other approved viewpoints, client-ready before/after, branding, version history and print/export; no deceptive precision claims.
+- [ ] Approve browser/tablet usability, visual accuracy, speed, version rollback, provenance, user roles, cost delta/takeoff links and project-specific records before merging.
+- [ ] Keep draft prototype PR #34 unmerged pending operator approval and performance/accuracy evidence.
+
+**Release sequencing:** This addition belongs in the complete product launch implementation backlog but is a separately gated design-build module. It must NOT block the current Blackridge core R1 financial/operational trial unless the owner explicitly makes it a required go-live component. No announcement that 3D rendering is operational until tests and owner signoff.
