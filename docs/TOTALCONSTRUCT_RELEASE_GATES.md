@@ -101,3 +101,33 @@ Last reviewed: 2026-10-14. This is a reconciliation of prior requests, not a cla
 - [ ] From **Drawings / Takeoff**, provide **Open in 3D Site Studio** for drawings or project images, and return approved dimensioned model revisions and cost-linked quantities to existing estimate/budget/revision workflows.
 - [ ] Ensure project-scoped saved scenes, rendering versions, reference sources, and authorized client presentation exports; enforce permissions and no cross-project data exposure.
 - [ ] Keep 3D studio preview separate and unmerged until owner reviews visual fidelity and ease-of-use. Existing core R1 acceptance gates remain unchanged.
+
+## H. Blackridge live-project trial readiness — operationally complete pilot [REQUIRED, NOT YET ACCEPTED]
+Owner clarification (2026-11-08): **"trial use" means a production-capable pilot with REAL projects, REAL communications and REAL billing, not a read-only demo, sample shell, or limited feature preview.** No representation of the platform as trial-ready until the following are passed and recorded.
+
+### Essential in-scope workflows (all required)
+- [ ] Create/edit a real project; safely import plans, specifications, contracts, contacts, schedules, SOV, budgets and historical data. Persist and reopen reliably.
+- [ ] Real project-scoped GC, PM, Superintendent, Accounting, Architect, Engineer, Subcontractor, Owner and Lender collaboration with invites, login, selective permissions, private contracts, revocation and audit.
+- [ ] Internal/external communication: project inbox, email notifications/delivery failure, plan distribution, correspondence, drawings, comments, meeting minutes, tasks and issue follow-through.
+- [ ] Real RFIs from creation through routing, responsible design response, attachments, drawing/spec references, reminders, closeout and record retrieval.
+- [ ] Real submittals from contractor upload through review, returned/revise/resubmit, approval, revision control, distribution and audit history.
+- [ ] Drawing document control: updated sheets, version supersession, field access, transmittals, notifications, annotation/review and full traceability.
+- [ ] Complete bid / procurement pipeline: trade-matched invite lists including outside-radius known subs, BCC privacy, bidders access plans, receive bids, evaluate scope completeness and price, award, execute contract and track commitments.
+- [ ] Baseline and revised cost codes, budgets, change events, approved changes, commitments, expenses, actuals, cost-to-complete, cash flow and WIP. Transfers and approved changes reconcile exactly against PA SOV and reports.
+- [ ] Professional invoices and subcontractor billings reviewed/mapped without duplicate G703 transfers; native owner GC G702/G703 with carryforward, stored materials, retainage, approved COs, correct continuation PDFs, immutable history.
+- [ ] Real contractor→owner→lender pay application approvals with validated signatures / biometric-capable passkey fallback, notifications, authorized backup, invoice creation, payment status and proper audit / access.
+- [ ] Daily reports, field photos, progress, schedule and delays, punch, site coordination, owner updates, document exports, backups and recovery.
+- [ ] Accurate project status dashboards; no dead controls or attractive but nonfunctional buttons; robust browser, tablet and phone usability.
+
+### Live project test cases
+- [ ] **Orchard Academy**: reconcile PA1 source values and contracts before any external submission, create PA2 with correct carryforward, tie all project financial statements, enable architect/civil design team workflow and validate live collaboration.
+- [ ] **Kingsland Commons**: real trade packages, recipient selection, plans distribution, bids returned, scope comparison, subcontractor communication and traceability without exposing bidder lists or confidential budgets.
+- [ ] Verify project switching does not leak or corrupt another project's records; isolate test data from actual money and approval records.
+
+### Formal go/no-go
+- [ ] Automated financial tests + authenticated end-to-end human walkthrough of ALL above with evidence, defects and resolutions, including owner/lender role denial tests.
+- [ ] Backups/restores, reliable persistence, rollback path, signed-document retention, application monitoring, incident escalation and operational support verified.
+- [ ] Explicit Blackridge administrator signoff before the phrase "ready for live-project trial" or "operational pilot" is used.
+- [ ] Initial rollout restricted to Blackridge-managed projects; broader commercial subscription launch requires additional tenant isolation, billing, scalability and security acceptance.
+
+**Distinction:** A Vercel READY deployment and passing GitHub CI are necessary but not sufficient. The optional photorealistic 3D Site Design Studio remains a separately accepted expansion unless expressly made mandatory for this pilot. Do not compromise financial or external-communication functionality to prioritize rendering.
