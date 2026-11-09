@@ -94,3 +94,10 @@ Last reviewed: 2026-10-14. This is a reconciliation of prior requests, not a cla
 - [ ] Keep draft prototype PR #34 unmerged pending operator approval and performance/accuracy evidence.
 
 **Release sequencing:** This addition belongs in the complete product launch implementation backlog but is a separately gated design-build module. It must NOT block the current Blackridge core R1 financial/operational trial unless the owner explicitly makes it a required go-live component. No announcement that 3D rendering is operational until tests and owner signoff.
+
+### Approved navigation location (2026-11-08)
+- [ ] **Preconstruction → 3D Site Design Studio** within the existing project-scoped Preconstruction workspace and left project-management navigation, adjacent to **Drawings / Takeoff**. Do not add a top-level application or unrelated standalone menu after integration.
+- [ ] Add a **3D Site Design / Visualization** quick-access tile to the Preconstruction landing page shown in the Orchard Academy example, beside Drawings & Specifications and Cost Controls; use the active project ID, project roles, and document context.
+- [ ] From **Drawings / Takeoff**, provide **Open in 3D Site Studio** for drawings or project images, and return approved dimensioned model revisions and cost-linked quantities to existing estimate/budget/revision workflows.
+- [ ] Ensure project-scoped saved scenes, rendering versions, reference sources, and authorized client presentation exports; enforce permissions and no cross-project data exposure.
+- [ ] Keep 3D studio preview separate and unmerged until owner reviews visual fidelity and ease-of-use. Existing core R1 acceptance gates remain unchanged.
