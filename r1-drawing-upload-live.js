@@ -9,13 +9,13 @@
  const yieldUI=()=>new Promise(r=>setTimeout(r,0));
  const now=()=>new Date().toISOString();
  function ensure(){state.drawingFiles=state.drawingFiles||[];state.documentIntake=state.documentIntake||[]}
- async function upload(file,p){
+ async function upload(file,p,onProgress){
   if(!token())throw new Error('Sign in again before uploading drawings.');
+  if(prj()?.id!==p.id)throw Error('Project changed before drawing upload');
   const path=`${p.id}/drawings/${Date.now()}-${Math.random().toString(36).slice(2,7)}-${safe(file.name)}`;
-  const url=`${root()}/storage/v1/object/project-documents/${path.split('/').map(encodeURIComponent).join('/')}`;
-  const r=await fetch(url,{method:'POST',headers:{apikey:cfg().key,Authorization:`Bearer ${token()}`,'Content-Type':file.type||'application/octet-stream','x-upsert':'false'},body:file});
-  if(!r.ok)throw new Error(`Drawing cloud upload failed (${r.status}): ${await r.text()}`);
-  return path;
+  await window.tcLoadR1Modules?.(['tc-resumable-upload.js']);
+  if(!window.tcResumableUpload)throw Error('Resumable upload service unavailable');
+  return window.tcResumableUpload.upload(file,path,onProgress);
  }
  async function pdfText(file){
   await window.tcLoadDocumentLibraries?.();
@@ -40,14 +40,15 @@
  async function handle(files,pArg,options={}){
   ensure();const p=pArg||prj();if(!p)return;
   for(const file of files){
-   const choice=file.size>25*1024*1024?{read:false,purpose:'Reference / File Only (large file; manual indexing available)'}:await intakeChoice(file);if(choice===false)continue;
+   const readable=/pdf/i.test(file.type)||/\.pdf$/i.test(file.name);
+   const choice=file.size>25*1024*1024||!readable?{read:false,purpose:!readable?'Reference / File Only (native source retained; extraction unavailable)':'Reference / File Only (large file; manual indexing available)'}:await intakeChoice(file);if(choice===false)continue;
    const id='DRW-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),createdAt=now();
    const localUrl=URL.createObjectURL(file);
    const rec={id,versionId:id,project:p.name,projectId:p.id,folder:options.folder||'',name:file.name,fileName:file.name,title:file.name.replace(/\.[^.]+$/,''),sheet:'',revision:parseRevision(file.name),issueDate:'',discipline:classify(file.name),status:'Uploading to project cloud…',type:file.type,url:localUrl,markup:[],sourceImmutable:true,createdAt,aiReadRequested:choice.read!==false,aiReadPurpose:choice.purpose||'',overwritePolicy:'Confirm before replacing existing values'};
    state.drawingFiles.push(rec);
    try{if(typeof renderDrawings==='function')renderDrawings()}catch(e){}
    try{
-    rec.storagePath=await upload(file,p);rec.sourceReference=sourceRef(rec);rec.status=choice.read===false?'Stored — source preserved':'Stored — scanning drawing set…';
+    rec.storagePath=await upload(file,p,(sent,total)=>{rec.uploadProgress=total?Math.round(sent/total*100):0;rec.status='Uploading '+rec.uploadProgress+'%';options.onProgress?.(sent,total)});rec.sourceReference=sourceRef(rec);rec.status=choice.read===false?'Stored — source preserved':'Stored — scanning drawing set…';
     const intake={id:'DOC-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),project:p.name,projectId:p.id,fileName:file.name,fileType:file.type,fileSize:file.size,storagePath:rec.storagePath,category:'Drawing',aiDocumentType:'Drawing',status:choice.read===false?'Stored Only':'Stored — extracting',createdAt:now(),sourceImmutable:true,sourceReference:rec.sourceReference,aiReadRequested:choice.read!==false,aiReadStatus:choice.read===false?'Stored Only':'AI Review Requested',overwritePolicy:'Confirm before replacing existing values',sourceTraceability:true};
     window.tcAiDocumentGovernance?.markIntake?.(intake,choice);
     state.documentIntake.push(intake);

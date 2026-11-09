@@ -2,7 +2,7 @@ name: R1 Verification
 
 on:
   push:
-    branches: [full-build-r1]
+    branches: [main, full-build-r1]
   pull_request:
     branches: [main]
 
@@ -17,6 +17,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm ci --ignore-scripts
+      - name: Native approval service typecheck
+        run: npx --yes deno@2.5.4 check --node-modules-dir=manual --no-lock supabase/functions/tc-payapp-workflow/index.ts
+      - name: Transactional pay-app workflow verification
+        run: npm run test:db
       - name: JavaScript syntax checks
         shell: bash
         run: |
@@ -45,4 +50,4 @@ jobs:
       - name: Verify protected production branch remains separate
         shell: bash
         run: |
-          test "$GITHUB_REF_NAME" != "main" || echo 'Main verification run only; no automatic production deployment configured.'
+          test "$GITHUB_REF_NAME" != "main" || echo 'Main verification run; deployment readiness is tracked separately from CI.'

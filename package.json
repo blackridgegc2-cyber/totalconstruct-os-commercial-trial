@@ -1,0 +1,1 @@
+{"name":"totalconnect-release-verification","private":true,"scripts":{"test":"node --test tests/*.cjs tests/*.test.js","test:db":"node --test tests/integration/*.test.cjs"},"devDependencies":{"@electric-sql/pglite":"0.3.14","@supabase/supabase-js":"2.99.1","pdf-lib":"1.17.1","tus-js-client":"4.3.1"}}
